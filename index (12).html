@@ -720,7 +720,7 @@
             background: #f7fafc; border: 1.5px dashed #cbd5e0; color: #2d3748;
         }
         .modal-content .tier-add-btn:hover { background: #edf2f7; }
-        body.dark-mode .modal-content .tier-add-btn { background: #1c1c1e; border-color: #3a3a3a; color: #e8e8e8; }
+        body.dark-mode .modal-content .tier-add-btn { background: var(--dm-surface-2); border-color: var(--dm-border); color: var(--dm-text-primary); }
 
         .modal-buttons {
             display: flex;
@@ -1414,7 +1414,7 @@
             border-radius: 6px;
         }
         body.dark-mode .skeleton-block {
-            background: linear-gradient(90deg, #1a1a1a 25%, #242424 37%, #1a1a1a 63%);
+            background: linear-gradient(90deg, var(--dm-surface-1) 25%, var(--dm-surface-2) 37%, var(--dm-surface-1) 63%);
             background-size: 400px 100%;
         }
         .skeleton-card {
@@ -1426,7 +1426,7 @@
             flex-direction: column;
             gap: 10px;
         }
-        body.dark-mode .skeleton-card { background: #121212; box-shadow: 0 0 0 1px #262626; }
+        body.dark-mode .skeleton-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
 
         /* ============================================
            DASHBOARD
@@ -1458,7 +1458,7 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
             animation: fadeIn 0.4s ease;
         }
-        body.dark-mode .dash-kpi-card { background: #121212; box-shadow: 0 0 0 1px #262626; }
+        body.dark-mode .dash-kpi-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
         .dash-kpi-label { font-size: 0.8em; color: #8e8e93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
         .dash-kpi-valor { font-size: 1.8em; font-weight: 800; color: var(--primary); margin-top: 6px; letter-spacing: -0.02em; }
 
@@ -1475,7 +1475,7 @@
             box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
             animation: fadeIn 0.5s ease;
         }
-        body.dark-mode .dash-chart-card { background: #121212; box-shadow: 0 0 0 1px #262626; }
+        body.dark-mode .dash-chart-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
         .dash-chart-title { font-weight: 700; margin-bottom: 12px; color: var(--primary); font-size: 1.02em; }
         .historial-list { display: flex; flex-direction: column; gap: 10px; }
 
@@ -1862,11 +1862,34 @@
            siempre legible.
         ============================================ */
         body.dark-mode {
-            --primary: #d4d4d8;
-            --border: #2a2a2a;
-            --bg-light: #121212;
-            background: #000000;
-            color: #e8e8e8;
+            /* ============================================
+               TOKENS DE MODO OSCURO — estilo Windows 11 / Fluent
+               Design: grises graduados, NO negro puro. Todo el
+               resto del CSS de dark-mode (y los estilos inline
+               generados por JS) deben usar estas variables, no
+               valores hex sueltos, para que un solo lugar controle
+               la paleta completa.
+            ============================================ */
+            --dm-bg-base: #202020;      /* fondo general de la app */
+            --dm-surface-1: #2c2c2c;    /* tarjetas, paneles */
+            --dm-surface-2: #333333;    /* headers de panel, hover, elementos elevados */
+            --dm-surface-3: #3d3d3d;    /* modales/popovers elevados, estados disabled */
+            --dm-border: #3f3f3f;
+            --dm-border-soft: #4a4a4a;
+            --dm-text-primary: #ffffff;
+            --dm-text-secondary: #c5c5c5;
+            --dm-text-disabled: #7a7a7a;
+
+            /* Re-apunta las variables globales del tema claro (usadas
+               en todo el resto del CSS) a los tokens de arriba, para
+               que los componentes que ya usan var(--primary) /
+               var(--border) / var(--bg-light) hereden el modo oscuro
+               automáticamente sin necesitar su propio override. */
+            --primary: var(--dm-text-primary);
+            --border: var(--dm-border);
+            --bg-light: var(--dm-surface-1);
+            background: var(--dm-bg-base);
+            color: var(--dm-text-primary);
         }
 
         body.dark-mode .content,
@@ -1885,34 +1908,36 @@
         body.dark-mode .cliente-panel,
         body.dark-mode .cliente-db-dropdown,
         body.dark-mode .cliente-db-item {
-            background: #121212;
-            color: #e8e8e8;
-            border-color: #2a2a2a;
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
         }
 
         body.dark-mode .form-label {
-            color: #d4d4d8;
+            color: var(--dm-text-primary);
         }
 
         body.dark-mode .add-product-section {
-            background: #161616;
-            border-color: #2a2a2a;
+            background: var(--dm-surface-1);
+            border-color: var(--dm-border);
         }
 
         body.dark-mode .products-table td,
         body.dark-mode .products-table th {
-            border-color: #2a2a2a;
+            border-color: var(--dm-border);
         }
 
         body.dark-mode .products-table tbody tr:hover {
-            background: #1a1a1a;
+            background: var(--dm-surface-2);
         }
 
         body.dark-mode .autocomplete-item:hover,
         body.dark-mode .cliente-db-item:hover {
-            background: #1e1e1e;
+            background: var(--dm-surface-2);
         }
 
+        /* Verde de "sucursal seleccionada": color de estado (éxito),
+           no un tono neutro — se deja igual que antes a propósito. */
         body.dark-mode .sucursal-card.selected {
             background: #0f2418;
         }
@@ -1926,20 +1951,22 @@
         body.dark-mode .empty-state,
         body.dark-mode .historial-empty,
         body.dark-mode .cliente-db-item-sub {
-            color: #9a9a9a;
+            color: var(--dm-text-secondary);
         }
 
         body.dark-mode .tab {
-            color: #9a9a9a;
+            color: var(--dm-text-secondary);
         }
 
+        /* Color de tab activo/hover: variante del accent (--secondary),
+           no un tono neutro — se deja igual que antes a propósito. */
         body.dark-mode .tab.active,
         body.dark-mode .tab:hover {
             color: #a5b4fc;
         }
 
         body.dark-mode .tabs {
-            border-bottom-color: #2a2a2a;
+            border-bottom-color: var(--dm-border);
         }
 
         /* La pantalla de acceso (login/registro) y el panel de cuenta
@@ -1972,9 +1999,9 @@
 
         body.dark-mode .loading-content,
         body.dark-mode .extra-field input {
-            background: #121212;
-            color: #e8e8e8;
-            border-color: #2a2a2a;
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
         }
 
         /* Toggle de tema */
@@ -2069,9 +2096,9 @@
         .ios-banner-icon { font-size: 1.4em; line-height: 1; flex-shrink: 0; }
         .ios-banner-body { flex: 1; min-width: 0; }
         .ios-banner-title { font-weight: 600; font-size: 0.95em; color: #1c1c1e; }
-        body.dark-mode .ios-banner-title { color: #e8e8e8; }
+        body.dark-mode .ios-banner-title { color: var(--dm-text-primary); }
         .ios-banner-text { font-size: 0.85em; color: #636366; margin-top: 2px; }
-        body.dark-mode .ios-banner-text { color: #9a9a9a; }
+        body.dark-mode .ios-banner-text { color: var(--dm-text-secondary); }
         .ios-banner-dismiss {
             background: rgba(0,0,0,0.06);
             border: none;
@@ -2085,7 +2112,7 @@
             white-space: nowrap;
         }
         .ios-banner-dismiss:hover { background: rgba(0,0,0,0.12); }
-        body.dark-mode .ios-banner-dismiss { background: rgba(255,255,255,0.1); color: #e8e8e8; }
+        body.dark-mode .ios-banner-dismiss { background: rgba(255,255,255,0.1); color: var(--dm-text-primary); }
         body.dark-mode .ios-banner-dismiss:hover { background: rgba(255,255,255,0.18); }
 
         .ios-search-wrap {
@@ -2116,9 +2143,9 @@
             outline: none;
             background: #e9e9ee;
         }
-        body.dark-mode .ios-search { background: #1c1c1e; color: #e8e8e8; }
-        body.dark-mode .ios-search:focus { background: #262626; }
-        body.dark-mode .ios-search-wrap svg { color: #6d6d70; }
+        body.dark-mode .ios-search { background: var(--dm-surface-2); color: var(--dm-text-primary); }
+        body.dark-mode .ios-search:focus { background: var(--dm-surface-3); }
+        body.dark-mode .ios-search-wrap svg { color: var(--dm-text-disabled); }
 
         .shalom-cards-grid {
             display: grid;
@@ -2142,8 +2169,8 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.09);
         }
         body.dark-mode .shalom-card {
-            background: #121212;
-            box-shadow: 0 0 0 1px #262626, 0 4px 14px rgba(0,0,0,0.4);
+            background: var(--dm-surface-1);
+            box-shadow: 0 0 0 1px var(--dm-border), 0 4px 14px rgba(0,0,0,0.4);
         }
         .shalom-card-top {
             display: flex;
@@ -2160,7 +2187,7 @@
             line-height: 1.25;
             overflow-wrap: break-word;
         }
-        body.dark-mode .shalom-card-nombre { color: #f2f2f2; }
+        body.dark-mode .shalom-card-nombre { color: var(--dm-text-primary); }
         .shalom-card-subinfo { font-size: 0.8em; color: #8e8e93; margin-top: 2px; }
         .shalom-card-destino { font-size: 0.85em; color: #8e8e93; }
         .shalom-card-estado-badge {
@@ -2185,7 +2212,7 @@
             color: #c7c7cc;
             margin-top: 6px;
         }
-        body.dark-mode .shalom-card-fecha { color: #6d6d70; }
+        body.dark-mode .shalom-card-fecha { color: var(--dm-text-disabled); }
         .shalom-card-del-btn {
             background: #f2f2f7;
             border: none;
@@ -2202,7 +2229,8 @@
             transition: background 0.15s;
         }
         .shalom-card-del-btn:hover { background: #ffe5e5; color: #ff3b30; }
-        body.dark-mode .shalom-card-del-btn { background: #1c1c1e; color: #9a9a9a; }
+        body.dark-mode .shalom-card-del-btn { background: var(--dm-surface-2); color: var(--dm-text-secondary); }
+        /* Hover rojo de "eliminar": color de estado, se deja igual. */
         body.dark-mode .shalom-card-del-btn:hover { background: #3a1414; color: #ff453a; }
 
         /* Mejora responsive móvil adicional */
