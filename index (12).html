@@ -2493,7 +2493,7 @@
             </div>
             <div class="modal-buttons">
                 <button type="button" class="btn btn-danger" id="modalConfirmacionCancelar">Cancelar</button>
-                <button type="button" class="btn" id="modalConfirmacionAceptar" style="background:#edf2f7;color:#2d3748;">Aceptar</button>
+                <button type="button" class="btn" id="modalConfirmacionAceptar" style="background:#edf2f7;color:#2d3748;">Sí, eliminar</button>
             </div>
         </div>
     </div>
@@ -4867,7 +4867,7 @@ async function generarFichaPDF() {
                 if (sucSel) sucSel.style.display = 'none';
                 guardarEstado();
                 renderSucursales();
-            });
+            }, { textoAceptar: 'Sí, limpiar' });
         }
 
         // ============================================
@@ -5610,7 +5610,7 @@ async function generarFichaPDF() {
             };
 
             if (productosEnTabla.length > 0) {
-                mostrarConfirmacion(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`, aplicarPlantilla);
+                mostrarConfirmacion(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`, aplicarPlantilla, { textoAceptar: 'Sí, cargar' });
             } else {
                 aplicarPlantilla();
             }
@@ -5922,6 +5922,9 @@ async function generarFichaPDF() {
 
             // mostrarConfirmacion(mensaje, onConfirmar, opts?)
             // opts: { titulo, textoAceptar, textoCancelar }
+            // Por defecto el botón de confirmar dice "Sí, eliminar" (la
+            // mayoría de los usos son de borrado) — pásale textoAceptar
+            // para acciones que no son un borrado (ej. "Sí, cargar").
             window.mostrarConfirmacion = function (mensaje, onConfirmar, opts) {
                 opts = opts || {};
                 abrir({
@@ -5929,8 +5932,8 @@ async function generarFichaPDF() {
                     callback: onConfirmar,
                     prompt: false,
                     titulo: opts.titulo,
-                    textoAceptar: opts.textoAceptar,
-                    textoCancelar: opts.textoCancelar
+                    textoAceptar: opts.textoAceptar || 'Sí, eliminar',
+                    textoCancelar: opts.textoCancelar || 'Cancelar'
                 });
             };
 
@@ -6295,7 +6298,7 @@ async function generarFichaPDF() {
                 } finally {
                     showLoading(false);
                 }
-            });
+            }, { textoAceptar: 'Sí, subir' });
         }
 
         // ---------- Filas dinámicas de niveles de precio (usado en el
@@ -6337,7 +6340,7 @@ async function generarFichaPDF() {
                 } catch (err) {
                     mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
                 }
-            });
+            }, { textoAceptar: 'Sí, quitar' });
         }
 
         // ============================================
@@ -6922,7 +6925,7 @@ async function generarFichaPDF() {
                 renderSucursales();
                 switchTabById('cotizar');
                 mostrarNotificacion('📂 Cotización cargada', 'success');
-            });
+            }, { textoAceptar: 'Sí, cargar' });
         }
 
         async function eliminarDeHistorial(objectId) {
@@ -7245,7 +7248,7 @@ async function generarFichaPDF() {
                 } catch (err) { /* seguimos igual, ya limpiamos localmente */ }
                 localStorage.removeItem('lh_sesion');
                 location.reload();
-            });
+            }, { textoAceptar: 'Sí, cerrar sesión' });
         }
 
         // Verifica al cargar la página si la sesión guardada sigue siendo válida.
