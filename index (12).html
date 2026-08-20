@@ -2493,7 +2493,7 @@
             </div>
             <div class="modal-buttons">
                 <button type="button" class="btn btn-danger" id="modalConfirmacionCancelar">Cancelar</button>
-                <button type="button" class="btn btn-success" id="modalConfirmacionAceptar">Aceptar</button>
+                <button type="button" class="btn" id="modalConfirmacionAceptar" style="background:#edf2f7;color:#2d3748;">Aceptar</button>
             </div>
         </div>
     </div>
@@ -4742,7 +4742,7 @@ async function generarFichaPDF() {
                 productosEnTabla.splice(index, 1);
                 renderTable();
                 guardarEstado();
-            }, { peligroso: true });
+            });
         }
 
         function updateTotal() {
@@ -4867,7 +4867,7 @@ async function generarFichaPDF() {
                 if (sucSel) sucSel.style.display = 'none';
                 guardarEstado();
                 renderSucursales();
-            }, { peligroso: true });
+            });
         }
 
         // ============================================
@@ -5165,7 +5165,7 @@ async function generarFichaPDF() {
                 guardarEstado();
                 renderSucursalList();
                 mostrarNotificacion('🗑️ Sucursal eliminada', 'success');
-            }, { peligroso: true });
+            });
         }
 
         // ============================================
@@ -5610,7 +5610,7 @@ async function generarFichaPDF() {
             };
 
             if (productosEnTabla.length > 0) {
-                mostrarConfirmacion(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`, aplicarPlantilla, { peligroso: true });
+                mostrarConfirmacion(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`, aplicarPlantilla);
             } else {
                 aplicarPlantilla();
             }
@@ -5621,7 +5621,7 @@ async function generarFichaPDF() {
                 const plantillas = getPlantillasDB().filter(p => p.id !== id);
                 localStorage.setItem('plantillas_lh', JSON.stringify(plantillas));
                 if (typeof renderPlantillas === 'function') renderPlantillas();
-            }, { peligroso: true });
+            });
         }
 
         // ============================================
@@ -5878,7 +5878,7 @@ async function generarFichaPDF() {
             }
 
             function abrir(opts) {
-                const { titulo, mensaje, prompt, valorInicial, textoAceptar, textoCancelar, peligroso, callback } = opts;
+                const { titulo, mensaje, prompt, valorInicial, textoAceptar, textoCancelar, callback } = opts;
                 disparador = document.activeElement;
                 esPrompt = !!prompt;
                 callbackAceptar = callback;
@@ -5887,7 +5887,9 @@ async function generarFichaPDF() {
                 mensajeEl.textContent = mensaje || '';
                 btnAceptar.textContent = textoAceptar || 'Aceptar';
                 btnCancelar.textContent = textoCancelar || 'Cancelar';
-                btnAceptar.className = 'btn ' + (peligroso ? 'btn-danger' : 'btn-success');
+                // Colores fijos: Cancelar siempre rojo, Aceptar siempre
+                // neutro (sin color de botón) — ver estilo en el HTML del
+                // modal (#modalConfirmacionAceptar / #modalConfirmacionCancelar).
 
                 if (esPrompt) {
                     promptWrap.style.display = 'block';
@@ -5919,9 +5921,7 @@ async function generarFichaPDF() {
             });
 
             // mostrarConfirmacion(mensaje, onConfirmar, opts?)
-            // opts: { titulo, textoAceptar, textoCancelar, peligroso }
-            // peligroso:true pinta el botón principal en rojo (acciones
-            // destructivas: eliminar, limpiar, sobrescribir datos).
+            // opts: { titulo, textoAceptar, textoCancelar }
             window.mostrarConfirmacion = function (mensaje, onConfirmar, opts) {
                 opts = opts || {};
                 abrir({
@@ -5930,8 +5930,7 @@ async function generarFichaPDF() {
                     prompt: false,
                     titulo: opts.titulo,
                     textoAceptar: opts.textoAceptar,
-                    textoCancelar: opts.textoCancelar,
-                    peligroso: !!opts.peligroso
+                    textoCancelar: opts.textoCancelar
                 });
             };
 
@@ -5945,8 +5944,7 @@ async function generarFichaPDF() {
                     valorInicial,
                     titulo: opts.titulo,
                     textoAceptar: opts.textoAceptar || 'Aceptar',
-                    textoCancelar: opts.textoCancelar,
-                    peligroso: false
+                    textoCancelar: opts.textoCancelar
                 });
             };
         })();
@@ -6339,7 +6337,7 @@ async function generarFichaPDF() {
                 } catch (err) {
                     mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
                 }
-            }, { peligroso: true });
+            });
         }
 
         // ============================================
@@ -6924,7 +6922,7 @@ async function generarFichaPDF() {
                 renderSucursales();
                 switchTabById('cotizar');
                 mostrarNotificacion('📂 Cotización cargada', 'success');
-            }, { peligroso: true });
+            });
         }
 
         async function eliminarDeHistorial(objectId) {
@@ -6975,7 +6973,7 @@ async function generarFichaPDF() {
                 } catch (err) {
                     mostrarNotificacion('❌ Error al eliminar el historial: ' + err.message, 'warning');
                 }
-            }, { peligroso: true });
+            });
         }
 
 
@@ -7557,7 +7555,7 @@ async function generarFichaPDF() {
                 } catch (err) {
                     mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
                 }
-            }, { peligroso: true });
+            });
         }
 
         async function marcarNotificadoShalom(objectId) {
