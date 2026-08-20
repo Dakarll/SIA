@@ -2337,10 +2337,10 @@
     </div>
 
     <!-- MODAL EDITAR PRODUCTO -->
-    <div class="modal" id="editProductoModal">
+    <div class="modal" id="editProductoModal" role="dialog" aria-modal="true" aria-labelledby="editProductoModalTitulo">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">✏️ Editar Producto</h2>
+                <h2 class="modal-title" id="editProductoModalTitulo">✏️ Editar Producto</h2>
                 <button class="modal-close" onclick="closeEditProductoModal()">×</button>
             </div>
             <form id="editProductoForm">
@@ -2371,7 +2371,7 @@
 
     <!-- MODAL PANEL DE CUENTA / CONFIGURACIÓN -->
     <!-- MODAL VISTA RÁPIDA DE COTIZACIÓN / ORDEN -->
-    <div class="modal" id="verCotizacionModal">
+    <div class="modal" id="verCotizacionModal" role="dialog" aria-modal="true" aria-labelledby="verCotTitulo">
         <div class="modal-content" style="max-width:600px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="verCotTitulo">Cotización</h2>
@@ -2382,20 +2382,20 @@
     </div>
 
     <!-- MODAL LISTA DE COMPRA (productos pendientes de despachar) -->
-    <div class="modal" id="listaCompraModal">
+    <div class="modal" id="listaCompraModal" role="dialog" aria-modal="true" aria-labelledby="listaCompraModalTitulo">
         <div class="modal-content" style="max-width:700px;">
             <div class="modal-header">
-                <h2 class="modal-title">🛒 Lista de compra — pendientes de despacho</h2>
+                <h2 class="modal-title" id="listaCompraModalTitulo">🛒 Lista de compra — pendientes de despacho</h2>
                 <button class="modal-close" onclick="document.getElementById('listaCompraModal').classList.remove('active')">×</button>
             </div>
             <div id="listaCompraContenido"></div>
         </div>
     </div>
 
-    <div class="modal" id="panelCuentaModal">
+    <div class="modal" id="panelCuentaModal" role="dialog" aria-modal="true" aria-labelledby="panelCuentaModalTitulo">
         <div class="modal-content" style="max-width:420px;">
             <div class="modal-header">
-                <h2 class="modal-title">⚙️ Cuenta y configuración</h2>
+                <h2 class="modal-title" id="panelCuentaModalTitulo">⚙️ Cuenta y configuración</h2>
                 <button class="modal-close" onclick="cerrarPanelCuenta()">×</button>
             </div>
             <p style="font-size:0.9em; color:#718096;">Sesión activa: <strong id="panelCuentaUsuario">—</strong></p>
@@ -2434,10 +2434,10 @@
     </div>
 
     <!-- MODAL EDITAR SUCURSAL -->
-    <div class="modal" id="editSucursalModal">
+    <div class="modal" id="editSucursalModal" role="dialog" aria-modal="true" aria-labelledby="editSucursalModalTitulo">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">✏️ Editar Sucursal</h2>
+                <h2 class="modal-title" id="editSucursalModalTitulo">✏️ Editar Sucursal</h2>
                 <button class="modal-close" onclick="closeEditSucursalModal()">×</button>
             </div>
             <form id="editSucursalForm">
@@ -5950,6 +5950,105 @@ async function generarFichaPDF() {
                     textoCancelar: opts.textoCancelar
                 });
             };
+        })();
+
+        // ============================================
+        // ACCESIBILIDAD GENÉRICA DE MODALES (.modal)
+        // Se aplica automáticamente a todo elemento .modal existente al
+        // cargar la página (editProductoModal, verCotizacionModal,
+        // listaCompraModal, panelCuentaModal, editSucursalModal), sin
+        // tener que tocar cada uno de los sitios donde se abren/cierran
+        // (siguen usando su propio classList.add/remove('active') igual
+        // que antes). Un MutationObserver por modal vigila el cambio de
+        // la clase "active" y, mientras está activo:
+        //   - Atrapa el foco (Tab no sale del modal).
+        //   - Cierra con Esc (simulando un click en su botón "×").
+        //   - Al abrir, mueve el foco al primer campo interactivo (sin
+        //     contar el botón "×" de cerrar).
+        //   - Al cerrar, devuelve el foco a quien abrió el modal.
+        // #modalConfirmacion NO se incluye aquí: ya tiene su propio
+        // manejo (ver sección "MODAL DE CONFIRMACIÓN / PROMPT" arriba),
+        // hecho a medida para su flujo de confirmar/cancelar/prompt.
+        // ============================================
+        (function () {
+            const SELECTOR_FOCABLES = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])';
+            const estadoPorModal = new WeakMap(); // modal -> { disparador, onKeydown }
+
+            function esVisible(el) {
+                return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+            }
+
+            function elementosFocables(modal) {
+                return Array.from(modal.querySelectorAll(SELECTOR_FOCABLES)).filter(esVisible);
+            }
+
+            function cerrarModal(modal) {
+                // Usa el botón "×" propio del modal (si existe) para que
+                // corra también su lógica de limpieza (closeEditProductoModal,
+                // cerrarPanelCuenta, etc.), en vez de solo quitar la clase.
+                const btnCerrar = modal.querySelector('.modal-close');
+                if (btnCerrar) { btnCerrar.click(); return; }
+                modal.classList.remove('active');
+            }
+
+            function onKeydownModal(e) {
+                const modal = e.currentTarget;
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cerrarModal(modal);
+                    return;
+                }
+                if (e.key === 'Tab') {
+                    const focables = elementosFocables(modal);
+                    if (focables.length === 0) return;
+                    const primero = focables[0];
+                    const ultimo = focables[focables.length - 1];
+                    if (e.shiftKey && document.activeElement === primero) {
+                        e.preventDefault();
+                        ultimo.focus();
+                    } else if (!e.shiftKey && document.activeElement === ultimo) {
+                        e.preventDefault();
+                        primero.focus();
+                    }
+                }
+            }
+
+            function activarModal(modal) {
+                if (estadoPorModal.has(modal)) return;
+                const disparador = document.activeElement;
+                modal.addEventListener('keydown', onKeydownModal);
+                estadoPorModal.set(modal, { disparador });
+
+                setTimeout(() => {
+                    const focables = elementosFocables(modal);
+                    // Foco inicial en el primer campo real, no en el "×".
+                    const primero = focables.find(el => !el.classList.contains('modal-close')) || focables[0];
+                    if (primero) primero.focus();
+                }, 0);
+            }
+
+            function desactivarModal(modal) {
+                const estado = estadoPorModal.get(modal);
+                if (!estado) return;
+                modal.removeEventListener('keydown', onKeydownModal);
+                estadoPorModal.delete(modal);
+                if (estado.disparador && document.contains(estado.disparador) && typeof estado.disparador.focus === 'function') {
+                    estado.disparador.focus();
+                }
+            }
+
+            document.querySelectorAll('.modal').forEach((modal) => {
+                if (modal.id === 'modalConfirmacion') return; // manejo propio, ver arriba
+                if (modal.classList.contains('active')) activarModal(modal);
+                new MutationObserver((mutations) => {
+                    mutations.forEach((m) => {
+                        if (m.attributeName !== 'class') return;
+                        if (modal.classList.contains('active')) activarModal(modal);
+                        else desactivarModal(modal);
+                    });
+                }).observe(modal, { attributes: true, attributeFilter: ['class'] });
+            });
         })();
 
         // ============================================
