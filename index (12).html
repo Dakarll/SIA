@@ -2477,6 +2477,27 @@
         </div>
     </div>
 
+    <!-- MODAL GENÉRICO DE CONFIRMACIÓN / PROMPT
+         Reemplaza a confirm()/prompt() nativos del navegador. Un solo
+         componente reutilizado por mostrarConfirmacion() y mostrarPrompt()
+         (ver el script principal, sección "MODAL DE CONFIRMACIÓN / PROMPT"). -->
+    <div class="modal" id="modalConfirmacion" role="dialog" aria-modal="true" aria-labelledby="modalConfirmacionTitulo">
+        <div class="modal-content" style="max-width:420px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalConfirmacionTitulo">Confirmar</h2>
+                <button type="button" class="modal-close" id="modalConfirmacionCerrarX" aria-label="Cerrar">×</button>
+            </div>
+            <p id="modalConfirmacionMensaje" style="white-space:pre-line; color:#4a5568; line-height:1.5;"></p>
+            <div class="form-group" id="modalConfirmacionPromptWrap" style="display:none; margin-top:14px; margin-bottom:0;">
+                <input type="text" class="form-input" id="modalConfirmacionInput">
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-danger" id="modalConfirmacionCancelar">Cancelar</button>
+                <button type="button" class="btn btn-success" id="modalConfirmacionAceptar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SISTEMA DE COTIZACIÓN -->
     <div class="container">
         <div class="header">
@@ -4717,11 +4738,11 @@ async function generarFichaPDF() {
         }
 
         function removeProduct(index) {
-            if (confirm('¿Eliminar este producto de la cotización?')) {
+            mostrarConfirmacion('¿Eliminar este producto de la cotización?', () => {
                 productosEnTabla.splice(index, 1);
                 renderTable();
                 guardarEstado();
-            }
+            }, { peligroso: true });
         }
 
         function updateTotal() {
@@ -4826,7 +4847,7 @@ async function generarFichaPDF() {
 
         function clearAll() {
             if (productosEnTabla.length === 0 && !sucursalSeleccionada) return;
-            if (confirm('¿Limpiar todo? Se borran los productos y los datos del cliente — la próxima que guardes será una cotización nueva con su propio correlativo.')) {
+            mostrarConfirmacion('¿Limpiar todo? Se borran los productos y los datos del cliente — la próxima que guardes será una cotización nueva con su propio correlativo.', () => {
                 productosEnTabla = [];
                 sucursalSeleccionada = null;
                 cotizacionActualId = null;
@@ -4846,7 +4867,7 @@ async function generarFichaPDF() {
                 if (sucSel) sucSel.style.display = 'none';
                 guardarEstado();
                 renderSucursales();
-            }
+            }, { peligroso: true });
         }
 
         // ============================================
@@ -5139,12 +5160,12 @@ async function generarFichaPDF() {
         });
 
         function eliminarSucursal(index) {
-            if (confirm('¿Eliminar esta sucursal permanentemente?')) {
+            mostrarConfirmacion('¿Eliminar esta sucursal permanentemente?', () => {
                 sucursalesDB.splice(index, 1);
                 guardarEstado();
                 renderSucursalList();
                 mostrarNotificacion('🗑️ Sucursal eliminada', 'success');
-            }
+            }, { peligroso: true });
         }
 
         // ============================================
@@ -5557,40 +5578,50 @@ async function generarFichaPDF() {
                 mostrarNotificacion('Agrega productos primero', 'warning');
                 return;
             }
-            const nombre = prompt('Nombre de la plantilla (ej: "Paquete Habitación Estándar"):');
-            if (!nombre || !nombre.trim()) return;
+            mostrarPrompt('Nombre de la plantilla (ej: "Paquete Habitación Estándar"):', '', (nombre) => {
+                if (!nombre || !nombre.trim()) return;
 
-            const plantillas = getPlantillasDB();
-            const plantilla = {
-                id: Date.now(),
-                nombre: nombre.trim(),
-                fecha: new Date().toISOString(),
-                productos: JSON.parse(JSON.stringify(productosEnTabla))
-            };
-            plantillas.unshift(plantilla);
-            if (plantillas.length > 50) plantillas.pop();
-            localStorage.setItem('plantillas_lh', JSON.stringify(plantillas));
-            mostrarNotificacion(`✅ Plantilla "${plantilla.nombre}" guardada`, 'success');
-            if (typeof renderPlantillas === 'function') renderPlantillas();
+                const plantillas = getPlantillasDB();
+                const plantilla = {
+                    id: Date.now(),
+                    nombre: nombre.trim(),
+                    fecha: new Date().toISOString(),
+                    productos: JSON.parse(JSON.stringify(productosEnTabla))
+                };
+                plantillas.unshift(plantilla);
+                if (plantillas.length > 50) plantillas.pop();
+                localStorage.setItem('plantillas_lh', JSON.stringify(plantillas));
+                mostrarNotificacion(`✅ Plantilla "${plantilla.nombre}" guardada`, 'success');
+                if (typeof renderPlantillas === 'function') renderPlantillas();
+            });
         }
 
         function cargarPlantilla(id) {
             const plantillas = getPlantillasDB();
             const plantilla = plantillas.find(p => p.id === id);
             if (!plantilla) return;
-            if (productosEnTabla.length > 0 && !confirm(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`)) return;
-            productosEnTabla = JSON.parse(JSON.stringify(plantilla.productos));
-            renderTable();
-            guardarEstado();
-            switchTabById('cotizar');
-            mostrarNotificacion(`📋 Plantilla "${plantilla.nombre}" cargada`, 'success');
+
+            const aplicarPlantilla = () => {
+                productosEnTabla = JSON.parse(JSON.stringify(plantilla.productos));
+                renderTable();
+                guardarEstado();
+                switchTabById('cotizar');
+                mostrarNotificacion(`📋 Plantilla "${plantilla.nombre}" cargada`, 'success');
+            };
+
+            if (productosEnTabla.length > 0) {
+                mostrarConfirmacion(`¿Cargar plantilla "${plantilla.nombre}"? Se reemplazarán los productos actuales.`, aplicarPlantilla, { peligroso: true });
+            } else {
+                aplicarPlantilla();
+            }
         }
 
         function eliminarPlantilla(id) {
-            if (!confirm('¿Eliminar esta plantilla?')) return;
-            const plantillas = getPlantillasDB().filter(p => p.id !== id);
-            localStorage.setItem('plantillas_lh', JSON.stringify(plantillas));
-            if (typeof renderPlantillas === 'function') renderPlantillas();
+            mostrarConfirmacion('¿Eliminar esta plantilla?', () => {
+                const plantillas = getPlantillasDB().filter(p => p.id !== id);
+                localStorage.setItem('plantillas_lh', JSON.stringify(plantillas));
+                if (typeof renderPlantillas === 'function') renderPlantillas();
+            }, { peligroso: true });
         }
 
         // ============================================
@@ -5760,6 +5791,165 @@ async function generarFichaPDF() {
                 setTimeout(() => div.remove(), 300);
             }, 3000);
         }
+
+        // ============================================
+        // MODAL DE CONFIRMACIÓN / PROMPT
+        // Reemplaza a confirm()/prompt() nativos del navegador por un
+        // único modal reutilizable con la identidad visual de la app.
+        //
+        // Uso:
+        //   mostrarConfirmacion('¿Seguro?', () => { ...si acepta... });
+        //   mostrarPrompt('Nombre:', '', (valor) => { ...si acepta... });
+        //
+        // OJO: a diferencia de confirm()/prompt() nativos (que BLOQUEAN
+        // la ejecución y devuelven un valor de inmediato), este modal es
+        // asíncrono — no bloquea nada. Por eso el código que antes iba
+        // después de "if (confirm(...))" ahora va DENTRO del callback.
+        // ============================================
+        (function () {
+            const modal = document.getElementById('modalConfirmacion');
+            const tituloEl = document.getElementById('modalConfirmacionTitulo');
+            const mensajeEl = document.getElementById('modalConfirmacionMensaje');
+            const promptWrap = document.getElementById('modalConfirmacionPromptWrap');
+            const inputEl = document.getElementById('modalConfirmacionInput');
+            const btnAceptar = document.getElementById('modalConfirmacionAceptar');
+            const btnCancelar = document.getElementById('modalConfirmacionCancelar');
+            const btnCerrarX = document.getElementById('modalConfirmacionCerrarX');
+
+            if (!modal) return; // por si el HTML del modal no está presente
+
+            let disparador = null;   // elemento con foco antes de abrir el modal
+            let esPrompt = false;
+            let callbackAceptar = null;
+
+            function elementosFocables() {
+                return Array.from(modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+                    .filter(el => !el.disabled && el.offsetParent !== null);
+            }
+
+            function onKeydown(e) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cerrar(false);
+                    return;
+                }
+                if (e.key === 'Tab') {
+                    // Trap de foco: Tab no debe salir del modal mientras esté abierto.
+                    const focables = elementosFocables();
+                    if (focables.length === 0) return;
+                    const primero = focables[0];
+                    const ultimo = focables[focables.length - 1];
+                    if (e.shiftKey && document.activeElement === primero) {
+                        e.preventDefault();
+                        ultimo.focus();
+                    } else if (!e.shiftKey && document.activeElement === ultimo) {
+                        e.preventDefault();
+                        primero.focus();
+                    }
+                }
+            }
+
+            function onClickFuera(e) {
+                if (e.target === modal) cerrar(false);
+            }
+
+            function cerrar(confirmado) {
+                modal.classList.remove('active');
+                document.removeEventListener('keydown', onKeydown);
+                modal.removeEventListener('click', onClickFuera);
+
+                const callback = callbackAceptar;
+                const valor = esPrompt ? inputEl.value : undefined;
+                const elementoAEnfocar = disparador;
+                callbackAceptar = null;
+                disparador = null;
+
+                if (confirmado && callback) {
+                    esPrompt ? callback(valor) : callback();
+                }
+
+                // Devuelve el foco a quien abrió el modal. Muchas de estas
+                // acciones re-renderizan listas (renderTable, renderHistorial,
+                // etc.), así que el elemento original puede ya no existir —
+                // en ese caso simplemente no se restaura el foco.
+                if (elementoAEnfocar && document.contains(elementoAEnfocar) && typeof elementoAEnfocar.focus === 'function') {
+                    elementoAEnfocar.focus();
+                }
+            }
+
+            function abrir(opts) {
+                const { titulo, mensaje, prompt, valorInicial, textoAceptar, textoCancelar, peligroso, callback } = opts;
+                disparador = document.activeElement;
+                esPrompt = !!prompt;
+                callbackAceptar = callback;
+
+                tituloEl.textContent = titulo || (esPrompt ? 'Completar dato' : 'Confirmar');
+                mensajeEl.textContent = mensaje || '';
+                btnAceptar.textContent = textoAceptar || 'Aceptar';
+                btnCancelar.textContent = textoCancelar || 'Cancelar';
+                btnAceptar.className = 'btn ' + (peligroso ? 'btn-danger' : 'btn-success');
+
+                if (esPrompt) {
+                    promptWrap.style.display = 'block';
+                    inputEl.value = valorInicial || '';
+                } else {
+                    promptWrap.style.display = 'none';
+                }
+
+                modal.classList.add('active');
+                document.addEventListener('keydown', onKeydown);
+                modal.addEventListener('click', onClickFuera);
+
+                // Foco inicial: el input si es prompt, si no el botón principal.
+                setTimeout(() => {
+                    if (esPrompt) {
+                        inputEl.focus();
+                        inputEl.select();
+                    } else {
+                        btnAceptar.focus();
+                    }
+                }, 0);
+            }
+
+            btnAceptar.addEventListener('click', () => cerrar(true));
+            btnCancelar.addEventListener('click', () => cerrar(false));
+            btnCerrarX.addEventListener('click', () => cerrar(false));
+            inputEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); cerrar(true); }
+            });
+
+            // mostrarConfirmacion(mensaje, onConfirmar, opts?)
+            // opts: { titulo, textoAceptar, textoCancelar, peligroso }
+            // peligroso:true pinta el botón principal en rojo (acciones
+            // destructivas: eliminar, limpiar, sobrescribir datos).
+            window.mostrarConfirmacion = function (mensaje, onConfirmar, opts) {
+                opts = opts || {};
+                abrir({
+                    mensaje,
+                    callback: onConfirmar,
+                    prompt: false,
+                    titulo: opts.titulo,
+                    textoAceptar: opts.textoAceptar,
+                    textoCancelar: opts.textoCancelar,
+                    peligroso: !!opts.peligroso
+                });
+            };
+
+            // mostrarPrompt(mensaje, valorInicial, onAceptar, opts?)
+            window.mostrarPrompt = function (mensaje, valorInicial, onAceptar, opts) {
+                opts = opts || {};
+                abrir({
+                    mensaje,
+                    callback: onAceptar,
+                    prompt: true,
+                    valorInicial,
+                    titulo: opts.titulo,
+                    textoAceptar: opts.textoAceptar || 'Aceptar',
+                    textoCancelar: opts.textoCancelar,
+                    peligroso: false
+                });
+            };
+        })();
 
         // ============================================
         // FUNCIONES PANEL CLIENTE
@@ -6079,34 +6269,35 @@ async function generarFichaPDF() {
             el.style.display = productosDB.length === 0 ? 'block' : 'none';
         }
 
-        async function migrarCatalogoALaNube() {
-            if (!confirm(`Esto va a subir ${productosDBSemilla.length} productos de arranque a tu catálogo en la nube. ¿Continuar?`)) return;
-            showLoading(true);
-            try {
-                for (const p of productosDBSemilla) {
-                    const base = await parseFetch(PRODUCTO_CLASE, 'POST', null, {
-                        codigo: p.codigo,
-                        nombre: p.nombre,
-                        costo: null,
-                        ACL: aclEquipo()
-                    });
-                    await parseFetch(PRECIO_VENTA_CLASE, 'POST', null, {
-                        codigo: p.codigo,
-                        productoId: base.objectId,
-                        tiers: [
-                            { etiqueta: 'Por menor', cantidadMinima: 1, precio: p.menor },
-                            { etiqueta: 'Por mayor', cantidadMinima: 6, precio: p.mayor }
-                        ],
-                        ACL: aclSoloUsuario()
-                    });
+        function migrarCatalogoALaNube() {
+            mostrarConfirmacion(`Esto va a subir ${productosDBSemilla.length} productos de arranque a tu catálogo en la nube. ¿Continuar?`, async () => {
+                showLoading(true);
+                try {
+                    for (const p of productosDBSemilla) {
+                        const base = await parseFetch(PRODUCTO_CLASE, 'POST', null, {
+                            codigo: p.codigo,
+                            nombre: p.nombre,
+                            costo: null,
+                            ACL: aclEquipo()
+                        });
+                        await parseFetch(PRECIO_VENTA_CLASE, 'POST', null, {
+                            codigo: p.codigo,
+                            productoId: base.objectId,
+                            tiers: [
+                                { etiqueta: 'Por menor', cantidadMinima: 1, precio: p.menor },
+                                { etiqueta: 'Por mayor', cantidadMinima: 6, precio: p.mayor }
+                            ],
+                            ACL: aclSoloUsuario()
+                        });
+                    }
+                    await cargarProductosDesdeNube();
+                    mostrarNotificacion('✅ Catálogo subido a la nube', 'success');
+                } catch (err) {
+                    mostrarNotificacion('❌ Error al migrar: ' + err.message, 'warning');
+                } finally {
+                    showLoading(false);
                 }
-                await cargarProductosDesdeNube();
-                mostrarNotificacion('✅ Catálogo subido a la nube', 'success');
-            } catch (err) {
-                mostrarNotificacion('❌ Error al migrar: ' + err.message, 'warning');
-            } finally {
-                showLoading(false);
-            }
+            });
         }
 
         // ---------- Filas dinámicas de niveles de precio (usado en el
@@ -6139,15 +6330,16 @@ async function generarFichaPDF() {
             return tiers.sort((a, b) => a.cantidadMinima - b.cantidadMinima);
         }
 
-        async function eliminarPrecioVentaNube(objectId) {
-            if (!confirm('¿Quitar tu precio de venta para este producto? (el producto sigue disponible para el resto del equipo)')) return;
-            try {
-                await parseFetch(PRECIO_VENTA_CLASE, 'DELETE', objectId);
-                await cargarProductosDesdeNube();
-                mostrarNotificacion('🗑️ Tu precio fue eliminado', 'success');
-            } catch (err) {
-                mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
-            }
+        function eliminarPrecioVentaNube(objectId) {
+            mostrarConfirmacion('¿Quitar tu precio de venta para este producto? (el producto sigue disponible para el resto del equipo)', async () => {
+                try {
+                    await parseFetch(PRECIO_VENTA_CLASE, 'DELETE', objectId);
+                    await cargarProductosDesdeNube();
+                    mostrarNotificacion('🗑️ Tu precio fue eliminado', 'success');
+                } catch (err) {
+                    mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
+                }
+            }, { peligroso: true });
         }
 
         // ============================================
@@ -6714,24 +6906,25 @@ async function generarFichaPDF() {
             try { entry = JSON.parse(registro.datos); }
             catch (e) { mostrarNotificacion('❌ No se pudo leer esta cotización guardada.', 'warning'); return; }
 
-            if (!confirm(`¿Cargar cotización de "${entry.cliente}"? Se reemplazará la cotización actual.`)) return;
-            productosEnTabla = JSON.parse(JSON.stringify(entry.productos));
-            sucursalSeleccionada = entry.sucursal || null;
-            cotizacionActualId = objectId; // seguir editando ESTE registro, mismo correlativo
-            document.getElementById('clienteNombre').value = entry.cliente === 'Sin nombre' ? '' : entry.cliente;
-            document.getElementById('clienteEmpresa').value = entry.empresa || '';
-            document.getElementById('clienteRUC').value = entry.ruc || '';
-            document.getElementById('clienteTelefono').value = entry.telefono || '';
-            document.getElementById('clienteEmail').value = entry.email || '';
-            document.getElementById('clienteDireccion').value = entry.direccion || '';
-            document.getElementById('clienteNotas').value = entry.notas || '';
-            actualizarResumenCliente();
-            renderTable();
-            guardarEstado();
-            if (sucursalSeleccionada) mostrarSucursalSeleccionada();
-            renderSucursales();
-            switchTabById('cotizar');
-            mostrarNotificacion('📂 Cotización cargada', 'success');
+            mostrarConfirmacion(`¿Cargar cotización de "${entry.cliente}"? Se reemplazará la cotización actual.`, () => {
+                productosEnTabla = JSON.parse(JSON.stringify(entry.productos));
+                sucursalSeleccionada = entry.sucursal || null;
+                cotizacionActualId = objectId; // seguir editando ESTE registro, mismo correlativo
+                document.getElementById('clienteNombre').value = entry.cliente === 'Sin nombre' ? '' : entry.cliente;
+                document.getElementById('clienteEmpresa').value = entry.empresa || '';
+                document.getElementById('clienteRUC').value = entry.ruc || '';
+                document.getElementById('clienteTelefono').value = entry.telefono || '';
+                document.getElementById('clienteEmail').value = entry.email || '';
+                document.getElementById('clienteDireccion').value = entry.direccion || '';
+                document.getElementById('clienteNotas').value = entry.notas || '';
+                actualizarResumenCliente();
+                renderTable();
+                guardarEstado();
+                if (sucursalSeleccionada) mostrarSucursalSeleccionada();
+                renderSucursales();
+                switchTabById('cotizar');
+                mostrarNotificacion('📂 Cotización cargada', 'success');
+            }, { peligroso: true });
         }
 
         async function eliminarDeHistorial(objectId) {
@@ -6771,17 +6964,18 @@ async function generarFichaPDF() {
             }
         }
 
-        async function limpiarHistorial() {
-            if (!confirm('¿Eliminar todo el historial de cotizaciones? Esta acción no se puede deshacer.')) return;
-            try {
-                for (const entry of historialCache) {
-                    await parseFetch(COTIZACION_CLASE, 'DELETE', entry.objectId);
+        function limpiarHistorial() {
+            mostrarConfirmacion('¿Eliminar todo el historial de cotizaciones? Esta acción no se puede deshacer.', async () => {
+                try {
+                    for (const entry of historialCache) {
+                        await parseFetch(COTIZACION_CLASE, 'DELETE', entry.objectId);
+                    }
+                    renderHistorial();
+                    mostrarNotificacion('Historial eliminado', 'info');
+                } catch (err) {
+                    mostrarNotificacion('❌ Error al eliminar el historial: ' + err.message, 'warning');
                 }
-                renderHistorial();
-                mostrarNotificacion('Historial eliminado', 'info');
-            } catch (err) {
-                mostrarNotificacion('❌ Error al eliminar el historial: ' + err.message, 'warning');
-            }
+            }, { peligroso: true });
         }
 
 
@@ -7037,22 +7231,23 @@ async function generarFichaPDF() {
             }
         }
 
-        async function cerrarSesion() {
-            if (!confirm('¿Cerrar sesión en este dispositivo?')) return;
-            try {
-                if (sesionUsuario) {
-                    await fetch(`${PARSE_URL}/logout`, {
-                        method: 'POST',
-                        headers: {
-                            'X-Parse-Application-Id': cloudConfig.appId,
-                            'X-Parse-JavaScript-Key': cloudConfig.jsKey,
-                            'X-Parse-Session-Token': sesionUsuario.sessionToken
-                        }
-                    });
-                }
-            } catch (err) { /* seguimos igual, ya limpiamos localmente */ }
-            localStorage.removeItem('lh_sesion');
-            location.reload();
+        function cerrarSesion() {
+            mostrarConfirmacion('¿Cerrar sesión en este dispositivo?', async () => {
+                try {
+                    if (sesionUsuario) {
+                        await fetch(`${PARSE_URL}/logout`, {
+                            method: 'POST',
+                            headers: {
+                                'X-Parse-Application-Id': cloudConfig.appId,
+                                'X-Parse-JavaScript-Key': cloudConfig.jsKey,
+                                'X-Parse-Session-Token': sesionUsuario.sessionToken
+                            }
+                        });
+                    }
+                } catch (err) { /* seguimos igual, ya limpiamos localmente */ }
+                localStorage.removeItem('lh_sesion');
+                location.reload();
+            });
         }
 
         // Verifica al cargar la página si la sesión guardada sigue siendo válida.
@@ -7354,14 +7549,15 @@ async function generarFichaPDF() {
             document.getElementById('limaEstadoManual').value = 'pendiente';
         }
 
-        async function eliminarEnvioShalom(objectId) {
-            if (!confirm('¿Eliminar este envío del seguimiento?')) return;
-            try {
-                await parseFetch(SHALOM_CLASE, 'DELETE', objectId);
-                cargarEnviosShalom();
-            } catch (err) {
-                mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
-            }
+        function eliminarEnvioShalom(objectId) {
+            mostrarConfirmacion('¿Eliminar este envío del seguimiento?', async () => {
+                try {
+                    await parseFetch(SHALOM_CLASE, 'DELETE', objectId);
+                    cargarEnviosShalom();
+                } catch (err) {
+                    mostrarNotificacion('❌ Error al eliminar: ' + err.message, 'warning');
+                }
+            }, { peligroso: true });
         }
 
         async function marcarNotificadoShalom(objectId) {
