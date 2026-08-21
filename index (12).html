@@ -1847,6 +1847,58 @@
             .modal.active {
                 padding: 8px;
             }
+
+            /* ---- Touch targets mínimos (WCAG 2.5.5/2.5.8, ~44px) ----
+               Solo dentro de este media query — el tamaño de escritorio
+               no cambia. Los controles muy chicos que viven DENTRO de
+               una celda de tabla ya angosta (editar precio en línea,
+               quitar un nivel de precio en el modal) se dejaron fuera a
+               propósito: llevarlos a 44px ahí desbordaría la fila/celda
+               en vez de mejorar el toque — es la excepción explícita
+               que pide la consigna cuando 44px "rompe el layout". */
+            .btn,
+            .tab {
+                min-height: 44px;
+            }
+
+            .modal-close {
+                width: 44px;
+                height: 44px;
+            }
+
+            .btn-edit,
+            .btn-remove {
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .shalom-card-del-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .filter-btn,
+            .dash-range-btn {
+                min-height: 44px;
+            }
+
+            .color-chip {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .form-input,
+            .search-input,
+            .cantidad-input,
+            .cliente-field input,
+            .cliente-field textarea,
+            .extra-field input {
+                min-height: 44px;
+            }
         }
 
         /* ---------- ≤600px ---------- */
