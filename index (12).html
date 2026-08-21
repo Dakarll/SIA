@@ -1189,6 +1189,8 @@
             border-color: var(--secondary);
             background: #eef2ff;
         }
+        body.dark-mode .color-chip { background: var(--dm-surface-2); }
+        body.dark-mode .color-chip:hover { background: var(--dm-surface-3); }
 
         /* Color tag in table */
         .color-tag {
@@ -2336,6 +2338,52 @@
              no eran ilegibles (contraste límite ~4.5:1), pero usaban
              grises sueltos (#718096/#8e8e93) en vez del token de texto
              secundario — se armonizan aquí por consistencia.
+
+           PUNTO 4 (estilos inline del JS) — en vez de convertir cada
+           uno de los ~90 casos de style="color:#718096..." a una clase,
+           se crearon variables globales --text-muted (#718096) y
+           --text-faint (#a0aec0) en :root (ver arriba), re-apuntadas
+           dentro de body.dark-mode. Así los estilos inline solo
+           cambiaron el valor hex por var(--text-muted)/var(--text-faint)
+           sin tocar el resto de cada style="..." (más seguro que armar
+           una clase .text-muted y tener que editar también el atributo
+           class de cada elemento). La clase .text-muted/.text-faint
+           igual se dejó creada por si se necesita en marcado nuevo.
+           Mismo criterio para #2d3748 → var(--primary) (ya existente).
+
+           Huérfanos encontrados DESPUÉS del reemplazo masivo (efectos
+           secundarios del propio reemplazo, no del código original):
+           - .cliente-panel-header (arriba) y varios "chips" grises
+             (badge "Cotización", botones "Desmarcar"/"Ver en
+             Shalom"/"Marcar pendiente") tenían fondo #f0f0f0 FIJO
+             emparejado con el texto que se acababa de volver
+             var(--text-muted) (claro en oscuro) → texto claro sobre
+             fondo claro fijo. Se creó --chip-neutral-bg (#f0f0f0 →
+             var(--dm-surface-2)) para que fondo y texto se muevan
+             juntos.
+           - El recuadro "N° DE COTIZACIÓN/ORDEN DE COMPRA" del modal
+             "Ver detalle" (verCotizacionDetalle) tenía el mismo
+             problema con sus fondos verde/lila fijos (#e8f9ee/#eef2ff)
+             — se creó --tint-ok-bg / --tint-info-bg (mismo criterio).
+           - #pantallaAcceso (login): sus estilos inline también
+             quedaron con var(--primary)/var(--text-muted)/var(--text-faint)
+             tras el reemplazo masivo. Como son estilos INLINE, la regla
+             "#pantallaAcceso * { color: ... }" que fuerza texto oscuro
+             NO los alcanza (un inline style siempre gana). Se le dieron
+             a #pantallaAcceso sus propias variables --primary/
+             --text-muted/--text-faint/--border/--bg-light fijas en
+             valor claro (igual que a las zonas de impresión), en vez de
+             depender de la regla de color heredado — este fue el bug
+             más serio de todo el punto 4: el título de la pantalla de
+             login quedaba en blanco sobre su tarjeta blanca en oscuro.
+           - #modalConfirmacionAceptar ("Sí, eliminar"): su fondo
+             "sin color de botón" (#edf2f7, pedido explícitamente así)
+             era fijo — se creó --btn-neutral-bg (#edf2f7 →
+             var(--dm-surface-3)) para que sea neutro en ambos modos en
+             vez de quedar como un rectángulo claro fijo en el modal
+             oscuro.
+           - #correlativosPanel (dentro de #panelCuentaModal): fondo
+             fijo #f7fafc → var(--bg-light) (ya existente).
         ============================================ */
 
         /* --- Fondos con gradiente que usaban var(--primary) --- */
@@ -2863,7 +2911,7 @@
                     </div>
                     <div id="sucursalSeleccionada" style="margin-top: 15px; display: none;">
                         <strong style="color: var(--success);">✅ Sucursal seleccionada:</strong>
-                        <div id="sucursalInfo" style="margin-top: 10px; padding: 15px; background: #f0fff4; border-radius: 8px; border: 2px solid var(--success);"></div>
+                        <div id="sucursalInfo" style="margin-top: 10px; padding: 15px; background: #f0fff4; border-radius: 8px; border: 2px solid var(--success); color: #2d3748;"></div>
                         <div class="deselect-hint show" id="deselectHint">
                             💡 <strong>Tip:</strong> Click nuevamente en la sucursal para deseleccionarla
                         </div>
@@ -3090,8 +3138,8 @@
     <div class="add-product-section" style="margin-bottom:15px; border-color:var(--accent); background:#fffbea;" id="listaCompraResumenWrap">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
-                <div style="font-weight:700; color:var(--primary); font-size:1.02em;">🛒 Lista de compra — productos pendientes de despacho</div>
-                <div style="font-size:0.85em; color:var(--text-muted); margin-top:2px;" id="listaCompraResumenTexto">Calculando...</div>
+                <div style="font-weight:700; color:#2d3748; font-size:1.02em;">🛒 Lista de compra — productos pendientes de despacho</div>
+                <div style="font-size:0.85em; color:#718096; margin-top:2px;" id="listaCompraResumenTexto">Calculando...</div>
             </div>
             <button class="btn btn-warning" style="white-space:nowrap;" onclick="abrirListaCompra()">📋 Ver lista de compra</button>
         </div>
@@ -3382,9 +3430,9 @@
                 <canvas id="shalomCanvas" style="display:none;"></canvas>
                 <div id="shalomCameraError" style="display:none; margin-top:10px; padding:12px; background:#fff5f5; border-radius:8px; border:1px solid var(--danger); font-size:0.85em; color:var(--danger);"></div>
 
-                <div id="shalomQrResultado" style="display:none; margin-top:15px; padding:15px; background:#fffbea; border-radius:8px; border:2px solid var(--accent);">
+                <div id="shalomQrResultado" style="display:none; margin-top:15px; padding:15px; background:#fffbea; border-radius:8px; border:2px solid var(--accent); color:#2d3748;">
                     <strong>📎 Contenido leído del QR:</strong> <span id="shalomQrTexto"></span>
-                    <p style="font-size:0.85em; color:var(--text-muted); margin:8px 0 0;">Esto no es el N° de Orden — es un código interno de Shalom que esta app no puede traducir automáticamente (su sistema de seguridad bloquea intentos automatizados, y respetamos eso). Escribe el N° de Orden y el Código arriba, en "Registrar nueva guía", tal como aparecen impresos en tu comprobante.</p>
+                    <p style="font-size:0.85em; color:#718096; margin:8px 0 0;">Esto no es el N° de Orden — es un código interno de Shalom que esta app no puede traducir automáticamente (su sistema de seguridad bloquea intentos automatizados, y respetamos eso). Escribe el N° de Orden y el Código arriba, en "Registrar nueva guía", tal como aparecen impresos en tu comprobante.</p>
                 </div>
             </div>
         </details>
