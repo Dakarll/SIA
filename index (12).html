@@ -1138,6 +1138,10 @@
             border: 1.5px solid #c7d2fe;
             flex-wrap: wrap;
         }
+        body.dark-mode .add-extras-row {
+            background: var(--dm-surface-2);
+            border-color: var(--dm-border-soft);
+        }
 
         .add-extras-row.visible { display: flex; }
 
@@ -2144,6 +2148,15 @@
             --text-muted: #718096;
             --text-faint: #a0aec0;
             --chip-neutral-bg: #f0f0f0;
+            /* FIX A1: re-fijar las VARIABLES de arriba no alcanza para
+               el texto que no usa var(--primary) explícitamente (texto
+               plano en <td>, <div>, etc.) — ese hereda directo el
+               color:#e8e8e8 (casi blanco) de body.dark-mode, que SÍ es
+               una propiedad heredada, no una variable. Sobre el fondo
+               blanco forzado de estas zonas de impresión, ese texto
+               quedaba invisible en la imagen exportada. Se fuerza aquí
+               también la propiedad color en sí (no solo la variable). */
+            color: #2d3748;
         }
 
         body.dark-mode .loading-content,
@@ -3988,7 +4001,7 @@ async function generarFichaPDF() {
         </table>
 
         <!-- TOTALES + PAGO + BANCO + YAPE EN FILA -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;align-items:start;">
 
             <!-- BANCO + YAPE (misma columna, mismo ancho) -->
             <div>
