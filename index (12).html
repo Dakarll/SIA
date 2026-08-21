@@ -47,6 +47,11 @@
                prominente que un chip, no un badge chico. */
             --tint-ok-bg: #e8f9ee;
             --tint-info-bg: #eef2ff;
+            /* Fondo "sin color de botón" del botón Aceptar del modal de
+               confirmación (decisión explícita: debe verse neutro, no
+               verde/rojo). En oscuro pasa a superficie elevada en vez
+               de quedar como un rectángulo claro flotando. */
+            --btn-neutral-bg: #edf2f7;
         }
 
         /* Clases utilitarias de texto atenuado — para marcado nuevo o
@@ -1914,6 +1919,7 @@
             --chip-neutral-bg: var(--dm-surface-2);
             --tint-ok-bg: var(--dm-surface-2);
             --tint-info-bg: var(--dm-surface-2);
+            --btn-neutral-bg: var(--dm-surface-3);
             background: var(--dm-bg-base);
             color: var(--dm-text-primary);
         }
@@ -2672,7 +2678,7 @@
             </div>
             <div class="modal-buttons">
                 <button type="button" class="btn btn-danger" id="modalConfirmacionCancelar">Cancelar</button>
-                <button type="button" class="btn" id="modalConfirmacionAceptar" style="background:#edf2f7;color:var(--primary);">Sí, eliminar</button>
+                <button type="button" class="btn" id="modalConfirmacionAceptar" style="background:var(--btn-neutral-bg);color:var(--primary);">Sí, eliminar</button>
             </div>
         </div>
     </div>
