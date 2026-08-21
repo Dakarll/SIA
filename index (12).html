@@ -517,6 +517,46 @@
             min-width: 120px;
         }
 
+        /* Barra de 4 botones del footer (Limpiar/Guardar/Imagen/Copiar
+           imagen): colores mate sólidos, distintos de los .btn-danger/
+           .btn-primary/.btn-success genéricos usados en el resto de la
+           app — por eso van scoped a .action-buttons, no reemplazan las
+           clases base. Guardar habilitado (única excepción, es la acción
+           principal disponible) usa el estilo base .btn-primary, que ya
+           coincide con var(--secondary) = #667eea. */
+        .action-buttons .btn-danger {
+            background: #4a3236;
+            border: 1.5px solid #8b4a52;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-primary:disabled {
+            background: #3a3a3a;
+            border: 1.5px solid #555555;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-primary:not(:disabled) {
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-success {
+            background: #1f4d3a;
+            border: 1.5px solid #2f7a57;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
         /* SUCURSALES */
         .filter-section {
             display: flex;
@@ -2037,6 +2077,45 @@
             #shalomCameraWrapper {
                 max-width: 100% !important;
             }
+
+            /* Fase C3: footer completo (cabecera + barra de botones)
+               apilado en una sola columna, sin scroll horizontal —
+               los 4 botones pasan de fila a grilla 2x2 para que
+               ninguno quede angosto o cortado. */
+            .total-section {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+
+            .total-info-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .ff-right {
+                align-items: flex-start;
+            }
+
+            .total-actions-wrap {
+                text-align: left;
+            }
+
+            .action-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .action-buttons .btn {
+                flex: initial;
+                min-width: 0;
+                padding: 10px 8px;
+                font-size: 12px;
+            }
         }
 
         /* ---------- ≤420px ---------- */
@@ -2212,14 +2291,20 @@
             --text-muted: #718096;
             --text-faint: #a0aec0;
             --chip-neutral-bg: #f0f0f0;
-            /* FIX A1: re-fijar las VARIABLES de arriba no alcanza para
-               el texto que no usa var(--primary) explícitamente (texto
-               plano en <td>, <div>, etc.) — ese hereda directo el
-               color:#e8e8e8 (casi blanco) de body.dark-mode, que SÍ es
-               una propiedad heredada, no una variable. Sobre el fondo
-               blanco forzado de estas zonas de impresión, ese texto
-               quedaba invisible en la imagen exportada. Se fuerza aquí
-               también la propiedad color en sí (no solo la variable). */
+        }
+
+        /* FIX A2: el FIX A1 forzaba `color` también con el selector `*`
+           (todo descendiente), lo que pisaba el color:white heredado en
+           los bloques de pago (Transferencia/Yape) — sus hijos internos
+           no tienen color propio, heredan el blanco del contenedor con
+           fondo azul/morado, y `.cotizacion-print *` los sobrescribía a
+           gris oscuro, volviéndolos invisibles sobre su propio fondo.
+           Se aplica `color` solo al contenedor raíz (sin `*`): el texto
+           plano sigue heredando gris oscuro por cascada normal, y los
+           bloques con su propio color inline (blanco) ya no son tocados. */
+        #fichaPreview,
+        .cotizacion-print,
+        .ficha-print {
             color: #2d3748;
         }
 
@@ -4005,32 +4090,36 @@ async function generarFichaPDF() {
         </div>
 
         <div class="total-section">
-            <div class="total-info-container">
-                <div id="correlativoEnCursoInfo" style="font-size:0.8em; font-weight:700; margin-bottom:6px;"></div>
-                <div id="totalInfo" style="font-size: 0.95em;">0 productos</div>
-                <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;" id="itemsBreakdown"></div>
-                <div class="margen-info" id="margenInfo"></div>
-                <div id="envioInfo" style="font-size: 0.85em; margin-top: 10px;"></div>
-                <div class="doc-tipo-row">
-                    <span>📄</span>
-                    <select id="tipoDocumento" style="background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.35);border-radius:6px;padding:3px 7px;font-size:0.85em;font-weight:700;cursor:pointer;">
-                        <option value="cotizacion">Cotización</option>
-                        <option value="ORDEN DE COMPRA">ORDEN DE COMPRA</option>
-                    </select>
+            <div class="total-info-container" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+                <div class="ff-left" style="flex:1;min-width:160px;">
+                    <div id="correlativoEnCursoInfo" style="font-size:0.8em; font-weight:700; margin-bottom:6px;"></div>
+                    <div id="totalInfo" style="font-size: 0.95em;">0 productos</div>
+                    <div style="font-size: 0.8em; opacity: 0.8; margin-top: 5px;" id="itemsBreakdown"></div>
+                    <div class="margen-info" id="margenInfo"></div>
+                    <div id="envioInfo" style="font-size: 0.85em; margin-top: 10px;"></div>
                 </div>
-                <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.2);">
-                    <div style="font-size:0.82em;font-weight:700;margin-bottom:6px;opacity:0.85;">💰 Forma de Pago</div>
-                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <span style="font-size:0.82em;">Adelanto S/:</span>
-                        <input type="number" id="montoAdelanto" min="0" step="0.50" placeholder="0.00"
-                            style="width:80px;padding:4px 8px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.15);color:white;font-weight:700;font-size:0.9em;text-align:right;"
-                            oninput="actualizarPago()">
-                        <span id="saldoPendienteLabel" style="font-size:0.82em;opacity:0.9;"></span>
+                <div class="ff-right" style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+                    <div class="doc-tipo-row" style="margin-top:0;">
+                        <span>📄</span>
+                        <select id="tipoDocumento" style="background:rgba(255,255,255,0.15);color:white;border:1.5px solid rgba(255,255,255,0.35);border-radius:6px;padding:3px 7px;font-size:0.85em;font-weight:700;cursor:pointer;">
+                            <option value="cotizacion">Cotización</option>
+                            <option value="ORDEN DE COMPRA">ORDEN DE COMPRA</option>
+                        </select>
                     </div>
-                    <div id="pagoResumen" style="font-size:0.78em;margin-top:4px;opacity:0.75;"></div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.82em;font-weight:700;margin-bottom:6px;opacity:0.85;">💰 Forma de Pago</div>
+                        <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;">
+                            <span style="font-size:0.82em;">Adelanto S/:</span>
+                            <input type="number" id="montoAdelanto" min="0" step="0.50" placeholder="0.00"
+                                style="width:80px;padding:4px 8px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.15);color:white;font-weight:700;font-size:0.9em;text-align:right;"
+                                oninput="actualizarPago()">
+                            <span id="saldoPendienteLabel" style="font-size:0.82em;opacity:0.9;"></span>
+                        </div>
+                        <div id="pagoResumen" style="font-size:0.78em;margin-top:4px;opacity:0.75;text-align:right;"></div>
+                    </div>
                 </div>
             </div>
-            <div style="text-align: right;">
+            <div class="total-actions-wrap" style="text-align: right;">
                 <div class="total-amount" id="totalAmount">S/ 0.00</div>
                 <div class="action-buttons">
                     <button class="btn btn-danger" onclick="clearAll()">🗑️ Limpiar</button>
@@ -4084,25 +4173,21 @@ async function generarFichaPDF() {
             <tbody id="printTableBody"></tbody>
         </table>
 
-        <!-- TOTALES + PAGO + BANCO + YAPE EN FILA -->
+        <!-- TOTALES + PAGO (FORMAS DE PAGO COMBINADO) EN FILA -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;align-items:start;">
 
-            <!-- BANCO + YAPE (misma columna, mismo ancho) -->
-            <div>
-                <div style="background:#2d3748;color:white;padding:14px 16px;border-radius:8px;">
-                    <div style="font-weight:700;font-size:0.88em;margin-bottom:8px;color:#fbbf24;">💳 Datos para Transferencia</div>
-                    <div style="font-size:0.78em;line-height:1.8;">
-                        <div><strong style="color:#fbbf24;">Empresa:</strong> Corp. Andina Integral S.A.C.</div>
-                        <div><strong style="color:#fbbf24;">Banco:</strong> BCP</div>
-                        <div><strong style="color:#fbbf24;">Cuenta S/:</strong> 1947224281034</div>
-                        <div><strong style="color:#fbbf24;">CCI:</strong> 00219400722428103498</div>
-                    </div>
+            <!-- FORMAS DE PAGO: banco/transferencia + Yape en una sola tarjeta -->
+            <div style="background:#2d3748;color:white;padding:14px 16px;border-radius:8px;">
+                <div style="font-weight:700;font-size:0.88em;margin-bottom:8px;color:#fbbf24;">💳 Formas de pago</div>
+                <div style="font-size:0.78em;line-height:1.8;margin-bottom:10px;">
+                    <div><strong style="color:#fbbf24;">Empresa:</strong> Corp. Andina Integral S.A.C.</div>
+                    <div><strong style="color:#fbbf24;">Banco:</strong> BCP</div>
+                    <div><strong style="color:#fbbf24;">Cuenta S/:</strong> 1947224281034</div>
+                    <div><strong style="color:#fbbf24;">CCI:</strong> 00219400722428103498</div>
                 </div>
-
-                <!-- YAPE -->
-                <div style="background:#720e9e;color:#ffffff;padding:12px 16px;border-radius:8px;margin-top:14px;text-align:center;">
-                    <div style="font-weight:800;font-size:0.9em;letter-spacing:0.03em;">📱 Pago Yape</div>
-                    <div style="font-size:0.82em;margin-top:3px;">924 431 877 &nbsp;·&nbsp; Jeyko Mejía</div>
+                <div style="background:rgba(255,255,255,0.12);border-radius:6px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;font-size:0.78em;flex-wrap:wrap;gap:4px;">
+                    <span>📱 Yape · 924 431 877</span>
+                    <strong style="color:#e9d5ff;">Jeyko Mejía</strong>
                 </div>
             </div>
 
