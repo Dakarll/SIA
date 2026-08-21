@@ -2003,13 +2003,20 @@
            (antes forzaba texto oscuro sobre el fondo oscuro del modal,
            dejándolo ilegible — ver comentario de huérfanos al final del
            bloque de modo oscuro). */
+        #pantallaAcceso {
+            --primary: #2d3748;
+            --text-muted: #718096;
+            --text-faint: #a0aec0;
+            --border: #e2e8f0;
+            --bg-light: #f7fafc;
+        }
         #pantallaAcceso, #pantallaAcceso * {
-            color:var(--primary);
+            color: #2d3748;
         }
         #pantallaAcceso h2 { color: #1a202c; }
         #pantallaAcceso .form-input {
             background: white;
-            color:var(--primary);
+            color: #2d3748;
             border-color: #cbd5e0;
         }
 
@@ -2572,7 +2579,7 @@
             </div>
             <p style="font-size:0.9em; color:var(--text-muted);">Sesión activa: <strong id="panelCuentaUsuario">—</strong></p>
 
-            <div id="correlativosPanel" style="display:none; margin:15px 0; padding:12px; background:#f7fafc; border-radius:10px;">
+            <div id="correlativosPanel" style="display:none; margin:15px 0; padding:12px; background:var(--bg-light); border-radius:10px;">
                 <strong style="font-size:0.9em; color:var(--primary);">🔢 Correlativos (solo Admin)</strong>
                 <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
                     <div style="flex:1; min-width:140px;">
