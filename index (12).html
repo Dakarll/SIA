@@ -1143,6 +1143,31 @@
             border-color: var(--dm-border-soft);
         }
 
+        /* ============================================
+           FASE A — AUDITORÍA A4 (además de A1/A2/A3 arriba)
+           Se repitió el barrido completo de todo el CSS (script de
+           auditoría estático comparando cada selector con fondo/color
+           fijo contra la lista ya cubierta por body.dark-mode, más un
+           barrido dinámico en navegador que mide contraste real de
+           fondo+texto sobre cada elemento visible, con todas las
+           pestañas/modales abiertos a la vez) para buscar casos NUEVOS
+           más allá de A1-A3. Resultado: 0 casos nuevos encontrados —
+           el resto de selectores con color/fondo fijo que aparecen en
+           el barrido son, en todos los casos, uno de estos tres tipos
+           ya revisados y dejados así a propósito:
+             1) Badges/botones con --accent o --secondary (fijos, no
+                cambian con el tema: .sync-indicator, .cliente-panel-badge,
+                .historial-count-badge, .btn-primary, etc.)
+             2) "Pills" con su propio par fondo+texto fijo y coherente
+                entre sí (.price-menor/.price-mayor, .deselect-hint,
+                .igv-indicator, .color-tag, .precio-override-badge) —
+                se ven igual en ambos modos a propósito, como una
+                etiqueta de estado, no como una tarjeta de la app.
+             3) CSS sin usar en el HTML actual (.envio-info, .bank-info,
+                .print-total-section, .print-client-box) — no generan
+                ningún elemento visible, no hace falta tocarlos.
+        ============================================ */
+
         .add-extras-row.visible { display: flex; }
 
         .extra-field { flex: 1; min-width: 120px; }
