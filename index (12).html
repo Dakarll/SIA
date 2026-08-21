@@ -2577,7 +2577,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="editProductoModalTitulo">✏️ Editar Producto</h2>
-                <button class="modal-close" onclick="closeEditProductoModal()">×</button>
+                <button class="modal-close" onclick="closeEditProductoModal()" aria-label="Cerrar">×</button>
             </div>
             <form id="editProductoForm">
                 <div class="form-group">
@@ -2611,7 +2611,7 @@
         <div class="modal-content" style="max-width:600px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="verCotTitulo">Cotización</h2>
-                <button class="modal-close" onclick="document.getElementById('verCotizacionModal').classList.remove('active')">×</button>
+                <button class="modal-close" onclick="document.getElementById('verCotizacionModal').classList.remove('active')" aria-label="Cerrar">×</button>
             </div>
             <div id="verCotContenido"></div>
         </div>
@@ -2622,7 +2622,7 @@
         <div class="modal-content" style="max-width:700px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="listaCompraModalTitulo">🛒 Lista de compra — pendientes de despacho</h2>
-                <button class="modal-close" onclick="document.getElementById('listaCompraModal').classList.remove('active')">×</button>
+                <button class="modal-close" onclick="document.getElementById('listaCompraModal').classList.remove('active')" aria-label="Cerrar">×</button>
             </div>
             <div id="listaCompraContenido"></div>
         </div>
@@ -2632,7 +2632,7 @@
         <div class="modal-content" style="max-width:420px;">
             <div class="modal-header">
                 <h2 class="modal-title" id="panelCuentaModalTitulo">⚙️ Cuenta y configuración</h2>
-                <button class="modal-close" onclick="cerrarPanelCuenta()">×</button>
+                <button class="modal-close" onclick="cerrarPanelCuenta()" aria-label="Cerrar">×</button>
             </div>
             <p style="font-size:0.9em; color:var(--text-muted);">Sesión activa: <strong id="panelCuentaUsuario">—</strong></p>
 
@@ -2674,7 +2674,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="editSucursalModalTitulo">✏️ Editar Sucursal</h2>
-                <button class="modal-close" onclick="closeEditSucursalModal()">×</button>
+                <button class="modal-close" onclick="closeEditSucursalModal()" aria-label="Cerrar">×</button>
             </div>
             <form id="editSucursalForm">
                 <div class="form-group">
@@ -2757,7 +2757,7 @@
                         </span>
                     </div>
                     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleDarkMode()" title="Alternar tema claro/oscuro (Ctrl+D)">🌙 Oscuro</button>
-                    <button class="theme-toggle-btn" onclick="abrirPanelCuenta()" title="Cuenta y configuración">⚙️</button>
+                    <button class="theme-toggle-btn" onclick="abrirPanelCuenta()" title="Cuenta y configuración" aria-label="Cuenta y configuración">⚙️</button>
                 </div>
             </div>
         </div>
@@ -2768,15 +2768,15 @@
         <div class="content">
             <!-- TABS -->
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('cotizar')">📋 Cotizar</button>
-                <button class="tab" onclick="switchTab('sucursales')">🚚 Sucursales</button>
-                <button class="tab" onclick="switchTab('historial')">🕓 Historial</button>
-                <button class="tab" onclick="switchTab('envios')">🚚 Envíos</button>
-                <button class="tab" onclick="switchTab('dashboard')">📊 Dashboard</button>
-                <button class="tab" onclick="switchTab('productos')">📦 Productos</button>
-                <button class="tab" onclick="switchTab('gestionsucursales')">🏢 Gestión Sucursales</button>
-                <button class="tab" onclick="switchTab('fichas')">📄 Fichas Técnicas</button>
-                <button class="tab" onclick="switchTab('shalom')">🚚 Seguimiento Shalom</button>
+                <button class="tab active" onclick="switchTab('cotizar')" aria-label="Cotizar">📋 Cotizar</button>
+                <button class="tab" onclick="switchTab('sucursales')" aria-label="Sucursales">🚚 Sucursales</button>
+                <button class="tab" onclick="switchTab('historial')" aria-label="Historial">🕓 Historial</button>
+                <button class="tab" onclick="switchTab('envios')" aria-label="Envíos">🚚 Envíos</button>
+                <button class="tab" onclick="switchTab('dashboard')" aria-label="Dashboard">📊 Dashboard</button>
+                <button class="tab" onclick="switchTab('productos')" aria-label="Productos">📦 Productos</button>
+                <button class="tab" onclick="switchTab('gestionsucursales')" aria-label="Gestión Sucursales">🏢 Gestión Sucursales</button>
+                <button class="tab" onclick="switchTab('fichas')" aria-label="Fichas Técnicas">📄 Fichas Técnicas</button>
+                <button class="tab" onclick="switchTab('shalom')" aria-label="Seguimiento Shalom">🚚 Seguimiento Shalom</button>
             </div>
 
             <!-- TAB: COTIZAR -->
@@ -4930,21 +4930,21 @@ async function generarFichaPDF() {
                             <td class="precio-cell">
                                 <div style="display:flex;align-items:center;gap:4px;">
                                     ${precioDisplay}
-                                    <button class="precio-edit-btn" title="Editar precio" onclick="togglePrecioEdit(${index})">✏️</button>
+                                    <button class="precio-edit-btn" title="Editar precio" aria-label="Editar precio" onclick="togglePrecioEdit(${index})">✏️</button>
                                 </div>
                                 <span class="precio-aplicado">${tipoPrecio}</span>
                                 <div class="precio-inline-edit" id="precioEdit_${index}">
                                     <span style="font-size:0.85em;color:var(--text-muted);">S/</span>
                                     <input class="precio-inline-input" type="number" step="0.01" min="0"
                                         id="precioInput_${index}" value="${precioUnitario.toFixed(2)}">
-                                    <button class="precio-inline-save" onclick="guardarPrecioOverride(${index})">✔</button>
-                                    <button class="precio-inline-cancel" onclick="cancelarPrecioEdit(${index})">✕</button>
-                                    ${hasOverride ? `<button class="precio-inline-cancel" title="Restaurar" onclick="restaurarPrecio(${index})" style="color:#e53e3e;">↩</button>` : ''}
+                                    <button class="precio-inline-save" aria-label="Guardar precio" onclick="guardarPrecioOverride(${index})">✔</button>
+                                    <button class="precio-inline-cancel" aria-label="Cancelar edición de precio" onclick="cancelarPrecioEdit(${index})">✕</button>
+                                    ${hasOverride ? `<button class="precio-inline-cancel" title="Restaurar" aria-label="Restaurar precio original" onclick="restaurarPrecio(${index})" style="color:#e53e3e;">↩</button>` : ''}
                                 </div>
                             </td>
                             <td class="total-cell">${totalDisplay}</td>
                             <td>
-                                <button class="btn-remove" onclick="removeProduct(${index})">✕</button>
+                                <button class="btn-remove" aria-label="Eliminar producto de la cotización" onclick="removeProduct(${index})">✕</button>
                             </td>
                         </tr>
                     `;
@@ -5185,8 +5185,8 @@ async function generarFichaPDF() {
                     <td class="precio-cell">${tiersTexto}</td>
                     <td class="precio-cell">${producto.costo != null ? 'S/ ' + Number(producto.costo).toFixed(2) : '<span style="color:var(--text-faint);">—</span>'}</td>
                     <td>
-                        <button class="btn-edit" onclick="editarProducto(${index})">✏️</button>
-                        <button class="btn-remove" onclick="eliminarProducto(${index})">🗑️</button>
+                        <button class="btn-edit" aria-label="Editar producto" onclick="editarProducto(${index})">✏️</button>
+                        <button class="btn-remove" aria-label="Eliminar producto" onclick="eliminarProducto(${index})">🗑️</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -5342,8 +5342,8 @@ async function generarFichaPDF() {
                         <td>${sucursal.provincia}</td>
                         <td><span class="sucursal-tipo">${sucursal.tipo}</span></td>
                         <td>
-                            <button class="btn-edit" onclick="editarSucursal(${realIndex})">✏️</button>
-                            <button class="btn-remove" onclick="eliminarSucursal(${realIndex})">🗑️</button>
+                            <button class="btn-edit" aria-label="Editar sucursal" onclick="editarSucursal(${realIndex})">✏️</button>
+                            <button class="btn-remove" aria-label="Eliminar sucursal" onclick="eliminarSucursal(${realIndex})">🗑️</button>
                         </td>
                     </tr>
                 `;
@@ -6647,7 +6647,7 @@ async function generarFichaPDF() {
                 <input type="text" class="form-input tier-etiqueta" placeholder="Ej: Docena" value="${etiqueta}">
                 <input type="number" class="form-input tier-cantidad" placeholder="Cant. mín." min="1" value="${cantidadMinima}">
                 <input type="number" class="form-input tier-precio" placeholder="Precio S/" min="0" step="0.01" value="${precio}">
-                <button type="button" class="tier-del-btn" onclick="this.parentElement.remove()">✕</button>
+                <button type="button" class="tier-del-btn" aria-label="Quitar nivel de precio" onclick="this.parentElement.remove()">✕</button>
             `;
             contenedor.appendChild(fila);
         }
@@ -6879,7 +6879,7 @@ async function generarFichaPDF() {
                                     ? `<button class="btn-historial-load" style="background:var(--chip-neutral-bg); color:var(--text-muted);" onclick="cambiarEstadoCotizacion('${entry.objectId}', 'cotizada')">↩ Desmarcar</button>`
                                     : `<button class="btn-historial-load" style="background:#e8f9ee; color:#38a169;" onclick="cambiarEstadoCotizacion('${entry.objectId}', 'orden_compra')">✅ Marcar venta</button>`
                                 }
-                                <button class="btn-historial-del" onclick="eliminarDeHistorial('${entry.objectId}')">🗑️</button>
+                                <button class="btn-historial-del" aria-label="Eliminar cotización del historial" onclick="eliminarDeHistorial('${entry.objectId}')">🗑️</button>
                             </div>
                         </div>
                     </div>`;
@@ -8003,7 +8003,7 @@ async function generarFichaPDF() {
                                 <h3 class="shalom-card-nombre">${nombreMostrado}</h3>
                                 <div class="shalom-card-subinfo">${subinfo}</div>
                             </div>
-                            <button class="shalom-card-del-btn" onclick="eliminarEnvioShalom('${e.objectId}')" title="Eliminar">✕</button>
+                            <button class="shalom-card-del-btn" onclick="eliminarEnvioShalom('${e.objectId}')" title="Eliminar" aria-label="Eliminar envío del seguimiento">✕</button>
                         </div>
                         ${e.destino ? `<div class="shalom-card-destino">📍 ${e.destino}</div>` : ''}
                         ${e.numeroOrdenCompra ? `<div style="font-size:0.78em; font-weight:700; color:var(--secondary);">🔗 ${e.numeroOrdenCompra}</div>` : ''}
