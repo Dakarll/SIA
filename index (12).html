@@ -122,11 +122,44 @@
         /* TABS */
         .tabs {
             display: flex;
-            gap: 5px;
+            gap: 0;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--border);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            align-items: stretch;
+        }
+
+        /* Fase B1: grupos de tabs por frecuencia de uso. El separador
+           entre grupos es un borde (no depende de ningún color hex
+           suelto — usa var(--border), que ya cambia solo con el tema),
+           así que se ve marcado en ambos modos y también sirve como
+           referencia visual clara si hay que hacer scroll horizontal
+           en pantallas angostas. */
+        .tab-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0 16px 10px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+        }
+        .tab-group:first-child { padding-left: 2px; }
+        .tab-group:last-child { border-right: none; padding-right: 2px; }
+
+        .tab-group-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+            color: var(--text-faint);
+            padding-left: 2px;
+            white-space: nowrap;
+        }
+
+        .tab-row {
+            display: flex;
+            gap: 4px;
         }
 
         .tab {
@@ -1768,8 +1801,14 @@
                 max-width: none;
             }
 
-            .tabs {
-                gap: 3px;
+            .tab-group {
+                padding: 0 10px 8px;
+            }
+            .tab-group:first-child { padding-left: 2px; }
+            .tab-group:last-child { padding-right: 2px; }
+
+            .tab-group-label {
+                font-size: 0.62em;
             }
 
             .tab {
@@ -2901,17 +2940,37 @@
 
 
         <div class="content">
-            <!-- TABS -->
+            <!-- TABS — agrupados por frecuencia de uso (Fase B1). Los
+                 botones son EXACTAMENTE los mismos (mismos onclick,
+                 mismos aria-label, misma clase "tab") — switchTab()
+                 usa event.target y querySelectorAll('.tab'), así que le
+                 da igual cuántos <div> envuelvan a cada botón. Solo
+                 cambió el agrupamiento visual. -->
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('cotizar')" aria-label="Cotizar">📋 Cotizar</button>
-                <button class="tab" onclick="switchTab('sucursales')" aria-label="Sucursales">🚚 Sucursales</button>
-                <button class="tab" onclick="switchTab('historial')" aria-label="Historial">🕓 Historial</button>
-                <button class="tab" onclick="switchTab('envios')" aria-label="Envíos">🚚 Envíos</button>
-                <button class="tab" onclick="switchTab('dashboard')" aria-label="Dashboard">📊 Dashboard</button>
-                <button class="tab" onclick="switchTab('productos')" aria-label="Productos">📦 Productos</button>
-                <button class="tab" onclick="switchTab('gestionsucursales')" aria-label="Gestión Sucursales">🏢 Gestión Sucursales</button>
-                <button class="tab" onclick="switchTab('fichas')" aria-label="Fichas Técnicas">📄 Fichas Técnicas</button>
-                <button class="tab" onclick="switchTab('shalom')" aria-label="Seguimiento Shalom">🚚 Seguimiento Shalom</button>
+                <div class="tab-group">
+                    <div class="tab-group-label">Operación diaria</div>
+                    <div class="tab-row">
+                        <button class="tab active" onclick="switchTab('cotizar')" aria-label="Cotizar">📋 Cotizar</button>
+                        <button class="tab" onclick="switchTab('historial')" aria-label="Historial">🕓 Historial</button>
+                        <button class="tab" onclick="switchTab('envios')" aria-label="Envíos">🚚 Envíos</button>
+                    </div>
+                </div>
+                <div class="tab-group">
+                    <div class="tab-group-label">Catálogo</div>
+                    <div class="tab-row">
+                        <button class="tab" onclick="switchTab('productos')" aria-label="Productos">📦 Productos</button>
+                        <button class="tab" onclick="switchTab('sucursales')" aria-label="Sucursales">🚚 Sucursales</button>
+                        <button class="tab" onclick="switchTab('fichas')" aria-label="Fichas Técnicas">📄 Fichas Técnicas</button>
+                        <button class="tab" onclick="switchTab('gestionsucursales')" aria-label="Gestión Sucursales">🏢 Gestión Sucursales</button>
+                    </div>
+                </div>
+                <div class="tab-group">
+                    <div class="tab-group-label">Reportes</div>
+                    <div class="tab-row">
+                        <button class="tab" onclick="switchTab('dashboard')" aria-label="Dashboard">📊 Dashboard</button>
+                        <button class="tab" onclick="switchTab('shalom')" aria-label="Seguimiento Shalom">🚚 Seguimiento Shalom</button>
+                    </div>
+                </div>
             </div>
 
             <!-- TAB: COTIZAR -->
