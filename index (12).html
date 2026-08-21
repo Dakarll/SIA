@@ -2557,6 +2557,27 @@
             opacity: 0.9;
             margin-top: 4px;
         }
+
+        /* ============================================
+           PREFERS-REDUCED-MOTION
+           Regla global (no una por cada @keyframes/transition — hay 5
+           @keyframes y 27 reglas con "transition:" repartidas por todo
+           el archivo). Se deja una duración mínima en vez de 0 en punto
+           porque algunos navegadores no disparan el evento
+           "transitionend" con duración exactamente 0, y ciertas partes
+           del JS podrían depender de ese evento; con 0.01ms el cambio
+           es visualmente instantáneo pero el evento se sigue disparando.
+           El equivalente para los gráficos de Chart.js (que no se puede
+           tocar con CSS) está en el script principal, donde se arma
+           la configuración del gráfico. */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -6088,6 +6109,15 @@ async function generarFichaPDF() {
         // UTILIDADES
         // ============================================
 
+        // El CSS (prefers-reduced-motion, ver <style>) ya cubre las
+        // animaciones/transiciones de la página, pero los gráficos del
+        // Dashboard los dibuja Chart.js con su propia animación interna
+        // (no controlable por CSS) — se apaga a mano aquí.
+        function prefiereMovimientoReducido() {
+            return typeof window.matchMedia === 'function' &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        }
+
         function showLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('active', show);
         }
@@ -8256,7 +8286,7 @@ async function generarFichaPDF() {
                         indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 800, easing: 'easeOutQuart' },
+                        animation: { duration: prefiereMovimientoReducido() ? 0 : 800, easing: 'easeOutQuart' },
                         plugins: { legend: { display: false } },
                         scales: {
                             x: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: 'rgba(128,128,128,0.1)' } },
@@ -8333,7 +8363,7 @@ async function generarFichaPDF() {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 900, easing: 'easeOutQuart' },
+                        animation: { duration: prefiereMovimientoReducido() ? 0 : 900, easing: 'easeOutQuart' },
                         plugins: {
                             legend: { display: false },
                             tooltip: {
