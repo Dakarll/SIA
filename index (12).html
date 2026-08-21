@@ -1969,29 +1969,35 @@
             border-bottom-color: var(--dm-border);
         }
 
-        /* La pantalla de acceso (login/registro) y el panel de cuenta
-           siempre usan su propia paleta clara y legible, sin importar
-           si el modo oscuro está activo — evita texto invisible
-           (blanco sobre blanco) heredado del tema. */
-        #pantallaAcceso, #pantallaAcceso * ,
-        #panelCuentaModal .modal-content, #panelCuentaModal .modal-content * {
+        /* La pantalla de acceso (login/registro) siempre usa su propia
+           paleta clara y legible, sin importar si el modo oscuro está
+           activo — evita texto invisible (blanco sobre blanco) heredado
+           del tema. #panelCuentaModal se sacó de aquí a propósito: es un
+           modal normal y debe verse en modo oscuro como cualquier otro
+           (antes forzaba texto oscuro sobre el fondo oscuro del modal,
+           dejándolo ilegible — ver comentario de huérfanos al final del
+           bloque de modo oscuro). */
+        #pantallaAcceso, #pantallaAcceso * {
             color: #2d3748;
         }
         #pantallaAcceso h2 { color: #1a202c; }
-        #pantallaAcceso .form-input, #panelCuentaModal .form-input {
+        #pantallaAcceso .form-input {
             background: white;
             color: #2d3748;
             border-color: #cbd5e0;
         }
 
-        /* Las zonas de impresión/vista previa (cotización y ficha técnica)
-           deben verse siempre igual sin importar el modo oscuro — si no,
-           la variable --primary (un "plomo" oscuro) se vuelve gris claro
-           en modo oscuro y el texto blanco sobre esas zonas se vuelve
-           casi invisible. Se re-fija aquí a su valor de modo claro. */
+        /* Las zonas de impresión/vista previa (cotización, ficha técnica
+           y sucursales por provincia) deben verse siempre igual sin
+           importar el modo oscuro — si no, la variable --primary (un
+           "plomo" oscuro) se vuelve gris claro/blanco en modo oscuro y
+           el texto se vuelve casi invisible sobre estos fondos, que son
+           siempre blancos (se exportan como imagen/PDF). Se re-fija
+           aquí a su valor de modo claro. */
         #fichaPreview, #fichaPreview *,
         .cotizacion-print, .cotizacion-print *,
-        .ficha-print, .ficha-print * {
+        .ficha-print, .ficha-print *,
+        #sucursalesProvinciaPrint, #sucursalesProvinciaPrint * {
             --primary: #2d3748;
             --border: #e2e8f0;
             --bg-light: #f7fafc;
@@ -2232,6 +2238,115 @@
         body.dark-mode .shalom-card-del-btn { background: var(--dm-surface-2); color: var(--dm-text-secondary); }
         /* Hover rojo de "eliminar": color de estado, se deja igual. */
         body.dark-mode .shalom-card-del-btn:hover { background: #3a1414; color: #ff453a; }
+
+        /* ============================================
+           MODO OSCURO — COMPONENTES HUÉRFANOS
+           Estos elementos tenían background/color fijos SIN contraparte
+           en body.dark-mode, lo que producía bloques claros "flotando"
+           sobre fondo oscuro o texto ilegible. Encontrados al auditar
+           el CSS completo (no solo las líneas que ya tenían
+           body.dark-mode) comparando cada selector con fondo/color fijo
+           contra la lista de selectores ya cubiertos:
+
+           - .header / .total-section: su gradiente usaba
+             var(--primary), que en modo oscuro pasó a ser blanco (texto
+             blanco sobre gradiente que ahora EMPIEZA en blanco = título
+             invisible). Es el bug más visible: aparece en TODAS las
+             pestañas (.header) y en la barra de acciones de Cotizar
+             (.total-section).
+           - .info-banner / .sucursal-tipo: fondo fijo color --accent
+             (amarillo, no cambia con el tema) + texto var(--primary)
+             (ahora blanco) = texto blanco sobre amarillo, contraste muy
+             pobre. Se fija el texto a oscuro siempre.
+           - .dash-range-btn.active: mismo problema — fondo blanco fijo
+             (el estado "seleccionado") + texto var(--primary) blanco =
+             texto invisible sobre el chip activo del Dashboard.
+           - .cliente-panel-header (+ hover) y .cliente-summary: el
+             header de "Datos del Cliente" tenía fondo claro fijo
+             (#f8faff) flotando sobre el panel oscuro; su texto de
+             resumen (#555) también quedaba casi invisible.
+           - .cliente-field label / input / textarea: las etiquetas y
+             los campos de texto del panel Cliente no tenían ningún
+             override — los inputs quedaban con el fondo blanco por
+             defecto del navegador y texto claro heredado (blanco sobre
+             blanco).
+           - #panelCuentaModal: tenía una regla fuera de body.dark-mode
+             que forzaba SIEMPRE texto oscuro (#2d3748) en su
+             modal-content, chocando con el fondo oscuro que sí le
+             aplica el modo oscuro (texto oscuro sobre fondo oscuro).
+             Se quitó esa regla — ver más arriba, sección "pantalla de
+             acceso" — para que el modal use el mismo tratamiento que
+             cualquier otro .modal-content.
+           - #sucursalesProvinciaPrint: el área de generar imagen de
+             "Sucursales por provincia" no estaba en la lista de zonas
+             de impresión siempre-claras (junto a .cotizacion-print /
+             .ficha-print / #fichaPreview), así que su texto con
+             var(--primary) se volvía blanco sobre su propio fondo
+             blanco fijo. Se agregó a esa lista (ver arriba).
+           - .btn-primary:disabled / .btn-whatsapp:disabled: fondo gris
+             claro fijo (#cbd5e0) + texto blanco heredado del botón =
+             botón deshabilitado ilegible y "flotando" en claro.
+           - .tier-del-btn: fondo rosa muy claro (#fff5f5) usado dentro
+             de los modales de edición de producto/sucursal — flotaba
+             como un bloque blanco sobre el modal oscuro.
+           - .modal-close, .historial-card-meta, .dash-kpi-label,
+             .ios-section-subtitle, .shalom-card-subinfo/destino/detalle:
+             no eran ilegibles (contraste límite ~4.5:1), pero usaban
+             grises sueltos (#718096/#8e8e93) en vez del token de texto
+             secundario — se armonizan aquí por consistencia.
+        ============================================ */
+
+        /* --- Fondos con gradiente que usaban var(--primary) --- */
+        body.dark-mode .header,
+        body.dark-mode .total-section {
+            background: linear-gradient(135deg, var(--dm-surface-2) 0%, var(--dm-bg-base) 100%);
+        }
+
+        /* --- Texto sobre fondo fijo de --accent (no cambia con el tema) --- */
+        body.dark-mode .info-banner,
+        body.dark-mode .sucursal-tipo {
+            color: #2d3748;
+        }
+
+        /* --- Chip "activo" del Dashboard: fondo blanco fijo, el texto debe seguir oscuro --- */
+        body.dark-mode .dash-range-btn.active {
+            color: var(--dm-bg-base);
+        }
+
+        /* --- Header "Datos del Cliente" --- */
+        body.dark-mode .cliente-panel-header { background: var(--dm-surface-2); }
+        body.dark-mode .cliente-panel-header:hover { background: var(--dm-surface-3); }
+        body.dark-mode .cliente-summary { color: var(--dm-text-secondary); }
+        body.dark-mode .cliente-field label { color: var(--dm-text-secondary); }
+        body.dark-mode .cliente-field input,
+        body.dark-mode .cliente-field textarea {
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
+        }
+
+        /* --- Botones deshabilitados --- */
+        body.dark-mode .btn-primary:disabled,
+        body.dark-mode .btn-whatsapp:disabled {
+            background: var(--dm-surface-3);
+            color: var(--dm-text-disabled);
+            border: 1px solid var(--dm-border-soft);
+        }
+
+        /* --- Botón "quitar nivel de precio" dentro de modales --- */
+        body.dark-mode .tier-del-btn { background: var(--dm-surface-2); }
+
+        /* --- Textos secundarios sueltos → token de texto secundario --- */
+        body.dark-mode .modal-close,
+        body.dark-mode .historial-card-meta,
+        body.dark-mode .dash-kpi-label,
+        body.dark-mode .ios-section-subtitle,
+        body.dark-mode .shalom-card-subinfo,
+        body.dark-mode .shalom-card-destino,
+        body.dark-mode .shalom-card-detalle {
+            color: var(--dm-text-secondary);
+        }
+        body.dark-mode .modal-close:hover { background: var(--dm-surface-2); }
 
         /* Mejora responsive móvil adicional */
         @media (max-width: 600px) {
