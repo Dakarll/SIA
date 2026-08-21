@@ -1394,11 +1394,6 @@
             color: var(--primary);
         }
 
-        @media (max-width: 600px) {
-            .cliente-grid { grid-template-columns: 1fr; }
-            .cliente-grid .full-row { grid-column: 1; }
-            .print-client-grid { grid-template-columns: 1fr; }
-        }
 
         .doc-tipo-row {
             display: flex;
@@ -1641,10 +1636,37 @@
             color: #22543d;
         }
 
-        /* RESPONSIVE MÓVIL */
+        /* ============================================
+           RESPONSIVE MÓVIL — sistema mobile-first consolidado
+           Antes había 6 bloques @media dispersos por todo el archivo
+           (768px, 600px x3, 480px, 420px), varios de ellos repitiendo
+           el mismo breakpoint y unos pocos con selectores compartidos
+           entre breakpoints distintos (.header h1, .total-amount,
+           .cantidad-input, .modal-content, .products-table th/td,
+           .dash-kpi-grid). Se unificaron en un solo lugar, en ORDEN
+           DESCENDENTE de ancho (768 → 600 → 480 → 420) — el mismo orden
+           relativo que ya tenían en el archivo original — para que la
+           cascada resuelva exactamente igual que antes en los
+           selectores compartidos (la regla del breakpoint más angosto
+           sigue ganando en pantallas muy chicas, por venir después en
+           el código). No se cambió ningún valor ni selector, solo se
+           reordenó y se juntó todo en un solo lugar.
+
+           (El @media (max-width: 768px) del bloque <style> de Fichas
+           Técnicas —más abajo, junto a .form-row/.ficha-grid— se dejó
+           donde está: es un bloque de estilos autocontenido para ese
+           formulario, sin selectores en común con nada de aquí, así
+           que no había nada real que "se pisara".)
+        ============================================ */
+
+        /* ---------- ≤768px ---------- */
         @media (max-width: 768px) {
             body {
                 padding: 5px;
+            }
+
+            .header {
+                padding: 15px;
             }
 
             .header h1 {
@@ -1653,10 +1675,6 @@
 
             .header .subtitle {
                 font-size: 0.75em;
-            }
-
-            .header {
-                padding: 15px;
             }
 
             .content {
@@ -1831,12 +1849,38 @@
             }
         }
 
-        @media (max-width: 420px) {
-            .dash-kpi-grid {
-                grid-template-columns: 1fr;
+        /* ---------- ≤600px ---------- */
+        @media (max-width: 600px) {
+            .cliente-grid { grid-template-columns: 1fr; }
+            .cliente-grid .full-row { grid-column: 1; }
+            .print-client-grid { grid-template-columns: 1fr; }
+
+            .add-product-section .add-product-title,
+            .shalom-card-nombre {
+                font-size: 1em;
+            }
+
+            /* evita zoom automático en iOS al enfocar un input */
+            .search-input, .form-input {
+                font-size: 16px;
+            }
+            .cantidad-input {
+                width: 50px;
+                font-size: 16px;
+            }
+            .action-buttons .btn {
+                min-width: 100%;
+            }
+            .modal-content {
+                padding: 20px 15px;
+            }
+            .products-table th, .products-table td {
+                padding: 8px 6px;
+                font-size: 0.8em;
             }
         }
 
+        /* ---------- ≤480px ---------- */
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1em;
@@ -1875,12 +1919,13 @@
             }
         }
 
-        @media (max-width: 600px) {
-            .add-product-section .add-product-title,
-            .shalom-card-nombre {
-                font-size: 1em;
+        /* ---------- ≤420px ---------- */
+        @media (max-width: 420px) {
+            .dash-kpi-grid {
+                grid-template-columns: 1fr;
             }
         }
+
 
         /* ============================================
            MODO OSCURO — negro real, apto para pantallas OLED
@@ -2440,27 +2485,6 @@
             color: var(--dm-text-secondary);
         }
         body.dark-mode .modal-close:hover { background: var(--dm-surface-2); }
-
-        /* Mejora responsive móvil adicional */
-        @media (max-width: 600px) {
-            .search-input, .form-input {
-                font-size: 16px; /* evita zoom automático en iOS */
-            }
-            .cantidad-input {
-                width: 50px;
-                font-size: 16px;
-            }
-            .action-buttons .btn {
-                min-width: 100%;
-            }
-            .modal-content {
-                padding: 20px 15px;
-            }
-            .products-table th, .products-table td {
-                padding: 8px 6px;
-                font-size: 0.8em;
-            }
-        }
 
         /* Validación visual de inputs */
         .input-error {
