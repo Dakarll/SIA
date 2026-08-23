@@ -530,6 +530,17 @@ export const state = {
     },
     sesionUsuario: null, // { sessionToken, userId, username }
 
+
+    export const apisPeruConfig = {
+    token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRha2FybGpvdmVAZ21haWwuY29tIn0.Q1Qfv9pySKQE6j4iyX9apJptF8wycnOYpm5xPj2imro',
+    baseUrl: 'https://dniruc.apisperu.com/api/v1'
+    // ⚠️ Token de cuenta personal de APIsPeru con cuota mensual limitada.
+    // Al vivir en JS de frontend, cualquiera que vea el código fuente
+    // (GitHub Pages es público) puede copiarlo y agotar la cuota.
+    // Riesgo aceptado por ahora; mitigación futura: mover esto detrás
+    // de un backend/proxy propio.
+};
+
     // HISTORIAL / CORRELATIVOS
     historialCache: [], // último listado traído del servidor
     contadorObjectIds: {}, // cache: { cotizacion: 'objectId', orden_compra: 'objectId' }
