@@ -1,0 +1,111 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d3748;
+            --secondary: #667eea;
+            --accent: #fbbf24;
+            --success: #48bb78;
+            --danger: #f56565;
+            --border: #e2e8f0;
+            --bg-light: #f7fafc;
+            /* Texto secundario/atenuado reutilizado en decenas de estilos
+               inline (JS). Igual que --primary, se re-apunta dentro de
+               body.dark-mode más abajo — así basta con usar
+               color:var(--text-muted) / var(--text-faint) en vez de un
+               hex suelto para que el texto responda al tema. */
+            --text-muted: #718096;
+            --text-faint: #a0aec0;
+            /* Fondo de "chip"/badge neutro (estado inactivo, botones
+               secundarios tipo "Desmarcar"/"Ver en Shalom"): se usa
+               siempre junto con --text-muted. */
+            --chip-neutral-bg: #f0f0f0;
+            /* Fondo del recuadro grande de N° de cotización/orden en el
+               modal "Ver detalle" (historial/envíos) — es un bloque más
+               prominente que un chip, no un badge chico. */
+            --tint-ok-bg: #e8f9ee;
+            --tint-info-bg: #eef2ff;
+            /* Fondo "sin color de botón" del botón Aceptar del modal de
+               confirmación (decisión explícita: debe verse neutro, no
+               verde/rojo). En oscuro pasa a superficie elevada en vez
+               de quedar como un rectángulo claro flotando. */
+            --btn-neutral-bg: #edf2f7;
+        }
+
+        /* Clases utilitarias de texto atenuado — para marcado nuevo o
+           donde no aplique reemplazar directamente el color inline. */
+        .text-muted { color: var(--text-muted); }
+        .text-faint { color: var(--text-faint); }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        body.dark-mode {
+            /* ============================================
+               TOKENS DE MODO OSCURO — estilo Windows 11 / Fluent
+               Design: grises graduados, NO negro puro. Todo el
+               resto del CSS de dark-mode (y los estilos inline
+               generados por JS) deben usar estas variables, no
+               valores hex sueltos, para que un solo lugar controle
+               la paleta completa.
+            ============================================ */
+            --dm-bg-base: #202020;      /* fondo general de la app */
+            --dm-surface-1: #2c2c2c;    /* tarjetas, paneles */
+            --dm-surface-2: #333333;    /* headers de panel, hover, elementos elevados */
+            --dm-surface-3: #3d3d3d;    /* modales/popovers elevados, estados disabled */
+            --dm-border: #3f3f3f;
+            --dm-border-soft: #4a4a4a;
+            --dm-text-primary: #ffffff;
+            --dm-text-secondary: #c5c5c5;
+            --dm-text-disabled: #7a7a7a;
+
+            /* Re-apunta las variables globales del tema claro (usadas
+               en todo el resto del CSS) a los tokens de arriba, para
+               que los componentes que ya usan var(--primary) /
+               var(--border) / var(--bg-light) hereden el modo oscuro
+               automáticamente sin necesitar su propio override. */
+            --primary: var(--dm-text-primary);
+            --border: var(--dm-border);
+            --bg-light: var(--dm-surface-1);
+            --text-muted: var(--dm-text-secondary);
+            --text-faint: var(--dm-text-disabled);
+            --chip-neutral-bg: var(--dm-surface-2);
+            --tint-ok-bg: var(--dm-surface-2);
+            --tint-info-bg: var(--dm-surface-2);
+            --btn-neutral-bg: var(--dm-surface-3);
+            background: var(--dm-bg-base);
+            color: var(--dm-text-primary);
+        }
+
+        /* ============================================
+           PREFERS-REDUCED-MOTION
+           Regla global (no una por cada @keyframes/transition — hay 5
+           @keyframes y 27 reglas con "transition:" repartidas por todo
+           el archivo). Se deja una duración mínima en vez de 0 en punto
+           porque algunos navegadores no disparan el evento
+           "transitionend" con duración exactamente 0, y ciertas partes
+           del JS podrían depender de ese evento; con 0.01ms el cambio
+           es visualmente instantáneo pero el evento se sigue disparando.
+           El equivalente para los gráficos de Chart.js (que no se puede
+           tocar con CSS) está en el script principal, donde se arma
+           la configuración del gráfico. */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }

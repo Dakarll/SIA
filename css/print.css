@@ -1,0 +1,237 @@
+        /* COTIZACIÓN IMPRIMIBLE */
+        .cotizacion-print {
+            position: fixed;
+            left: -9999px;
+            top: 0;
+            background: white;
+            padding: 40px;
+            width: 900px;
+        }
+
+        /* Los navegadores móviles (Chrome/Safari Android/iOS) agrandan el
+           texto automáticamente ("font boosting") dentro de bloques anchos
+           como este, aunque esté fuera de pantalla con ancho fijo — por
+           eso la imagen generada desde el celular salía con letras más
+           grandes que desde PC. Se desactiva ese autoajuste para que el
+           tamaño sea siempre el mismo, sin importar el dispositivo. */
+        .cotizacion-print, .cotizacion-print * {
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        .print-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .print-logo {
+            flex: 0 0 auto;
+        }
+
+        .print-logo svg {
+            max-width: 250px;
+            height: auto;
+        }
+
+        .print-info {
+            text-align: right;
+            flex: 0 0 auto;
+        }
+
+        .print-title {
+            font-size: 2em;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .print-date {
+            color:var(--text-muted);
+            font-size: 0.95em;
+        }
+
+        .vigencia-banner {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .print-table th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .print-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .print-table tbody tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+
+        .print-total-section {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .print-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .bank-info {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .bank-info h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .bank-detail {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .bank-detail strong {
+            color: var(--accent);
+        }
+
+        .envio-info {
+            background: #e6fffa;
+            border: 2px solid #81e6d9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .envio-info h4 {
+            color: #234e52;
+            margin-bottom: 10px;
+        }
+
+        .envio-detail {
+            color: #2c7a7b;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .print-footer {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            color:var(--text-muted);
+            font-size: 0.9em;
+        }
+
+
+        /* Print client info */
+        .print-client-box {
+            background: #f8faff;
+            border: 2px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .print-client-title {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        .print-client-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .print-client-item label {
+            display: block;
+            font-size: 0.75em;
+            color:var(--text-muted);
+            font-weight: 600;
+        }
+
+        .print-client-item span {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+
+        .doc-tipo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+            font-size: 0.88em;
+            opacity: 0.9;
+        }
+
+        /* Las zonas de impresión/vista previa (cotización, ficha técnica
+           y sucursales por provincia) deben verse siempre igual sin
+           importar el modo oscuro — si no, la variable --primary (un
+           "plomo" oscuro) se vuelve gris claro/blanco en modo oscuro y
+           el texto se vuelve casi invisible sobre estos fondos, que son
+           siempre blancos (se exportan como imagen/PDF). Se re-fija
+           aquí a su valor de modo claro. */
+        #fichaPreview, #fichaPreview *,
+        .cotizacion-print, .cotizacion-print *,
+        .ficha-print, .ficha-print *,
+        #sucursalesProvinciaPrint, #sucursalesProvinciaPrint * {
+            --primary: #2d3748;
+            --border: #e2e8f0;
+            --bg-light: #f7fafc;
+            --text-muted: #718096;
+            --text-faint: #a0aec0;
+            --chip-neutral-bg: #f0f0f0;
+        }
+
+        /* FIX A2: el FIX A1 forzaba `color` también con el selector `*`
+           (todo descendiente), lo que pisaba el color:white heredado en
+           los bloques de pago (Transferencia/Yape) — sus hijos internos
+           no tienen color propio, heredan el blanco del contenedor con
+           fondo azul/morado, y `.cotizacion-print *` los sobrescribía a
+           gris oscuro, volviéndolos invisibles sobre su propio fondo.
+           Se aplica `color` solo al contenedor raíz (sin `*`): el texto
+           plano sigue heredando gris oscuro por cascada normal, y los
+           bloques con su propio color inline (blanco) ya no son tocados. */
+        #fichaPreview,
+        .cotizacion-print,
+        .ficha-print {
+            color: #2d3748;
+        }

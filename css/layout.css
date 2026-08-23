@@ -1,0 +1,2435 @@
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a202c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 0.85em;
+        }
+
+        .correlativo-header-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            font-size: 0.78em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        /* INFO BANNER */
+        .info-banner {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 12px 20px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        /* CONTENT */
+        .content {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            align-items: stretch;
+        }
+
+        /* Fase B1: grupos de tabs por frecuencia de uso. El separador
+           entre grupos es un borde (no depende de ningún color hex
+           suelto — usa var(--border), que ya cambia solo con el tema),
+           así que se ve marcado en ambos modos y también sirve como
+           referencia visual clara si hay que hacer scroll horizontal
+           en pantallas angostas. */
+        .tab-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0 16px 10px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--border);
+        }
+        .tab-group:first-child { padding-left: 2px; }
+        .tab-group:last-child { border-right: none; padding-right: 2px; }
+
+        .tab-group-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+            color: var(--text-faint);
+            padding-left: 2px;
+            white-space: nowrap;
+        }
+
+        .tab-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab {
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color:var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab:hover {
+            color: var(--secondary);
+        }
+
+        .tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SECCIÓN AGREGAR */
+        .add-product-section {
+            background: var(--bg-light);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .add-product-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* BÚSQUEDA */
+        .search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color:var(--text-faint);
+            font-size: 1.2em;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .autocomplete-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .autocomplete-item:hover {
+            background: #edf2f7;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 4px;
+            font-size: 0.95em;
+        }
+
+        .product-prices {
+            font-size: 0.8em;
+            color:var(--text-muted);
+        }
+
+        .price-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            font-size: 0.85em;
+        }
+
+        .price-menor {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .price-mayor {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        /* TABLA */
+        .products-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 600px;
+        }
+
+        .products-table thead {
+            background: #edf2f7;
+        }
+
+        .products-table th {
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+
+        .products-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85em;
+        }
+
+        .products-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .products-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .codigo-cell {
+            color:var(--text-muted);
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .producto-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .cantidad-input {
+            width: 60px;
+            padding: 6px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .precio-cell {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .precio-aplicado {
+            font-size: 0.8em;
+            color:var(--text-muted);
+            display: block;
+            margin-top: 3px;
+        }
+
+        .total-cell {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1em;
+        }
+
+        .btn-remove {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8em;
+        }
+
+        .btn-remove:hover {
+            background: #c53030;
+            transform: scale(1.05);
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #dd6b20;
+            transform: scale(1.05);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color:var(--text-muted);
+        }
+
+        /* TOTAL SECTION */
+        .total-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a202c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 0 0 12px 12px;
+            margin-top: 20px;
+        }
+
+        .total-info-container {
+            margin-bottom: 15px;
+        }
+
+        .total-amount {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Barra de 4 botones del footer (Limpiar/Guardar/Imagen/Copiar
+           imagen): colores mate sólidos, distintos de los .btn-danger/
+           .btn-primary/.btn-success genéricos usados en el resto de la
+           app — por eso van scoped a .action-buttons, no reemplazan las
+           clases base. Guardar habilitado (única excepción, es la acción
+           principal disponible) usa el estilo base .btn-primary, que ya
+           coincide con var(--secondary) = #667eea. */
+        .action-buttons .btn-danger {
+            background: #4a3236;
+            border: 1.5px solid #8b4a52;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-primary:disabled {
+            background: #3a3a3a;
+            border: 1.5px solid #555555;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-primary:not(:disabled) {
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        .action-buttons .btn-success {
+            background: #1f4d3a;
+            border: 1.5px solid #2f7a57;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-weight: 700;
+        }
+
+        /* SUCURSALES */
+        .filter-section {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85em;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--secondary);
+        }
+
+        .filter-btn.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .sucursal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .sucursal-card {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+        }
+
+        .sucursal-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .sucursal-card.selected {
+            border-color: var(--success);
+            background: #f0fff4;
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.2);
+        }
+
+        .sucursal-card.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .sucursal-nombre {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .sucursal-direccion {
+            color:var(--text-muted);
+            font-size: 0.85em;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .sucursal-tipo {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .sucursal-stats {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85em;
+            color:var(--text-muted);
+        }
+
+        .deselect-hint {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #bee3f8;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #2c5282;
+        }
+
+        .deselect-hint.show {
+            display: block;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color:var(--text-muted);
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #edf2f7;
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Niveles de precio dinámicos (por producto: unidad, media docena, docena, etc.) */
+        .tier-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+        .tier-row .form-input { margin: 0; }
+        .tier-del-btn {
+            background: #fff5f5;
+            color: var(--danger);
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .tier-del-btn:hover { background: #fed7d7; }
+        .tier-add-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1.5px dashed rgba(255,255,255,0.4);
+            color: white;
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .tier-add-btn:hover { background: rgba(255,255,255,0.25); }
+        .modal-content .tier-add-btn {
+            background: #f7fafc; border: 1.5px dashed #cbd5e0; color:var(--primary);
+        }
+        .modal-content .tier-add-btn:hover { background: #edf2f7; }
+        body.dark-mode .modal-content .tier-add-btn { background: var(--dm-surface-2); border-color: var(--dm-border); color: var(--dm-text-primary); }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .modal-buttons .btn {
+            flex: 1;
+        }
+
+        /* FORMULARIO NUEVO */
+        .new-form-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .new-form-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .new-form-section .form-input {
+            background: white;
+        }
+
+
+        /* LOADING */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+            max-width: 90%;
+            font-size: 0.9em;
+        }
+
+        .notification.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .notification.warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .notification.error {
+            background: var(--danger);
+            color: white;
+        }
+
+        .notification.info {
+            background: var(--secondary);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        /* ================================================
+           PANEL CLIENTE
+        ================================================ */
+        .cliente-panel {
+            background: white;
+            border: 2px solid var(--border);
+            border-left: 5px solid var(--secondary);
+            border-radius: 8px;
+            margin-bottom: 18px;
+            overflow: hidden;
+        }
+
+        .cliente-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            cursor: pointer;
+            user-select: none;
+            background: #f8faff;
+            transition: background 0.2s;
+        }
+
+        .cliente-panel-header:hover { background: #eef2ff; }
+
+        .cliente-panel-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cliente-panel-badge {
+            background: var(--secondary);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .cliente-panel-toggle {
+            font-size: 1.2em;
+            color: var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .cliente-panel-toggle.open { transform: rotate(180deg); }
+
+        .cliente-panel-body {
+            padding: 16px 18px;
+            display: none;
+            border-top: 1px solid var(--border);
+        }
+
+        .cliente-panel-body.open { display: block; }
+
+        .cliente-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .cliente-grid .full-row { grid-column: 1 / -1; }
+
+        .cliente-field label {
+            display: block;
+            font-size: 0.8em;
+            font-weight: 600;
+            color:var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .cliente-field input,
+        .cliente-field textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: border-color 0.2s;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .cliente-field input:focus,
+        .cliente-field textarea:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .cliente-summary {
+            font-size: 0.85em;
+            color: #555;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 4px 0;
+        }
+
+        .cliente-summary span { display: flex; align-items: center; gap: 4px; }
+
+        /* ================================================
+           COLOR TAG / INLINE CONTROLS EN ADD-PRODUCT
+        ================================================ */
+        .add-extras-row {
+            display: none;
+            gap: 12px;
+            align-items: flex-end;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            border: 1.5px solid #c7d2fe;
+            flex-wrap: wrap;
+        }
+        body.dark-mode .add-extras-row {
+            background: var(--dm-surface-2);
+            border-color: var(--dm-border-soft);
+        }
+
+        /* ============================================
+           FASE A — AUDITORÍA A4 (además de A1/A2/A3 arriba)
+           Se repitió el barrido completo de todo el CSS (script de
+           auditoría estático comparando cada selector con fondo/color
+           fijo contra la lista ya cubierta por body.dark-mode, más un
+           barrido dinámico en navegador que mide contraste real de
+           fondo+texto sobre cada elemento visible, con todas las
+           pestañas/modales abiertos a la vez) para buscar casos NUEVOS
+           más allá de A1-A3. Resultado: 0 casos nuevos encontrados —
+           el resto de selectores con color/fondo fijo que aparecen en
+           el barrido son, en todos los casos, uno de estos tres tipos
+           ya revisados y dejados así a propósito:
+             1) Badges/botones con --accent o --secondary (fijos, no
+                cambian con el tema: .sync-indicator, .cliente-panel-badge,
+                .historial-count-badge, .btn-primary, etc.)
+             2) "Pills" con su propio par fondo+texto fijo y coherente
+                entre sí (.price-menor/.price-mayor, .deselect-hint,
+                .igv-indicator, .color-tag, .precio-override-badge) —
+                se ven igual en ambos modos a propósito, como una
+                etiqueta de estado, no como una tarjeta de la app.
+             3) CSS sin usar en el HTML actual (.envio-info, .bank-info,
+                .print-total-section, .print-client-box) — no generan
+                ningún elemento visible, no hace falta tocarlos.
+        ============================================ */
+
+        .add-extras-row.visible { display: flex; }
+
+        .extra-field { flex: 1; min-width: 120px; }
+
+        .extra-field label {
+            display: block;
+            font-size: 0.78em;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .extra-field input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1.5px solid #c7d2fe;
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: white;
+        }
+
+        .extra-field input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Color swatch chips */
+        .color-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .color-chip {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78em;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            background: #e2e8f0;
+            color: var(--primary);
+            transition: all 0.15s;
+        }
+
+        .color-chip:hover {
+            border-color: var(--secondary);
+            background: #eef2ff;
+        }
+        body.dark-mode .color-chip { background: var(--dm-surface-2); }
+        body.dark-mode .color-chip:hover { background: var(--dm-surface-3); }
+
+        /* Color tag in table */
+        .color-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #dbeafe;
+            color: #1e40af;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        /* ================================================
+           PRECIO OVERRIDE
+        ================================================ */
+        .precio-override-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 4px;
+            font-size: 0.72em;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .precio-edit-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color:var(--text-faint);
+            font-size: 0.9em;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            vertical-align: middle;
+        }
+
+        .precio-edit-btn:hover {
+            color: var(--secondary);
+            background: #eef2ff;
+        }
+
+        .precio-inline-edit {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .precio-inline-edit.visible { display: flex; }
+
+        .precio-inline-input {
+            width: 80px;
+            padding: 4px 8px;
+            border: 2px solid var(--secondary);
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .precio-inline-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 4px 9px;
+            font-size: 0.8em;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .precio-inline-cancel {
+            background: #e2e8f0;
+            color: var(--primary);
+            border: none;
+            border-radius: 5px;
+            padding: 4px 9px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+
+        /* ================================================
+           IGV TOGGLE (ya existente, agregar estilos que faltan)
+        ================================================ */
+        .igv-toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .igv-toggle {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .igv-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .igv-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .igv-slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .igv-slider {
+            background-color: var(--secondary);
+        }
+
+        input:checked + .igv-slider:before {
+            transform: translateX(20px);
+        }
+
+        .igv-info {
+            font-size: 0.8em;
+            color:var(--text-muted);
+        }
+
+        .precio-sin-igv {
+            text-decoration: line-through;
+            color:var(--text-faint);
+            font-size: 0.85em;
+            margin-right: 4px;
+        }
+
+        .precio-con-igv {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .igv-indicator {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6em;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+
+        /* ================================================
+           WHATSAPP BUTTON
+        ================================================ */
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:hover:not(:disabled) {
+            background: #1ebe5d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+        }
+        .btn-whatsapp:disabled { background: #cbd5e0; cursor: not-allowed; }
+
+        /* ================================================
+           HISTORIAL
+        ================================================ */
+        .historial-empty {
+            text-align: center;
+            padding: 50px 20px;
+            color:var(--text-faint);
+            font-size: 1em;
+        }
+
+        /* Skeleton loader — placeholders animados mientras carga desde la nube */
+        @keyframes skeleton-pulse {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+        .skeleton-block {
+            background: linear-gradient(90deg, #edf1f5 25%, #f7fafc 37%, #edf1f5 63%);
+            background-size: 400px 100%;
+            animation: skeleton-pulse 1.4s ease-in-out infinite;
+            border-radius: 6px;
+        }
+        body.dark-mode .skeleton-block {
+            background: linear-gradient(90deg, var(--dm-surface-1) 25%, var(--dm-surface-2) 37%, var(--dm-surface-1) 63%);
+            background-size: 400px 100%;
+        }
+        .skeleton-card {
+            border-radius: 14px;
+            padding: 16px;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        body.dark-mode .skeleton-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
+
+        /* ============================================
+           DASHBOARD
+        ============================================ */
+        .dash-range-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 7px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.15s;
+        }
+        .dash-range-btn:hover { background: rgba(255,255,255,0.25); }
+        .dash-range-btn.active { background: white; color: var(--primary); }
+
+        .dash-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 18px 0;
+        }
+        .dash-kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
+            animation: fadeIn 0.4s ease;
+        }
+        body.dark-mode .dash-kpi-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
+        .dash-kpi-label { font-size: 0.8em; color: #8e8e93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+        .dash-kpi-valor { font-size: 1.8em; font-weight: 800; color: var(--primary); margin-top: 6px; letter-spacing: -0.02em; }
+
+        .dash-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+        .dash-chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
+            animation: fadeIn 0.5s ease;
+        }
+        body.dark-mode .dash-chart-card { background: var(--dm-surface-1); box-shadow: 0 0 0 1px var(--dm-border); }
+        .dash-chart-title { font-weight: 700; margin-bottom: 12px; color: var(--primary); font-size: 1.02em; }
+        .historial-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .historial-card {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            transition: box-shadow 0.2s;
+        }
+        .historial-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+        .historial-card-left { flex: 1; }
+        .historial-card-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95em;
+            margin-bottom: 3px;
+        }
+        .historial-card-meta {
+            font-size: 0.8em;
+            color:var(--text-muted);
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .historial-card-total {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 1.05em;
+            white-space: nowrap;
+        }
+        .historial-card-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .btn-historial-load {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.82em;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-historial-load:hover { background: #5568d3; }
+        .btn-historial-del {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.82em;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .historial-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .historial-count-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: 700;
+        }
+
+        /* ================================================
+           BASE CLIENTES
+        ================================================ */
+        .cliente-db-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--secondary);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            display: none;
+            z-index: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .cliente-db-dropdown.visible { display: block; }
+        .cliente-db-item {
+            padding: 9px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            font-size: 0.88em;
+        }
+        .cliente-db-item:hover { background: #eef2ff; }
+        .cliente-db-item-name { font-weight: 700; color: var(--primary); }
+        .cliente-db-item-sub { font-size: 0.8em; color:var(--text-muted); margin-top: 1px; }
+        .cliente-save-btn {
+            padding: 6px 14px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.82em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .cliente-save-btn:hover { background: #5568d3; }
+        .cliente-field-wrap { position: relative; }
+
+        /* BADGE */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-success {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        /* ============================================
+           RESPONSIVE MÓVIL — sistema mobile-first consolidado
+           Antes había 6 bloques @media dispersos por todo el archivo
+           (768px, 600px x3, 480px, 420px), varios de ellos repitiendo
+           el mismo breakpoint y unos pocos con selectores compartidos
+           entre breakpoints distintos (.header h1, .total-amount,
+           .cantidad-input, .modal-content, .products-table th/td,
+           .dash-kpi-grid). Se unificaron en un solo lugar, en ORDEN
+           DESCENDENTE de ancho (768 → 600 → 480 → 420) — el mismo orden
+           relativo que ya tenían en el archivo original — para que la
+           cascada resuelva exactamente igual que antes en los
+           selectores compartidos (la regla del breakpoint más angosto
+           sigue ganando en pantallas muy chicas, por venir después en
+           el código). No se cambió ningún valor ni selector, solo se
+           reordenó y se juntó todo en un solo lugar.
+
+           (El @media (max-width: 768px) del bloque <style> de Fichas
+           Técnicas —más abajo, junto a .form-row/.ficha-grid— se dejó
+           donde está: es un bloque de estilos autocontenido para ese
+           formulario, sin selectores en común con nada de aquí, así
+           que no había nada real que "se pisara".)
+        ============================================ */
+
+        /* ---------- ≤768px ---------- */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.2em;
+            }
+
+            .header .subtitle {
+                font-size: 0.75em;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .info-banner {
+                font-size: 0.8em;
+                padding: 10px;
+            }
+
+            .total-section {
+                padding: 15px;
+            }
+
+            .total-amount {
+                font-size: 1.5em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+            .sucursal-grid {
+                grid-template-columns: 1fr;
+                max-height: 500px;
+            }
+
+            .products-table th,
+            .products-table td {
+                padding: 8px 4px;
+                font-size: 0.75em;
+            }
+
+            .cantidad-input {
+                width: 50px;
+                font-size: 0.85em;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .tab-group {
+                padding: 0 10px 8px;
+            }
+            .tab-group:first-child { padding-left: 2px; }
+            .tab-group:last-child { padding-right: 2px; }
+
+            .tab-group-label {
+                font-size: 0.62em;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 0.8em;
+            }
+
+            .new-form-section {
+                padding: 15px;
+            }
+
+            /* Formularios con varios campos en fila (Shalom, Envío Lima,
+               fichas técnicas) traían anchos fijos pensados para
+               escritorio (150-200px). En un teléfono angosto eso deja
+               2-3 campos apretados por línea con el texto/placeholder
+               cortado — aquí se fuerza cada campo a ocupar toda la fila
+               para que se lea completo y sea fácil de tocar. */
+            .add-product-section input[style*="max-width"],
+            .add-product-section select[style*="max-width"] {
+                max-width: 100% !important;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .add-product-title {
+                font-size: 1em;
+            }
+
+            /* Tarjetas de Historial / Envíos: en escritorio van en fila
+               (info a la izquierda, total y acciones a la derecha). En
+               móvil eso aprieta demasiado — se apilan en columna y el
+               total + acciones ocupan todo el ancho para que los botones
+               sean fáciles de tocar. */
+            .historial-card {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px;
+            }
+
+            .historial-card > div[style*="flex-direction:column"] {
+                align-items: stretch !important;
+                margin-top: 10px;
+            }
+
+            .historial-card-total {
+                text-align: right;
+            }
+
+            .historial-card-actions {
+                justify-content: flex-end;
+            }
+
+            .historial-card-actions .btn-historial-load,
+            .historial-card-actions .btn-historial-del {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+
+            .historial-header-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 10px;
+            }
+
+            /* Grillas de KPIs y gráficos del Dashboard: una sola columna
+               en móvil para que cada tarjeta tenga espacio de sobra. */
+            .dash-kpi-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dash-charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-chart-card {
+                padding: 14px;
+            }
+
+            #dashRangoBotones {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+            }
+
+            .dash-range-btn {
+                flex-shrink: 0;
+            }
+
+            /* Modal "Ver" (detalle de cotización/orden): reducir el
+               padding lateral y la tipografía de la tabla para que quepa
+               sin desbordarse; la tabla en sí queda dentro de un
+               contenedor con scroll horizontal si aún así no entra. */
+            #verCotContenido .products-table {
+                min-width: 480px;
+            }
+
+            #verCotContenido .products-table th,
+            #verCotContenido .products-table td {
+                padding: 8px 6px;
+                font-size: 0.78em;
+            }
+
+            .modal.active {
+                padding: 8px;
+            }
+
+            /* ---- Touch targets mínimos (WCAG 2.5.5/2.5.8, ~44px) ----
+               Solo dentro de este media query — el tamaño de escritorio
+               no cambia. Los controles muy chicos que viven DENTRO de
+               una celda de tabla ya angosta (editar precio en línea,
+               quitar un nivel de precio en el modal) se dejaron fuera a
+               propósito: llevarlos a 44px ahí desbordaría la fila/celda
+               en vez de mejorar el toque — es la excepción explícita
+               que pide la consigna cuando 44px "rompe el layout". */
+            .btn,
+            .tab {
+                min-height: 44px;
+            }
+
+            .modal-close {
+                width: 44px;
+                height: 44px;
+            }
+
+            .btn-edit,
+            .btn-remove {
+                min-height: 44px;
+                min-width: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .shalom-card-del-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            .filter-btn,
+            .dash-range-btn {
+                min-height: 44px;
+            }
+
+            .color-chip {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .form-input,
+            .search-input,
+            .cantidad-input,
+            .cliente-field input,
+            .cliente-field textarea,
+            .extra-field input {
+                min-height: 44px;
+            }
+        }
+
+        /* ---------- ≤600px ---------- */
+        @media (max-width: 600px) {
+            .cliente-grid { grid-template-columns: 1fr; }
+            .cliente-grid .full-row { grid-column: 1; }
+            .print-client-grid { grid-template-columns: 1fr; }
+
+            .add-product-section .add-product-title,
+            .shalom-card-nombre {
+                font-size: 1em;
+            }
+
+            /* evita zoom automático en iOS al enfocar un input */
+            .search-input, .form-input {
+                font-size: 16px;
+            }
+            .cantidad-input {
+                width: 50px;
+                font-size: 16px;
+            }
+            .action-buttons .btn {
+                min-width: 100%;
+            }
+            .modal-content {
+                padding: 20px 15px;
+            }
+            .products-table th, .products-table td {
+                padding: 8px 6px;
+                font-size: 0.8em;
+            }
+        }
+
+        /* ---------- ≤480px ---------- */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1em;
+            }
+
+            .total-amount {
+                font-size: 1.3em;
+            }
+
+            .btn-edit,
+            .btn-remove {
+                padding: 4px 8px;
+                font-size: 0.75em;
+            }
+
+            #pantallaAcceso > div {
+                padding: 24px 20px !important;
+                border-radius: 20px !important;
+            }
+
+            .ios-section-header {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .shalom-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .shalom-card {
+                padding: 14px;
+            }
+
+            #shalomCameraWrapper {
+                max-width: 100% !important;
+            }
+
+            /* Fase C3: footer completo (cabecera + barra de botones)
+               apilado en una sola columna, sin scroll horizontal —
+               los 4 botones pasan de fila a grilla 2x2 para que
+               ninguno quede angosto o cortado. */
+            .total-section {
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+
+            .total-info-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .ff-right {
+                align-items: flex-start;
+            }
+
+            .total-actions-wrap {
+                text-align: left;
+            }
+
+            .action-buttons {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            .action-buttons .btn {
+                flex: initial;
+                min-width: 0;
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+        }
+
+        /* ---------- ≤420px ---------- */
+        @media (max-width: 420px) {
+            .dash-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+        /* ============================================
+           MODO OSCURO — negro real, apto para pantallas OLED
+           (no es un simple "negativo": fondos casi negros reales,
+           no gris-azulado invertido)
+           Nota: las áreas de impresión (cotizacion-print,
+           ficha-print, fichaPreview) se mantienen claras
+           intencionalmente para que el PDF exportado sea
+           siempre legible.
+        ============================================ */
+
+
+        body.dark-mode .content,
+        body.dark-mode .products-table,
+        body.dark-mode .products-table thead,
+        body.dark-mode .modal-content,
+        body.dark-mode .sucursal-card,
+        body.dark-mode .autocomplete-dropdown,
+        body.dark-mode .autocomplete-item,
+        body.dark-mode .search-input,
+        body.dark-mode .form-input,
+        body.dark-mode .cantidad-input,
+        body.dark-mode .filter-btn,
+        body.dark-mode .historial-card,
+        body.dark-mode .shalom-card,
+        body.dark-mode .cliente-panel,
+        body.dark-mode .cliente-db-dropdown,
+        body.dark-mode .cliente-db-item {
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
+        }
+
+        body.dark-mode .form-label {
+            color: var(--dm-text-primary);
+        }
+
+        body.dark-mode .add-product-section {
+            background: var(--dm-surface-1);
+            border-color: var(--dm-border);
+        }
+
+        body.dark-mode .products-table td,
+        body.dark-mode .products-table th {
+            border-color: var(--dm-border);
+        }
+
+        body.dark-mode .products-table tbody tr:hover {
+            background: var(--dm-surface-2);
+        }
+
+        body.dark-mode .autocomplete-item:hover,
+        body.dark-mode .cliente-db-item:hover {
+            background: var(--dm-surface-2);
+        }
+
+        /* Verde de "sucursal seleccionada": color de estado (éxito),
+           no un tono neutro — se deja igual que antes a propósito. */
+        body.dark-mode .sucursal-card.selected {
+            background: #0f2418;
+        }
+
+        body.dark-mode .search-icon,
+        body.dark-mode .codigo-cell,
+        body.dark-mode .product-prices,
+        body.dark-mode .precio-aplicado,
+        body.dark-mode .sucursal-direccion,
+        body.dark-mode .sucursal-stats,
+        body.dark-mode .empty-state,
+        body.dark-mode .historial-empty,
+        body.dark-mode .cliente-db-item-sub {
+            color: var(--dm-text-secondary);
+        }
+
+        body.dark-mode .tab {
+            color: var(--dm-text-secondary);
+        }
+
+        /* Color de tab activo/hover: variante del accent (--secondary),
+           no un tono neutro — se deja igual que antes a propósito. */
+        body.dark-mode .tab.active,
+        body.dark-mode .tab:hover {
+            color: #a5b4fc;
+        }
+
+        body.dark-mode .tabs {
+            border-bottom-color: var(--dm-border);
+        }
+
+        /* La pantalla de acceso (login/registro) siempre usa su propia
+           paleta clara y legible, sin importar si el modo oscuro está
+           activo — evita texto invisible (blanco sobre blanco) heredado
+           del tema. #panelCuentaModal se sacó de aquí a propósito: es un
+           modal normal y debe verse en modo oscuro como cualquier otro
+           (antes forzaba texto oscuro sobre el fondo oscuro del modal,
+           dejándolo ilegible — ver comentario de huérfanos al final del
+           bloque de modo oscuro). */
+        #pantallaAcceso {
+            --primary: #2d3748;
+            --text-muted: #718096;
+            --text-faint: #a0aec0;
+            --border: #e2e8f0;
+            --bg-light: #f7fafc;
+        }
+        #pantallaAcceso, #pantallaAcceso * {
+            color: #2d3748;
+        }
+        #pantallaAcceso h2 { color: #1a202c; }
+        #pantallaAcceso .form-input {
+            background: white;
+            color: #2d3748;
+            border-color: #cbd5e0;
+        }
+
+        body.dark-mode .loading-content,
+        body.dark-mode .extra-field input {
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
+        }
+
+        /* Toggle de tema */
+        .theme-toggle-btn {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* Indicador de sincronización entre pestañas */
+        .sync-indicator {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 9999;
+            cursor: pointer;
+        }
+
+        .sync-indicator.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ============================================
+           SEGUIMIENTO SHALOM — estética estilo iOS
+           (tipografía del sistema, tarjetas redondeadas con
+           sombra suave, banner inline en vez de flotante,
+           buscador tipo "pill" de iOS)
+        ============================================ */
+        .ios-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin: 28px 0 14px;
+        }
+        .ios-section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--primary);
+        }
+        .ios-section-subtitle {
+            font-size: 0.85em;
+            color: #8e8e93;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .ios-link-btn {
+            background: none;
+            border: none;
+            color: #007aff;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 4px;
+        }
+        .ios-link-btn:hover { opacity: 0.7; }
+        body.dark-mode .ios-link-btn { color: #0a84ff; }
+
+        .ios-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+            animation: fadeIn 0.3s ease;
+        }
+        .ios-banner--success { background: #e8f9ee; }
+        body.dark-mode .ios-banner--success { background: #0d2818; }
+        .ios-banner-icon { font-size: 1.4em; line-height: 1; flex-shrink: 0; }
+        .ios-banner-body { flex: 1; min-width: 0; }
+        .ios-banner-title { font-weight: 600; font-size: 0.95em; color: #1c1c1e; }
+        body.dark-mode .ios-banner-title { color: var(--dm-text-primary); }
+        .ios-banner-text { font-size: 0.85em; color: #636366; margin-top: 2px; }
+        body.dark-mode .ios-banner-text { color: var(--dm-text-secondary); }
+        .ios-banner-dismiss {
+            background: rgba(0,0,0,0.06);
+            border: none;
+            color: #1c1c1e;
+            font-size: 0.8em;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        .ios-banner-dismiss:hover { background: rgba(0,0,0,0.12); }
+        body.dark-mode .ios-banner-dismiss { background: rgba(255,255,255,0.1); color: var(--dm-text-primary); }
+        body.dark-mode .ios-banner-dismiss:hover { background: rgba(255,255,255,0.18); }
+
+        .ios-search-wrap {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .ios-search-wrap svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: #8e8e93;
+            pointer-events: none;
+        }
+        .ios-search {
+            width: 100%;
+            padding: 9px 14px 9px 34px;
+            border: none;
+            border-radius: 12px;
+            background: #f2f2f7;
+            font-size: 0.95em;
+            color: #1c1c1e;
+            transition: background 0.15s;
+        }
+        .ios-search:focus {
+            outline: none;
+            background: #e9e9ee;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        body.dark-mode .ios-search { background: var(--dm-surface-2); color: var(--dm-text-primary); }
+        body.dark-mode .ios-search:focus { background: var(--dm-surface-3); }
+        body.dark-mode .ios-search-wrap svg { color: var(--dm-text-disabled); }
+
+        .shalom-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 14px;
+        }
+        .shalom-card {
+            position: relative;
+            border: none;
+            border-radius: 18px;
+            padding: 16px 16px 14px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.06);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .shalom-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.09);
+        }
+        body.dark-mode .shalom-card {
+            background: var(--dm-surface-1);
+            box-shadow: 0 0 0 1px var(--dm-border), 0 4px 14px rgba(0,0,0,0.4);
+        }
+        .shalom-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .shalom-card-nombre {
+            font-weight: 700;
+            font-size: 1.08em;
+            color: #1c1c1e;
+            letter-spacing: -0.01em;
+            margin: 0;
+            line-height: 1.25;
+            overflow-wrap: break-word;
+        }
+        body.dark-mode .shalom-card-nombre { color: var(--dm-text-primary); }
+        .shalom-card-subinfo { font-size: 0.8em; color: #8e8e93; margin-top: 2px; }
+        .shalom-card-destino { font-size: 0.85em; color: #8e8e93; }
+        .shalom-card-estado-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: 0.76em;
+            font-weight: 700;
+            align-self: flex-start;
+            margin-top: 4px;
+            letter-spacing: 0.01em;
+        }
+        .shalom-card-detalle {
+            font-size: 0.78em;
+            color: #8e8e93;
+            line-height: 1.4;
+            margin-top: 2px;
+        }
+        .shalom-card-fecha {
+            font-size: 0.72em;
+            color: #c7c7cc;
+            margin-top: 6px;
+        }
+        body.dark-mode .shalom-card-fecha { color: var(--dm-text-disabled); }
+        .shalom-card-del-btn {
+            background: #f2f2f7;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.85em;
+            color: #8e8e93;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .shalom-card-del-btn:hover { background: #ffe5e5; color: #ff3b30; }
+        body.dark-mode .shalom-card-del-btn { background: var(--dm-surface-2); color: var(--dm-text-secondary); }
+        /* Hover rojo de "eliminar": color de estado, se deja igual. */
+        body.dark-mode .shalom-card-del-btn:hover { background: #3a1414; color: #ff453a; }
+
+        /* ============================================
+           MODO OSCURO — COMPONENTES HUÉRFANOS
+           Estos elementos tenían background/color fijos SIN contraparte
+           en body.dark-mode, lo que producía bloques claros "flotando"
+           sobre fondo oscuro o texto ilegible. Encontrados al auditar
+           el CSS completo (no solo las líneas que ya tenían
+           body.dark-mode) comparando cada selector con fondo/color fijo
+           contra la lista de selectores ya cubiertos:
+
+           - .header / .total-section: su gradiente usaba
+             var(--primary), que en modo oscuro pasó a ser blanco (texto
+             blanco sobre gradiente que ahora EMPIEZA en blanco = título
+             invisible). Es el bug más visible: aparece en TODAS las
+             pestañas (.header) y en la barra de acciones de Cotizar
+             (.total-section).
+           - .info-banner / .sucursal-tipo: fondo fijo color --accent
+             (amarillo, no cambia con el tema) + texto var(--primary)
+             (ahora blanco) = texto blanco sobre amarillo, contraste muy
+             pobre. Se fija el texto a oscuro siempre.
+           - .dash-range-btn.active: mismo problema — fondo blanco fijo
+             (el estado "seleccionado") + texto var(--primary) blanco =
+             texto invisible sobre el chip activo del Dashboard.
+           - .cliente-panel-header (+ hover) y .cliente-summary: el
+             header de "Datos del Cliente" tenía fondo claro fijo
+             (#f8faff) flotando sobre el panel oscuro; su texto de
+             resumen (#555) también quedaba casi invisible.
+           - .cliente-field label / input / textarea: las etiquetas y
+             los campos de texto del panel Cliente no tenían ningún
+             override — los inputs quedaban con el fondo blanco por
+             defecto del navegador y texto claro heredado (blanco sobre
+             blanco).
+           - #panelCuentaModal: tenía una regla fuera de body.dark-mode
+             que forzaba SIEMPRE texto oscuro (#2d3748) en su
+             modal-content, chocando con el fondo oscuro que sí le
+             aplica el modo oscuro (texto oscuro sobre fondo oscuro).
+             Se quitó esa regla — ver más arriba, sección "pantalla de
+             acceso" — para que el modal use el mismo tratamiento que
+             cualquier otro .modal-content.
+           - #sucursalesProvinciaPrint: el área de generar imagen de
+             "Sucursales por provincia" no estaba en la lista de zonas
+             de impresión siempre-claras (junto a .cotizacion-print /
+             .ficha-print / #fichaPreview), así que su texto con
+             var(--primary) se volvía blanco sobre su propio fondo
+             blanco fijo. Se agregó a esa lista (ver arriba).
+           - .btn-primary:disabled / .btn-whatsapp:disabled: fondo gris
+             claro fijo (#cbd5e0) + texto blanco heredado del botón =
+             botón deshabilitado ilegible y "flotando" en claro.
+           - .tier-del-btn: fondo rosa muy claro (#fff5f5) usado dentro
+             de los modales de edición de producto/sucursal — flotaba
+             como un bloque blanco sobre el modal oscuro.
+           - .modal-close, .historial-card-meta, .dash-kpi-label,
+             .ios-section-subtitle, .shalom-card-subinfo/destino/detalle:
+             no eran ilegibles (contraste límite ~4.5:1), pero usaban
+             grises sueltos (#718096/#8e8e93) en vez del token de texto
+             secundario — se armonizan aquí por consistencia.
+
+           PUNTO 4 (estilos inline del JS) — en vez de convertir cada
+           uno de los ~90 casos de style="color:#718096..." a una clase,
+           se crearon variables globales --text-muted (#718096) y
+           --text-faint (#a0aec0) en :root (ver arriba), re-apuntadas
+           dentro de body.dark-mode. Así los estilos inline solo
+           cambiaron el valor hex por var(--text-muted)/var(--text-faint)
+           sin tocar el resto de cada style="..." (más seguro que armar
+           una clase .text-muted y tener que editar también el atributo
+           class de cada elemento). La clase .text-muted/.text-faint
+           igual se dejó creada por si se necesita en marcado nuevo.
+           Mismo criterio para #2d3748 → var(--primary) (ya existente).
+
+           Huérfanos encontrados DESPUÉS del reemplazo masivo (efectos
+           secundarios del propio reemplazo, no del código original):
+           - .cliente-panel-header (arriba) y varios "chips" grises
+             (badge "Cotización", botones "Desmarcar"/"Ver en
+             Shalom"/"Marcar pendiente") tenían fondo #f0f0f0 FIJO
+             emparejado con el texto que se acababa de volver
+             var(--text-muted) (claro en oscuro) → texto claro sobre
+             fondo claro fijo. Se creó --chip-neutral-bg (#f0f0f0 →
+             var(--dm-surface-2)) para que fondo y texto se muevan
+             juntos.
+           - El recuadro "N° DE COTIZACIÓN/ORDEN DE COMPRA" del modal
+             "Ver detalle" (verCotizacionDetalle) tenía el mismo
+             problema con sus fondos verde/lila fijos (#e8f9ee/#eef2ff)
+             — se creó --tint-ok-bg / --tint-info-bg (mismo criterio).
+           - #pantallaAcceso (login): sus estilos inline también
+             quedaron con var(--primary)/var(--text-muted)/var(--text-faint)
+             tras el reemplazo masivo. Como son estilos INLINE, la regla
+             "#pantallaAcceso * { color: ... }" que fuerza texto oscuro
+             NO los alcanza (un inline style siempre gana). Se le dieron
+             a #pantallaAcceso sus propias variables --primary/
+             --text-muted/--text-faint/--border/--bg-light fijas en
+             valor claro (igual que a las zonas de impresión), en vez de
+             depender de la regla de color heredado — este fue el bug
+             más serio de todo el punto 4: el título de la pantalla de
+             login quedaba en blanco sobre su tarjeta blanca en oscuro.
+           - #modalConfirmacionAceptar ("Sí, eliminar"): su fondo
+             "sin color de botón" (#edf2f7, pedido explícitamente así)
+             era fijo — se creó --btn-neutral-bg (#edf2f7 →
+             var(--dm-surface-3)) para que sea neutro en ambos modos en
+             vez de quedar como un rectángulo claro fijo en el modal
+             oscuro.
+           - #correlativosPanel (dentro de #panelCuentaModal): fondo
+             fijo #f7fafc → var(--bg-light) (ya existente).
+        ============================================ */
+
+        /* --- Fondos con gradiente que usaban var(--primary) --- */
+        body.dark-mode .header,
+        body.dark-mode .total-section {
+            background: linear-gradient(135deg, var(--dm-surface-2) 0%, var(--dm-bg-base) 100%);
+        }
+
+        /* --- Texto sobre fondo fijo de --accent (no cambia con el tema) --- */
+        body.dark-mode .info-banner,
+        body.dark-mode .sucursal-tipo {
+            color:var(--primary);
+        }
+
+        /* --- Chip "activo" del Dashboard: fondo blanco fijo, el texto debe seguir oscuro --- */
+        body.dark-mode .dash-range-btn.active {
+            color: var(--dm-bg-base);
+        }
+
+        /* --- Header "Datos del Cliente" --- */
+        body.dark-mode .cliente-panel-header { background: var(--dm-surface-2); }
+        body.dark-mode .cliente-panel-header:hover { background: var(--dm-surface-3); }
+        body.dark-mode .cliente-summary { color: var(--dm-text-secondary); }
+        body.dark-mode .cliente-field label { color: var(--dm-text-secondary); }
+        body.dark-mode .cliente-field input,
+        body.dark-mode .cliente-field textarea {
+            background: var(--dm-surface-1);
+            color: var(--dm-text-primary);
+            border-color: var(--dm-border);
+        }
+
+        /* --- Botones deshabilitados --- */
+        body.dark-mode .btn-primary:disabled,
+        body.dark-mode .btn-whatsapp:disabled {
+            background: var(--dm-surface-3);
+            color: var(--dm-text-disabled);
+            border: 1px solid var(--dm-border-soft);
+        }
+
+        /* --- Botón "quitar nivel de precio" dentro de modales --- */
+        body.dark-mode .tier-del-btn { background: var(--dm-surface-2); }
+
+        /* --- Textos secundarios sueltos → token de texto secundario --- */
+        body.dark-mode .modal-close,
+        body.dark-mode .historial-card-meta,
+        body.dark-mode .dash-kpi-label,
+        body.dark-mode .ios-section-subtitle,
+        body.dark-mode .shalom-card-subinfo,
+        body.dark-mode .shalom-card-destino,
+        body.dark-mode .shalom-card-detalle {
+            color: var(--dm-text-secondary);
+        }
+        body.dark-mode .modal-close:hover { background: var(--dm-surface-2); }
+
+        /* Validación visual de inputs */
+        .input-error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.15) !important;
+        }
+
+        .input-error-msg {
+            color: var(--danger);
+            font-size: 0.8em;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Margen de ganancia */
+        .margen-info {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+
+<style>
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.ficha-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.ficha-section h3 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10px;
+}
+
+.ficha-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.ficha-item {
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+}
+
+.ficha-item-label {
+    font-weight: 600;
+    color:var(--text-muted);
+    font-size: 0.85em;
+    margin-bottom: 5px;
+}
+
+.ficha-item-value {
+    color: var(--primary);
+    font-size: 1.05em;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .ficha-grid {
+        grid-template-columns: 1fr;
+    }
+}
