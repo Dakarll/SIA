@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -363,14 +361,14 @@
                                 <label>Empresa / Razón Social</label>
                                 <input type="text" id="clienteEmpresa" placeholder="Empresa (opcional)">
                             </div>
-                        <div class="cliente-field">
-                            <label>RUC / DNI</label>
-                            <div class="cliente-field-wrap" style="display:flex; gap:6px; align-items:center;">
-                                <input type="text" id="clienteRUC" placeholder="20XXXXXXXXX / DNI" oninput="actualizarResumenCliente()" maxlength="11" style="flex:1;">
-                                <button type="button" id="btnConsultarDniRuc" onclick="consultarDniRuc()" title="Buscar en RENIEC/SUNAT" style="white-space:nowrap; padding:8px 10px; border-radius:8px; border:1px solid var(--primary); background:transparent; color:var(--primary); cursor:pointer;">🔍</button>
-                            </div>
-                            <div id="clienteDniRucStatus" style="font-size:0.78em; color:var(--text-muted); margin-top:3px; min-height:14px;"></div>
-                        </div>
+<div class="cliente-field">
+    <label>RUC / DNI</label>
+    <div class="cliente-field-wrap" style="display:flex; gap:6px; align-items:center;">
+        <input type="text" id="clienteRUC" placeholder="20XXXXXXXXX / DNI" maxlength="11" style="flex:1;">
+        <button type="button" id="btnConsultarDniRuc" title="Buscar en RENIEC/SUNAT" style="white-space:nowrap; padding:8px 10px; border-radius:8px; border:1px solid var(--primary); background:transparent; color:var(--primary); cursor:pointer;">🔍</button>
+    </div>
+    <div id="clienteDniRucStatus" style="font-size:0.78em; color:var(--text-muted); margin-top:3px; min-height:14px;"></div>
+</div>
                             <div class="cliente-field">
                                 <label>Teléfono / WhatsApp</label>
                                 <input type="text" id="clienteTelefono" placeholder="9XX XXX XXX">
