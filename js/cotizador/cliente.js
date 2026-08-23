@@ -1,5 +1,6 @@
 // Panel de datos de cliente y base de datos local de clientes.
 import { mostrarNotificacion } from '../core/ui-helpers.js';
+import { apisPeruConfig } from '../core/state.js';
 
 export function toggleClientePanel() {
     const body = document.getElementById('clientePanelBody');
@@ -42,6 +43,69 @@ export function getClienteData() {
         direccion: document.getElementById('clienteDireccion').value.trim(),
         notas: document.getElementById('clienteNotas').value.trim()
     };
+}
+
+// ============================================
+// CONSULTA DNI / RUC (APIsPeru)
+// ============================================
+
+export async function consultarDniRuc() {
+    const input = document.getElementById('clienteRUC');
+    const btn = document.getElementById('btnConsultarDniRuc');
+    const status = document.getElementById('clienteDniRucStatus');
+    const numero = input.value.trim().replace(/\s+/g, '');
+
+    if (!/^\d{8}$/.test(numero) && !/^\d{11}$/.test(numero)) {
+        status.textContent = '⚠️ Ingresa un DNI (8 dígitos) o RUC (11 dígitos) válido.';
+        status.style.color = '#e67700';
+        return;
+    }
+
+    const esDni = numero.length === 8;
+    const url = `${apisPeruConfig.baseUrl}/${esDni ? 'dni' : 'ruc'}/${numero}?token=${apisPeruConfig.token}`;
+
+    btn.disabled = true;
+    btn.textContent = '⏳';
+    status.textContent = 'Consultando...';
+    status.style.color = 'var(--text-muted)';
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!res.ok || data.error || (!data.nombres && !data.razonSocial)) {
+            status.textContent = `❌ No se encontró información para ese ${esDni ? 'DNI' : 'RUC'}.`;
+            status.style.color = '#e03131';
+            mostrarNotificacion(`No se encontró información para el ${esDni ? 'DNI' : 'RUC'} ingresado`, 'warning');
+            return;
+        }
+
+        if (esDni) {
+            const nombreCompleto = [data.nombres, data.apellidoPaterno, data.apellidoMaterno]
+                .filter(Boolean).join(' ');
+            document.getElementById('clienteNombre').value = nombreCompleto;
+        } else {
+            document.getElementById('clienteEmpresa').value = data.razonSocial || '';
+            const dirActual = document.getElementById('clienteDireccion');
+            if (!dirActual.value.trim() && data.direccion) {
+                dirActual.value = data.direccion;
+            }
+        }
+
+        actualizarResumenCliente();
+        status.textContent = `✅ Datos completados desde ${esDni ? 'RENIEC' : 'SUNAT'}.`;
+        status.style.color = '#2f9e44';
+        mostrarNotificacion('Datos del cliente completados', 'success');
+
+    } catch (err) {
+        console.error('Error consultando DNI/RUC:', err);
+        status.textContent = '❌ Error de conexión al consultar. Intenta de nuevo.';
+        status.style.color = '#e03131';
+        mostrarNotificacion('Error de conexión al consultar DNI/RUC', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔍';
+    }
 }
 
 // ============================================
@@ -127,6 +191,7 @@ export function initCliente() {
         document.getElementById(id).addEventListener('input', actualizarResumenCliente);
     });
     document.getElementById('btnGuardarClienteDB').addEventListener('click', guardarClienteDB);
+    document.getElementById('btnConsultarDniRuc').addEventListener('click', consultarDniRuc);
 
     window.cargarClienteDB = cargarClienteDB;
 }
