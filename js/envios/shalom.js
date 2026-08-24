@@ -339,7 +339,9 @@ export function renderListaShalom() {
                         ? `<button type="button" class="btn btn-small" style="background:var(--chip-neutral-bg); color:var(--text-muted); width:100%;" onclick="cambiarEstadoLima('${e.objectId}', 'pendiente')">↩ Marcar pendiente</button>`
                         : `<button type="button" class="btn btn-small" style="background:#38a169; color:white; width:100%;" onclick="cambiarEstadoLima('${e.objectId}', 'entregado')">✅ Marcar entregado</button>`
                     }
-                </div>` : ''}
+                </div>` : (e.guia ? `<div style="margin-top:8px;">
+                    <button type="button" class="btn btn-small" style="background:var(--secondary); color:white; width:100%;" onclick="abrirPapeleta('${e.objectId}')">🎫 Ver papeleta</button>
+                </div>` : '')}
             </div>`;
     }).join('');
 }

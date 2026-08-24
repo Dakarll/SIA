@@ -15,6 +15,7 @@ import { initHistorial, guardarEnHistorial } from './historial/historial.js';
 import { initCorrelativos } from './historial/correlativos.js';
 import { initShalom } from './envios/shalom.js';
 import { initLima } from './envios/lima.js';
+import { initPapeleta } from './envios/papeleta.js';
 import { initListaCompra } from './envios/lista-compra.js';
 import { initDashboard } from './dashboard/dashboard.js';
 import { initFichas } from './fichas-tecnicas/fichas.js';
@@ -103,6 +104,7 @@ function initTodosLosModulos() {
     initCorrelativos();
     initShalom();
     initLima();
+    initPapeleta();
     initListaCompra();
     initDashboard();
     initFichas();
