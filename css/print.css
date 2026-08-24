@@ -212,6 +212,7 @@
         #fichaPreview, #fichaPreview *,
         .cotizacion-print, .cotizacion-print *,
         .ficha-print, .ficha-print *,
+        .papeleta-card, .papeleta-card *,
         #sucursalesProvinciaPrint, #sucursalesProvinciaPrint * {
             --primary: #2d3748;
             --border: #e2e8f0;
@@ -234,4 +235,180 @@
         .cotizacion-print,
         .ficha-print {
             color: #2d3748;
+        }
+
+        /* PAPELETA DE ENVÍO — misma razón que .cotizacion-print arriba:
+           se captura como imagen con html2canvas, así que el tamaño de
+           letra debe ser idéntico sin importar el navegador móvil. */
+        .papeleta-card, .papeleta-card * {
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        .papeleta-card {
+            width: 100%;
+            max-width: 300px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            padding: 22px 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+        }
+
+        .papeleta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .papeleta-brand {
+            font-size: 0.85em;
+            font-weight: 800;
+            color: #2d3748;
+            letter-spacing: 0.02em;
+        }
+
+        .papeleta-badge {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            flex: 0 0 auto;
+        }
+
+        .papeleta-estado-titulo {
+            font-size: 1.4em;
+            font-weight: 800;
+            color: #2d3748;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .papeleta-guia {
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #e53e3e;
+            margin-bottom: 4px;
+        }
+
+        .papeleta-fecha {
+            font-size: 0.75em;
+            color: #718096;
+            margin-bottom: 18px;
+        }
+
+        .papeleta-steps {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .papeleta-step-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e0;
+            color: #a0aec0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72em;
+            font-weight: 700;
+            flex: 0 0 auto;
+        }
+
+        .papeleta-step-circle.current {
+            background: #2d3748;
+            border-color: #2d3748;
+            color: #ffffff;
+        }
+
+        .papeleta-step-connector {
+            flex: 1 1 auto;
+            height: 2px;
+            background: #cbd5e0;
+            margin: 0 2px;
+        }
+
+        .papeleta-step-connector.current {
+            background: #2d3748;
+        }
+
+        .papeleta-steps-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .papeleta-step-label {
+            font-size: 0.62em;
+            color: #a0aec0;
+            width: 26px;
+            text-align: center;
+            white-space: nowrap;
+            transform: translateX(-33%);
+        }
+
+        .papeleta-step-label.current {
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .papeleta-mensaje {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+        }
+
+        .papeleta-mensaje-texto {
+            font-size: 0.8em;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+
+        .papeleta-divider {
+            border-top: 1px solid #e2e8f0;
+            margin-bottom: 14px;
+        }
+
+        .papeleta-row-label {
+            font-size: 0.7em;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 2px;
+        }
+
+        .papeleta-row-value {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+
+        .papeleta-oc-chip {
+            display: inline-block;
+            background: #ebf8ff;
+            color: #3182ce;
+            font-size: 0.72em;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .papeleta-footer {
+            text-align: center;
+            font-size: 0.62em;
+            color: #a0aec0;
+            margin-top: 6px;
+            line-height: 1.4;
         }

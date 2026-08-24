@@ -1038,6 +1038,23 @@
     </div>
 </div>
 
+<!-- PAPELETA DE ENVÍO -->
+<div class="modal" id="papeletaModal" role="dialog" aria-modal="true" aria-labelledby="papeletaModalTitulo">
+    <div class="modal-content" style="max-width:400px;">
+        <div class="modal-header">
+            <h2 class="modal-title" id="papeletaModalTitulo">🎫 Papeleta de envío</h2>
+            <button class="modal-close" id="btnCerrarPapeletaModal" aria-label="Cerrar">×</button>
+        </div>
+        <div style="display:flex; justify-content:center; padding:4px 4px 18px;">
+            <div class="papeleta-card" id="papeletaPreviewCard"></div>
+        </div>
+        <div class="modal-buttons">
+            <button type="button" class="btn btn-success" id="btnDescargarPapeleta">🖼️ Descargar / Compartir</button>
+            <button type="button" class="btn btn-success" id="btnCopiarPapeleta">📋 Copiar imagen</button>
+        </div>
+    </div>
+</div>
+
 <!-- SUCURSALES POR PROVINCIA — PARA IMAGEN -->
 <div id="sucursalesProvinciaPrint" style="position: fixed; left: -9999px; top: 0; background: white; padding: 40px; width: 1300px; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom: 3px solid var(--primary); padding-bottom: 20px; margin-bottom: 25px;">
