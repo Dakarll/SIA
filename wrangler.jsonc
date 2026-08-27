@@ -1,0 +1,15 @@
+{
+  // SIA es una SPA estática sin build step (HTML + CSS + ES Modules
+  // nativos). No hay Worker script: Cloudflare sirve la carpeta tal cual
+  // como "static assets". El entry-point que wrangler pedía es este
+  // directorio de assets, declarado abajo.
+  "name": "sia",
+  "compatibility_date": "2026-08-25",
+  "assets": {
+    // La raíz del repo: index.html, css/ y js/ se suben sin transformar.
+    "directory": ".",
+    // Sirve index.html en "/" y hace fallback a index.html para rutas
+    // desconocidas (comportamiento SPA de una sola página).
+    "not_found_handling": "single-page-application"
+  }
+}

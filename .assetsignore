@@ -1,0 +1,8 @@
+# Archivos que NO deben publicarse como assets estáticos en Cloudflare.
+# Sin esto, "directory": "." subiría el repo entero (incluido .git).
+.git
+.claude
+.gitignore
+.assetsignore
+wrangler.jsonc
+README.md
