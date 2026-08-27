@@ -87,6 +87,9 @@ export async function cargarDashboard() {
         const ticketProm = totalCotizaciones > 0 ? montoTotal / totalCotizaciones : 0;
         const conGanancia = filtradas.filter(c => c.ganancia !== null && c.ganancia !== undefined);
         const gananciaTotal = conGanancia.reduce((a, c) => a + c.ganancia, 0);
+        // Saldo por cobrar: suma del saldoPendiente de las órdenes del
+        // rango. Los registros viejos sin este campo cuentan como 0.
+        const porCobrarTotal = filtradas.reduce((a, c) => a + Math.max(0, c.saldoPendiente || 0), 0);
 
         const porDepto = {};
         filtradas.forEach(c => {
@@ -99,6 +102,7 @@ export async function cargarDashboard() {
         animarNumero('kpiCotizaciones', totalCotizaciones);
         animarNumero('kpiMontoTotal', montoTotal, 'S/ ', 2);
         animarNumero('kpiTicketProm', ticketProm, 'S/ ', 2);
+        animarNumero('kpiPorCobrar', porCobrarTotal, 'S/ ', 2);
         document.getElementById('kpiGananciaWrap').style.display = conGanancia.length > 0 ? 'block' : 'none';
         if (conGanancia.length > 0) {
             animarNumero('kpiGanancia', gananciaTotal, 'S/ ', 2);

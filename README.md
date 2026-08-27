@@ -101,7 +101,7 @@ esta migración (solo reorganizar, no reescribir lógica). Lista completa:
 `eliminarPlantilla`, `eliminarProducto`, `eliminarSucursal`,
 `exportarListaCompraExcel`, `guardarPrecioOverride`, `irARegistrarGuia`,
 `marcarNotificadoShalom`, `mostrarConfirmacion`, `mostrarPrompt`,
-`removeProduct`, `restaurarPrecio`, `seleccionarSucursal`,
+`registrarPagoCotizacion`, `removeProduct`, `restaurarPrecio`, `seleccionarSucursal`,
 `switchTabById`, `togglePrecioEdit`, `updateCantidad`,
 `verCotizacionDetalle`.
 
