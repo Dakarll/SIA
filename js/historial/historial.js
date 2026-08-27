@@ -1,11 +1,11 @@
 // Historial de cotizaciones (Back4App, atado al usuario): guardar,
 // listar/filtrar, ver detalle, cargar, eliminar y cambiar de estado.
 import { state } from '../core/state.js';
-import { mostrarNotificacion, mostrarConfirmacion } from '../core/ui-helpers.js';
+import { mostrarNotificacion, mostrarConfirmacion, mostrarPrompt } from '../core/ui-helpers.js';
 import { parseFetch, COTIZACION_CLASE, aclSoloUsuario } from '../core/parseClient.js';
 import { getClienteData, actualizarResumenCliente } from '../cotizador/cliente.js';
 import { obtenerPrecio, calcularPrecioConIGV } from '../cotizador/precios.js';
-import { renderTable, guardarEstado } from '../cotizador/productos-tabla.js';
+import { renderTable, guardarEstado, actualizarPago } from '../cotizador/productos-tabla.js';
 import { renderSucursales, mostrarSucursalSeleccionada } from '../catalogo/sucursales-crud.js';
 import { siguienteCorrelativo } from './correlativos.js';
 import { buscarEnvioPorOC, badgeEnvioHtml, poblarListaOrdenesCompra } from '../envios/shalom.js';
@@ -33,6 +33,16 @@ export async function guardarEnHistorial(opts = {}) {
     });
     const totalFinal = state.mostrarConIGV ? calcularPrecioConIGV(subtotal) : subtotal;
 
+    // Adelanto que se llenó en la cotización (input #montoAdelanto de la
+    // pestaña Cotizar). Antes solo se mostraba/imprimía en pantalla; ahora
+    // se persiste para poder rastrear qué órdenes quedan con saldo.
+    const montoAdelantoEl = document.getElementById('montoAdelanto');
+    const montoAdelanto = montoAdelantoEl ? (parseFloat(montoAdelantoEl.value) || 0) : 0;
+    const saldoPendiente = Math.max(0, totalFinal - montoAdelanto);
+    const estadoPago = montoAdelanto <= 0
+        ? 'sin_adelanto'
+        : (saldoPendiente > 0 ? 'con_saldo' : 'pagado_completo');
+
     const entrada = {
         fecha: new Date().toISOString(),
         cliente: cliente.nombre || 'Sin nombre',
@@ -45,6 +55,9 @@ export async function guardarEnHistorial(opts = {}) {
         productos: JSON.parse(JSON.stringify(state.productosEnTabla)),
         sucursal: state.sucursalSeleccionada ? { ...state.sucursalSeleccionada } : null,
         total: totalFinal,
+        montoAdelanto: montoAdelanto,
+        saldoPendiente: saldoPendiente,
+        estadoPago: estadoPago,
         mostrarConIGV: state.mostrarConIGV,
         forzarPorMayor: state.forzarPorMayor
     };
@@ -63,6 +76,9 @@ export async function guardarEnHistorial(opts = {}) {
                 numProductos: entrada.productos.length,
                 provincia: state.sucursalSeleccionada ? (state.sucursalSeleccionada.provincia || null) : null,
                 ganancia: hayCosto ? gananciaEstimada : null,
+                montoAdelanto: montoAdelanto,
+                saldoPendiente: saldoPendiente,
+                estadoPago: estadoPago,
                 datos: JSON.stringify(entrada)
             });
             const registro = state.historialCache.find(e => e.objectId === state.cotizacionActualId);
@@ -79,6 +95,9 @@ export async function guardarEnHistorial(opts = {}) {
                 ganancia: hayCosto ? gananciaEstimada : null,
                 estado: 'cotizada',
                 numeroCotizacion: numero,
+                montoAdelanto: montoAdelanto,
+                saldoPendiente: saldoPendiente,
+                estadoPago: estadoPago,
                 datos: JSON.stringify(entrada),
                 creadoPorUsername: state.sesionUsuario.username,
                 ACL: aclSoloUsuario()
@@ -100,6 +119,8 @@ export function limpiarFiltrosHistorial() {
     document.getElementById('historialFiltroTexto').value = '';
     document.getElementById('historialFiltroDesde').value = '';
     document.getElementById('historialFiltroHasta').value = '';
+    const filtroSaldoEl = document.getElementById('historialFiltroSaldo');
+    if (filtroSaldoEl) filtroSaldoEl.checked = false;
     pintarHistorialDesdeCache();
 }
 
@@ -137,6 +158,22 @@ export async function renderHistorial() {
     pintarHistorialDesdeCache();
 }
 
+// Etiqueta visual del estado de pago de una orden (mismo estilo de chip
+// que badgeEstado/badgeEnvio). Los registros viejos de Back4App no tienen
+// estadoPago/saldoPendiente — se tratan como 'sin_adelanto'/0.
+export function badgePagoHtml(entry) {
+    const base = 'display:inline-block; padding:2px 9px; border-radius:12px; font-size:0.72em; font-weight:700;';
+    const estadoPago = entry.estadoPago || 'sin_adelanto';
+    if (estadoPago === 'pagado_completo') {
+        return `<span style="${base} background:#e8f9ee; color:#38a169;">✅ Pagado completo</span>`;
+    }
+    if (estadoPago === 'con_saldo') {
+        const saldo = Math.max(0, entry.saldoPendiente || 0);
+        return `<span style="${base} background:#fef3c7; color:#92400e;">🟡 Saldo: S/ ${saldo.toFixed(2)}</span>`;
+    }
+    return `<span style="${base} background:#fff5f5; color:#e53e3e;">🔴 Sin adelanto</span>`;
+}
+
 // Repinta el Historial usando lo que ya está en state.historialCache, sin
 // volver a pedir las cotizaciones al servidor. Se usa al aplicar
 // filtros y al refrescar las etiquetas de envío cuando llega data
@@ -152,9 +189,11 @@ export function pintarHistorialDesdeCache() {
     const filtroTextoEl = document.getElementById('historialFiltroTexto');
     const filtroDesdeEl = document.getElementById('historialFiltroDesde');
     const filtroHastaEl = document.getElementById('historialFiltroHasta');
+    const filtroSaldoEl = document.getElementById('historialFiltroSaldo');
     const filtroTexto = filtroTextoEl ? filtroTextoEl.value.trim().toLowerCase() : '';
     const filtroDesde = filtroDesdeEl && filtroDesdeEl.value ? new Date(filtroDesdeEl.value + 'T00:00:00') : null;
     const filtroHasta = filtroHastaEl && filtroHastaEl.value ? new Date(filtroHastaEl.value + 'T23:59:59') : null;
+    const filtroSoloSaldo = filtroSaldoEl ? filtroSaldoEl.checked : false;
 
     const historial = state.historialCache.filter(entry => {
         if (filtroTexto) {
@@ -164,6 +203,7 @@ export function pintarHistorialDesdeCache() {
         const fechaEntry = new Date(entry.createdAt);
         if (filtroDesde && fechaEntry < filtroDesde) return false;
         if (filtroHasta && fechaEntry > filtroHasta) return false;
+        if (filtroSoloSaldo && !(entry.estado === 'orden_compra' && (entry.saldoPendiente || 0) > 0)) return false;
         return true;
     });
 
@@ -185,6 +225,8 @@ export function pintarHistorialDesdeCache() {
             : `<span style="display:inline-block; padding:2px 9px; border-radius:12px; font-size:0.72em; font-weight:700; background:var(--chip-neutral-bg); color:var(--text-muted);">📝 Cotización</span>`;
         const envioInfo = esOrden ? buscarEnvioPorOC(numeroMostrado) : null;
         const badgeEnvio = envioInfo ? badgeEnvioHtml(envioInfo) : '';
+        const estadoPago = entry.estadoPago || 'sin_adelanto';
+        const badgePago = esOrden ? badgePagoHtml(entry) : '';
         return `
             <div class="historial-card">
                 <div class="historial-card-left">
@@ -194,7 +236,7 @@ export function pintarHistorialDesdeCache() {
                         <span>📦 ${entry.numProductos || 0} producto${entry.numProductos !== 1 ? 's' : ''}</span>
                         ${(entry.creadoPorUsername && entry.creadoPorUsername !== state.sesionUsuario.username) ? `<span>👤 ${entry.creadoPorUsername}</span>` : ''}
                     </div>
-                    <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">${badgeEstado}${badgeEnvio}</div>
+                    <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">${badgeEstado}${badgeEnvio}${badgePago}</div>
                 </div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
                     <div class="historial-card-total">S/ ${(entry.total || 0).toFixed(2)}</div>
@@ -204,6 +246,10 @@ export function pintarHistorialDesdeCache() {
                         ${esOrden
                             ? `<button class="btn-historial-load" style="background:var(--chip-neutral-bg); color:var(--text-muted);" onclick="cambiarEstadoCotizacion('${entry.objectId}', 'cotizada')">↩ Desmarcar</button>`
                             : `<button class="btn-historial-load" style="background:#e8f9ee; color:#38a169;" onclick="cambiarEstadoCotizacion('${entry.objectId}', 'orden_compra')">✅ Marcar venta</button>`
+                        }
+                        ${esOrden && estadoPago !== 'pagado_completo'
+                            ? `<button class="btn-historial-load" style="background:#fef3c7; color:#92400e;" onclick="registrarPagoCotizacion('${entry.objectId}')">💰 Registrar pago</button>`
+                            : ''
                         }
                         <button class="btn-historial-del" aria-label="Eliminar cotización del historial" onclick="eliminarDeHistorial('${entry.objectId}')">🗑️</button>
                     </div>
@@ -259,6 +305,7 @@ export function verCotizacionDetalle(objectId) {
             <span style="padding:3px 10px; border-radius:12px; font-size:0.78em; font-weight:700; background:${esOrden ? '#e8f9ee' : 'var(--chip-neutral-bg)'}; color:${esOrden ? '#38a169' : 'var(--text-muted)'};">${esOrden ? '✅ Orden de compra' : '📝 Cotización'}</span>
             ${entry.sucursal ? `<span style="padding:3px 10px; border-radius:12px; font-size:0.78em; background:#ebf8ff; color:#3182ce;">📍 ${entry.sucursal.nombre}</span>` : ''}
             ${envio ? badgeEnvioHtml(envio) : ''}
+            ${esOrden ? badgePagoHtml(registro) : ''}
         </div>
         <div style="margin-bottom:14px; word-break:break-word;">
             ${entry.empresa ? `<div style="font-size:0.9em; color:var(--primary); font-weight:600;">${entry.empresa}</div>` : ''}
@@ -298,8 +345,13 @@ export function cargarDesdeHistorial(objectId) {
         document.getElementById('clienteEmail').value = entry.email || '';
         document.getElementById('clienteDireccion').value = entry.direccion || '';
         document.getElementById('clienteNotas').value = entry.notas || '';
+        // Restaura el adelanto guardado con el registro, para que al
+        // volver a guardar esta edición no se pierda ni se pise con 0.
+        const adelantoInput = document.getElementById('montoAdelanto');
+        if (adelantoInput) adelantoInput.value = entry.montoAdelanto ? entry.montoAdelanto : '';
         actualizarResumenCliente();
         renderTable();
+        actualizarPago();
         guardarEstado();
         if (state.sucursalSeleccionada) mostrarSucursalSeleccionada();
         renderSucursales();
@@ -345,6 +397,48 @@ export async function cambiarEstadoCotizacion(objectId, nuevoEstado) {
     }
 }
 
+// Registra un pago adicional sobre una orden de compra: pide el monto con
+// mostrarPrompt(), lo suma al montoAdelanto ya guardado, recalcula
+// saldoPendiente y estadoPago, y persiste los tres campos en Back4App.
+// Los registros viejos sin estos campos se tratan como montoAdelanto 0.
+export async function registrarPagoCotizacion(objectId) {
+    const registro = state.historialCache.find(e => e.objectId === objectId);
+    if (!registro) return;
+
+    const totalRegistro = registro.total || 0;
+    const adelantoActual = registro.montoAdelanto || 0;
+    const saldoActual = registro.saldoPendiente !== undefined && registro.saldoPendiente !== null
+        ? Math.max(0, registro.saldoPendiente)
+        : Math.max(0, totalRegistro - adelantoActual);
+
+    mostrarPrompt(`Saldo pendiente: S/ ${saldoActual.toFixed(2)} — ¿cuánto se pagó ahora?`, '', async (valor) => {
+        const pago = parseFloat(valor);
+        if (isNaN(pago) || pago <= 0) {
+            mostrarNotificacion('⚠️ Ingresa un monto de pago válido', 'warning');
+            return;
+        }
+        const nuevoAdelanto = adelantoActual + pago;
+        const nuevoSaldo = Math.max(0, totalRegistro - nuevoAdelanto);
+        const nuevoEstadoPago = nuevoAdelanto <= 0
+            ? 'sin_adelanto'
+            : (nuevoSaldo > 0 ? 'con_saldo' : 'pagado_completo');
+        try {
+            await parseFetch(COTIZACION_CLASE, 'PUT', objectId, {
+                montoAdelanto: nuevoAdelanto,
+                saldoPendiente: nuevoSaldo,
+                estadoPago: nuevoEstadoPago
+            });
+            mostrarNotificacion(
+                nuevoEstadoPago === 'pagado_completo' ? '✅ Pago registrado — saldado por completo' : '💰 Pago registrado',
+                'success'
+            );
+            renderHistorial();
+        } catch (err) {
+            mostrarNotificacion('❌ Error al registrar el pago: ' + err.message, 'warning');
+        }
+    });
+}
+
 export function limpiarHistorial() {
     mostrarConfirmacion('¿Eliminar todo el historial de cotizaciones? Esta acción no se puede deshacer.', async () => {
         try {
@@ -363,6 +457,8 @@ export function initHistorial() {
     document.getElementById('historialFiltroTexto').addEventListener('input', pintarHistorialDesdeCache);
     document.getElementById('historialFiltroDesde').addEventListener('change', pintarHistorialDesdeCache);
     document.getElementById('historialFiltroHasta').addEventListener('change', pintarHistorialDesdeCache);
+    const filtroSaldoEl = document.getElementById('historialFiltroSaldo');
+    if (filtroSaldoEl) filtroSaldoEl.addEventListener('change', pintarHistorialDesdeCache);
     document.getElementById('btnLimpiarFiltrosHistorial').addEventListener('click', limpiarFiltrosHistorial);
     document.getElementById('btnGuardarHistorial').addEventListener('click', () => guardarEnHistorial());
     document.getElementById('btnLimpiarHistorial').addEventListener('click', limpiarHistorial);
@@ -374,4 +470,5 @@ export function initHistorial() {
     window.cargarDesdeHistorial = cargarDesdeHistorial;
     window.cambiarEstadoCotizacion = cambiarEstadoCotizacion;
     window.eliminarDeHistorial = eliminarDeHistorial;
+    window.registrarPagoCotizacion = registrarPagoCotizacion;
 }

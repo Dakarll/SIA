@@ -658,6 +658,12 @@
                 <label class="form-label" style="font-size:0.85em;">Hasta</label>
                 <input type="date" id="historialFiltroHasta" class="form-input">
             </div>
+            <div style="min-width:180px;">
+                <label class="form-label" style="font-size:0.85em; display:flex; align-items:center; gap:6px; cursor:pointer;">
+                    <input type="checkbox" id="historialFiltroSaldo" style="width:auto;">
+                    Solo con saldo pendiente
+                </label>
+            </div>
             <div>
                 <button class="btn btn-small" style="background:var(--border);" id="btnLimpiarFiltrosHistorial">✕ Limpiar filtros</button>
             </div>
@@ -783,6 +789,10 @@
         <div class="dash-kpi-card">
             <div class="dash-kpi-label">Departamento top</div>
             <div class="dash-kpi-valor" id="kpiDeptoTop" style="font-size:1.3em;">—</div>
+        </div>
+        <div class="dash-kpi-card" style="border-left:4px solid #92400e;">
+            <div class="dash-kpi-label">💰 Por cobrar</div>
+            <div class="dash-kpi-valor" id="kpiPorCobrar" style="color:#92400e;">S/ 0</div>
         </div>
         <div class="dash-kpi-card" id="kpiGananciaWrap" style="display:none; border-left:4px solid #38a169;">
             <div class="dash-kpi-label">💰 Ganancia estimada</div>
