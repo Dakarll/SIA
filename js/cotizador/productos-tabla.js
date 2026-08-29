@@ -66,14 +66,10 @@ export function cargarEstado() {
 // SISTEMA DE TABS
 // ============================================
 
-export function switchTab(tab, e) {
-    state.tabActual = tab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-    e.target.classList.add('active');
-    document.getElementById(`tab-${tab}`).classList.add('active');
-
+// Dispara el render/carga de datos propio de cada vista. Se extrajo de
+// switchTab() para poder reutilizarlo desde la navegación móvil (Fase 4a),
+// que activa la vista con switchTabById y luego pide su contenido.
+export function renderTabContent(tab) {
     if (tab === 'sucursales') {
         renderSucursales();
         updateSucursalStats();
@@ -89,11 +85,25 @@ export function switchTab(tab, e) {
         cargarEnviosShalom();
     } else if (tab === 'dashboard') {
         cargarDashboard();
+    } else if (tab === 'cotizar') {
+        renderAccesosRapidos();
     }
 
     if (tab !== 'shalom' && typeof detenerCamaraQR === 'function') {
         detenerCamaraQR();
     }
+}
+
+export function switchTab(tab, e) {
+    state.tabActual = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    if (e && e.target) e.target.classList.add('active');
+    const tc = document.getElementById(`tab-${tab}`);
+    if (tc) tc.classList.add('active');
+
+    renderTabContent(tab);
 }
 
 // Variante que activa una pestaña por id sin depender de un evento de
@@ -191,31 +201,91 @@ function initAutocompleteYAgregar() {
         const colorIngresado = document.getElementById('inputColor').value.trim();
         const cantidadInicial = parseInt(document.getElementById('inputCantidadInicial').value) || 1;
 
-        // Permitir mismo producto si tiene color diferente
-        const existe = state.productosEnTabla.find(p =>
-            p.codigo === state.productoSeleccionado.codigo &&
-            (p.color || '') === colorIngresado
-        );
-        if (existe) {
-            mostrarNotificacion('Este producto con el mismo color ya está en la cotización', 'warning');
-            return;
-        }
+        const agregado = agregarProductoATabla(state.productoSeleccionado, { cantidad: cantidadInicial, color: colorIngresado });
+        if (!agregado) return;
 
-        state.productosEnTabla.push({
-            ...state.productoSeleccionado,
-            cantidad: cantidadInicial,
-            color: colorIngresado || ''
-        });
-
-        renderTable();
         searchInput.value = '';
         document.getElementById('inputColor').value = '';
         document.getElementById('inputCantidadInicial').value = '1';
         document.getElementById('addExtrasRow').classList.remove('visible');
         state.productoSeleccionado = null;
         btnAdd.disabled = true;
-        guardarEstado();
     });
+}
+
+// Agrega un producto a la cotización en curso. Lo usan tanto el botón
+// "Agregar a la Cotización" como los accesos rápidos (Fase 4c). Mantiene
+// la regla original: se permite el mismo producto si cambia el color.
+// Devuelve true si se agregó, false si ya estaba (mismo código+color).
+export function agregarProductoATabla(producto, { cantidad = 1, color = '' } = {}) {
+    if (!producto) return false;
+    const colorNorm = (color || '').trim();
+    const existe = state.productosEnTabla.find(p =>
+        p.codigo === producto.codigo && (p.color || '') === colorNorm
+    );
+    if (existe) {
+        mostrarNotificacion('Este producto con el mismo color ya está en la cotización', 'warning');
+        return false;
+    }
+    state.productosEnTabla.push({
+        ...producto,
+        cantidad: Math.max(1, parseInt(cantidad) || 1),
+        color: colorNorm
+    });
+    renderTable();
+    guardarEstado();
+    return true;
+}
+
+// ============================================
+// ACCESOS RÁPIDOS A PRODUCTOS (Fase 4c)
+// ============================================
+
+// Top-N productos por unidades vendidas en el historial. No existe un
+// concepto de "favorito" en el catálogo, así que el criterio es la
+// frecuencia histórica (suma de cantidades por código). Si no hay
+// historial utilizable todavía, cae a los primeros N del catálogo.
+function computarProductosFrecuentes(limite = 6) {
+    const unidadesPorCodigo = {};
+    for (const entry of state.historialCache) {
+        if (!entry || !entry.datos) continue;
+        let datos;
+        try { datos = JSON.parse(entry.datos); } catch (e) { continue; }
+        if (!datos || !Array.isArray(datos.productos)) continue;
+        for (const p of datos.productos) {
+            if (!p || !p.codigo) continue;
+            unidadesPorCodigo[p.codigo] = (unidadesPorCodigo[p.codigo] || 0) + (Number(p.cantidad) || 0);
+        }
+    }
+    const catalogoPorCodigo = new Map(state.productosDB.map(p => [p.codigo, p]));
+    const ordenados = Object.entries(unidadesPorCodigo)
+        .filter(([codigo]) => catalogoPorCodigo.has(codigo))
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limite)
+        .map(([codigo]) => catalogoPorCodigo.get(codigo));
+    if (ordenados.length > 0) return ordenados;
+    return state.productosDB.slice(0, limite);
+}
+
+export function renderAccesosRapidos() {
+    const section = document.getElementById('accesosRapidosSection');
+    const grid = document.getElementById('accesosRapidosGrid');
+    if (!section || !grid) return;
+
+    const productos = computarProductosFrecuentes(6);
+    if (productos.length === 0) {
+        section.style.display = 'none';
+        return;
+    }
+    section.style.display = 'block';
+    grid.innerHTML = productos.map(p => {
+        let precio = 0;
+        try { precio = obtenerPrecio(p, 1); } catch (e) { precio = 0; }
+        return `<button type="button" class="acceso-rapido-item" data-codigo="${encodeURIComponent(p.codigo)}">
+            <span class="ar-nombre">${p.nombre}</span>
+            <span class="ar-precio">S/ ${Number(precio).toFixed(2)}</span>
+        </button>`;
+    }).join('');
 }
 
 // ============================================
@@ -539,6 +609,19 @@ export function initProductosTabla() {
     });
     document.getElementById('btnGuardarPlantilla').addEventListener('click', guardarComoPlantilla);
     document.getElementById('btnClearAll').addEventListener('click', clearAll);
+
+    // Accesos rápidos (Fase 4c): un toque agrega el producto a la cotización.
+    const arGrid = document.getElementById('accesosRapidosGrid');
+    if (arGrid) {
+        arGrid.addEventListener('click', (e) => {
+            const btn = e.target.closest('.acceso-rapido-item');
+            if (!btn) return;
+            const codigo = decodeURIComponent(btn.dataset.codigo);
+            const prod = state.productosDB.find(p => p.codigo === codigo);
+            if (prod) agregarProductoATabla(prod, { cantidad: 1 });
+        });
+    }
+    renderAccesosRapidos();
 
     window.updateCantidad = updateCantidad;
     window.removeProduct = removeProduct;

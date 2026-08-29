@@ -13,9 +13,31 @@ import { buscarEnvioPorOC, badgeEnvioHtml, crearRegistroShalom, cargarEnviosShal
 import { pintarResumenListaCompra } from './lista-compra.js';
 import { switchTabById } from '../cotizador/productos-tabla.js';
 
+// Badge "Envíos": nº de órdenes de compra confirmadas que aún NO están
+// entregadas (sin guía registrada, o con guía en cualquier estado
+// distinto de "entregado"). Conteo estable (no depende de los filtros de
+// la vista). Actualiza todos los badges marcados con .js-envios-badge —
+// la sidebar de desktop (Fase 3) y la lista "Inicio" de móvil (Fase 4a).
+// Se ocultan si es 0.
+export function actualizarBadgeEnviosSidebar() {
+    const badges = document.querySelectorAll('.js-envios-badge');
+    if (!badges.length) return;
+    const pendientes = state.historialCache
+        .filter(e => e.estado === 'orden_compra')
+        .filter(e => {
+            const envio = buscarEnvioPorOC(e.numeroOrdenCompra);
+            return !envio || envio.estado !== 'entregado';
+        }).length;
+    badges.forEach(b => {
+        b.textContent = pendientes;
+        b.hidden = pendientes === 0;
+    });
+}
+
 export function renderEnvios() {
     const listEl = document.getElementById('enviosList');
     const countEl = document.getElementById('enviosCount');
+    actualizarBadgeEnviosSidebar();
     if (!listEl) return;
 
     pintarResumenListaCompra();

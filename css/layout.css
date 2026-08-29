@@ -126,6 +126,248 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ============================================================
+           SIDEBAR PERSISTENTE — Fase 3 (Variante B de
+           desktop_variantes_apple.html). Solo desktop (≥1024px); por
+           debajo se sigue usando la barra .tabs horizontal (la Fase 4
+           rehace la navegación móvil).
+           Los ítems son <button class="tab sidebar-link" data-tab>, así
+           que switchTab()/initTabs() los tratan igual que las tabs de
+           siempre — esto es solo estructura visual, no comportamiento.
+           ============================================================ */
+        .sidebar { display: none; }
+
+        .sidebar-brand {
+            font-size: 0.95em;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--primary);
+            padding: 0 10px 14px;
+        }
+
+        .sidebar-group + .sidebar-group { margin-top: 8px; }
+
+        .sidebar-group-label {
+            font-size: 0.66em;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+            color: var(--text-faint);
+            padding: 10px 10px 4px;
+        }
+
+        .sidebar .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 9px 10px;
+            margin-bottom: 2px;
+            border: none;
+            border-bottom: none;
+            border-radius: 8px;
+            background: none;
+            text-align: left;
+            font-size: 0.82em;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: transform 0.12s ease-out, background 0.15s ease, color 0.15s ease;
+        }
+        .sidebar .sidebar-link:hover {
+            background: rgba(124, 142, 240, 0.10);
+            color: var(--secondary);
+        }
+        /* Respuesta instantánea al clic (Apple Design). */
+        .sidebar .sidebar-link:active { transform: scale(0.97); }
+        /* Ítem activo: fondo tenue de acento + texto de acento. */
+        .sidebar .sidebar-link.active {
+            background: rgba(124, 142, 240, 0.16);
+            color: var(--secondary);
+            border-bottom: none;
+        }
+        body.dark-mode .sidebar .sidebar-link { color: var(--dm-text-secondary); }
+        body.dark-mode .sidebar .sidebar-link:hover,
+        body.dark-mode .sidebar .sidebar-link.active { color: #a5b4fc; }
+
+        .sidebar-badge {
+            margin-left: auto;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 0.85em;
+            font-weight: 700;
+            line-height: 1.4;
+            padding: 0 7px;
+            border-radius: 10px;
+            pointer-events: none;   /* el clic pasa al botón, no al badge */
+        }
+        .sidebar-badge[hidden] { display: none; }
+
+        @media (min-width: 1024px) {
+            .container {
+                display: grid;
+                grid-template-columns: 216px minmax(0, 1fr);
+                grid-template-areas:
+                    "sidebar header"
+                    "sidebar banner"
+                    "sidebar content"
+                    "sidebar total";
+                column-gap: 16px;
+                align-items: start;
+            }
+            .sidebar {
+                grid-area: sidebar;
+                display: block;
+                position: sticky;
+                top: 10px;
+                align-self: start;
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+                background: var(--bg-light);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px 10px;
+            }
+            .header { grid-area: header; }
+            .info-banner { grid-area: banner; }
+            .content { grid-area: content; }
+            /* .total-section (footer del cotizador) es hermano de .content,
+               no hijo — hay que ubicarlo explícitamente en la columna de
+               contenido o el grid lo autocoloca bajo la sidebar. */
+            .total-section { grid-area: total; }
+            /* En desktop manda la sidebar. */
+        }
+
+        /* ============================================================
+           FASE 4a — NAVEGACIÓN MÓVIL (pila tipo iOS Settings)
+           La barra .tabs horizontal ya no se usa en ningún tamaño:
+           desktop navega por sidebar (Fase 3), móvil por "Inicio".
+           ============================================================ */
+        .tabs { display: none; }
+
+        /* Barra superior móvil: "‹ Inicio" + título de la sección. */
+        .mobile-top-bar { display: none; }
+        .mobile-top-bar.mn-hidden { display: none !important; }
+
+        @media (max-width: 1023px) {
+            .mobile-top-bar {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                position: sticky;
+                top: 0;
+                z-index: 40;
+                padding: 10px 14px;
+                background: var(--bg-light);
+                border-bottom: 1px solid var(--border);
+            }
+            .mobile-top-bar.mn-hidden { display: none !important; }
+        }
+        .mobile-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            border: none;
+            background: none;
+            color: var(--secondary);
+            font-family: inherit;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 6px;
+            margin: -4px -6px;
+            border-radius: 8px;
+            transition: background 0.12s ease;
+        }
+        .mobile-back-btn:active { background: rgba(102, 126, 234, 0.12); }
+        .mobile-screen-title {
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--primary);
+            font-size: 1.05em;
+        }
+        body.dark-mode .mobile-top-bar { background: var(--dm-surface-1); border-bottom-color: var(--dm-border); }
+
+        /* Pantalla raíz "Inicio": lista agrupada tipo iOS Settings. */
+        .inicio-group-label {
+            font-size: 0.68em;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+            color: var(--text-faint);
+            margin: 16px 4px 6px;
+        }
+        .inicio-group {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        .inicio-row {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            width: 100%;
+            padding: 14px 14px;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            background: none;
+            font-family: inherit;
+            font-size: 0.95em;
+            color: var(--primary);
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.12s ease, transform 0.1s ease-out;
+        }
+        .inicio-row:last-child { border-bottom: none; }
+        .inicio-row:active { background: rgba(102, 126, 234, 0.08); transform: scale(0.995); }
+        .inicio-row-ic { font-size: 1.15em; width: 24px; text-align: center; flex-shrink: 0; }
+        .inicio-row-lbl { flex: 1; font-weight: 600; }
+        .inicio-row-chev { color: var(--text-faint); font-size: 1.05em; }
+        .inicio-row-badge {
+            background: var(--secondary);
+            color: #fff;
+            font-size: 0.75em;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+        .inicio-row-badge[hidden] { display: none; }
+        body.dark-mode .inicio-group { background: var(--dm-surface-1); border-color: var(--dm-border); }
+        body.dark-mode .inicio-row { color: var(--dm-text-primary); border-bottom-color: var(--dm-border); }
+        body.dark-mode .inicio-row:active { background: rgba(124, 142, 240, 0.12); }
+
+        /* Transición de slide (push/pop) entre secciones — solo móvil.
+           mobile-nav.js controla los transform/opacity con estilos inline;
+           aquí solo se define la curva de la transición, la capa de la
+           vista saliente y el clip del contenedor. */
+        @media (max-width: 1023px) {
+            .content { position: relative; overflow-x: hidden; }
+            /* En móvil la animación de entrada la maneja mobile-nav.js. */
+            .tab-content.active { position: relative; z-index: 2; animation: none; }
+            .tab-content.active,
+            .tab-content.mn-leaving {
+                transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.32s ease;
+                will-change: transform;
+            }
+            .tab-content.mn-leaving {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 3;
+            }
+
+            /* El footer de la cotización solo aparece en la pantalla
+               Cotizar. Selector con 2 clases para ganarle a los otros
+               `.total-section { display: ... }` de los @media responsive
+               (p.ej. el de ≤480px de la Fase 1d). Cuando SÍ estamos en
+               Cotizar, `:not()` no aplica y mandan esas reglas. */
+            body:not(.mn-on-cotizar) .total-section { display: none; }
+        }
+
         /* SECCIÓN AGREGAR */
         .add-product-section {
             background: var(--bg-light);
@@ -141,6 +383,63 @@
             color: var(--primary);
             margin-bottom: 15px;
         }
+
+        /* ============================================================
+           FASE 4c — ACCESOS RÁPIDOS A PRODUCTOS (grilla 2 columnas,
+           patrón .catalog-grid del prototipo). Un toque agrega el
+           producto a la cotización.
+           ============================================================ */
+        .accesos-rapidos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .acceso-rapido-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 12px 10px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--primary);
+            font-family: inherit;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-out, border-color 0.12s ease, background 0.12s ease;
+        }
+        .acceso-rapido-item:hover { border-color: var(--secondary); }
+        .acceso-rapido-item:active { transform: scale(0.96); background: var(--bg-light); }
+        .acceso-rapido-item .ar-nombre {
+            display: block;
+            line-height: 1.25;
+        }
+        .acceso-rapido-item .ar-precio {
+            font-size: 0.85em;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        body.dark-mode .acceso-rapido-item {
+            background: var(--dm-surface-1);
+            border-color: var(--dm-border);
+            color: var(--dm-text-primary);
+        }
+        body.dark-mode .acceso-rapido-item:active { background: var(--dm-surface-2); }
+
+        /* ============================================================
+           FASE 4d — SELECTOR DE SUCURSAL DE ENVÍO (fila colapsable
+           "Sucursal de envío" en Cotizar). Es un cuadro de texto con
+           sugerencias en vivo: reutiliza .search-container /
+           .autocomplete-dropdown / .autocomplete-item del buscador de
+           productos. El dropdown flota (position:absolute); como el panel
+           usa overflow:hidden para el colapso, se abre el overflow solo
+           mientras la fila está desplegada.
+           ============================================================ */
+        .cliente-panel.envio-panel-open { overflow: visible; }
 
         /* BÚSQUEDA */
         .search-container {
@@ -599,6 +898,45 @@
             font-weight: 600;
             margin-top: 8px;
         }
+
+        /* Fase 4b — pie de la tarjeta de sucursal: tipo + acciones
+           editar/eliminar (la sección "Gestión" ya no es aparte). */
+        .sucursal-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .sucursal-card-footer .sucursal-tipo { margin-top: 0; }
+        .sucursal-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .sucursal-card-actions .btn-edit { margin-right: 0; }
+
+        /* Fase 4b — bloque plegable "Agregar nueva sucursal" dentro de
+           la vista Sucursales. */
+        .suc-add-details {
+            margin-bottom: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            background: var(--bg-light);
+            overflow: hidden;
+        }
+        .suc-add-details > summary {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            list-style: none;
+            user-select: none;
+        }
+        .suc-add-details > summary::-webkit-details-marker { display: none; }
+        .suc-add-details > summary::before {
+            content: "\25B8\00a0";
+            color: var(--secondary);
+            font-weight: 700;
+        }
+        .suc-add-details[open] > summary::before { content: "\25BE\00a0"; }
+        .suc-add-details > summary + * { margin: 12px 15px 15px; }
 
         .sucursal-stats {
             margin-top: 15px;

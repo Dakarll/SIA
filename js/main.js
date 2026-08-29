@@ -19,6 +19,7 @@ import { initPapeleta } from './envios/papeleta.js';
 import { initListaCompra } from './envios/lista-compra.js';
 import { initDashboard } from './dashboard/dashboard.js';
 import { initFichas } from './fichas-tecnicas/fichas.js';
+import { initMobileNav } from './core/mobile-nav.js';
 
 // Re-exportado para los módulos que necesitan cambiar de pestaña desde
 // código (cargar plantilla, cargar desde historial, atajo "Registrar
@@ -109,6 +110,7 @@ function initTodosLosModulos() {
     initDashboard();
     initFichas();
     initTabs();
+    initMobileNav();
     initAtajosTeclado();
     initSyncEntrePestanas();
     initCerrarModalesAlClickFuera();

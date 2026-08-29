@@ -92,15 +92,32 @@ export async function prepararCotizacion() {
         : null;
     const numDoc = numeroCorrelativo ? `N° ${numeroCorrelativo}` : 'N° pendiente';
 
-    // TIPO DE DOCUMENTO
+    // TIPO DE DOCUMENTO — el título va en negro en ambos casos (misma
+    // familia visual). La distinción de estado la da el pill.
     const tipodoc = document.getElementById('tipoDocumento').value;
-    const tituloDoc = tipodoc === 'ORDEN DE COMPRA' ? 'ORDEN DE COMPRA' : 'COTIZACIÓN';
+    const esOrden = tipodoc === 'ORDEN DE COMPRA';
+    const tituloDoc = esOrden ? 'ORDEN DE COMPRA' : 'COTIZACIÓN';
     document.getElementById('printTipoDoc').textContent = tituloDoc;
     document.getElementById('printDate').textContent = `Fecha: ${fechaStr}`;
     document.getElementById('printNumeroCot').textContent = numDoc;
-    // "Válido 7 días" solo en cotización
+
+    // PILL DE ESTADO: ámbar "⏱ Válido 7 días" (cotización) /
+    // azul sólido "✓ Confirmado" (orden de compra).
     const validezEl = document.getElementById('printValidezBadge');
-    if (validezEl) validezEl.style.display = tipodoc === 'ORDEN DE COMPRA' ? 'none' : 'inline-block';
+    if (validezEl) {
+        validezEl.style.display = 'inline-flex';
+        validezEl.textContent = esOrden ? '✓ Confirmado' : '⏱ Válido 7 días';
+        validezEl.classList.toggle('pill-orden', esOrden);
+        validezEl.classList.toggle('pill-cotizacion', !esOrden);
+    }
+
+    // BLOQUE PAGO / ENTREGA:
+    //  - Cotización: tarjeta de pago combinada (Opción A) + caja de total.
+    //  - Orden de Compra: UNA tarjeta "Entrega" + franja "TOTAL DE LA ORDEN".
+    const bloqueCotPago = document.getElementById('printCotizacionPago');
+    const bloqueOrdenEntrega = document.getElementById('printOrdenEntrega');
+    if (bloqueCotPago) bloqueCotPago.style.display = esOrden ? 'none' : 'grid';
+    if (bloqueOrdenEntrega) bloqueOrdenEntrega.style.display = esOrden ? 'block' : 'none';
 
     // CLIENTE en bloque compacto
     const cliente = getClienteData();
@@ -111,7 +128,7 @@ export async function prepararCotizacion() {
 
     if (cliente.nombre || cliente.empresa) {
         hayCliente = true;
-        let html = `<div style="font-size:0.75em;font-weight:700;color:#5568d3;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:7px;">👤 Cliente</div>`;
+        let html = `<div style="font-size:0.75em;font-weight:700;color:#5568d3;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">👤 Cliente</div>`;
         if (cliente.nombre) html += `<div style="font-weight:700;font-size:0.88em;color:var(--primary);">${cliente.nombre}</div>`;
         if (cliente.empresa) html += `<div style="font-size:0.8em;color:var(--text-muted);">${cliente.empresa}</div>`;
         const detalles = [
@@ -120,22 +137,24 @@ export async function prepararCotizacion() {
             cliente.email ? `✉️ ${cliente.email}` : null,
             cliente.direccion ? `📍 ${cliente.direccion}` : null
         ].filter(Boolean);
-        if (detalles.length) html += `<div style="font-size:0.78em;color:var(--text-muted);margin-top:5px;line-height:1.7;">${detalles.join('<br>')}</div>`;
-        if (cliente.notas) html += `<div style="font-size:0.75em;color:#92400e;background:#fef3c7;padding:4px 7px;border-radius:4px;margin-top:5px;">📝 ${cliente.notas}</div>`;
+        if (detalles.length) html += `<div style="font-size:0.78em;color:var(--text-muted);margin-top:6px;line-height:1.7;">${detalles.join('<br>')}</div>`;
+        if (cliente.notas) html += `<div style="font-size:0.75em;color:#92400e;background:#fef3c7;padding:4px 8px;border-radius:4px;margin-top:6px;">📝 ${cliente.notas}</div>`;
         clientePrintEl.innerHTML = html;
         clientePrintEl.style.display = 'block';
     } else {
         clientePrintEl.style.display = 'none';
     }
 
-    // ENVÍO en bloque compacto
+    // ENVÍO en bloque compacto — solo en Cotización. En la Orden de Compra
+    // el envío vive en la tarjeta "Entrega" de abajo (una sola, sin
+    // duplicar el dato arriba).
     const envioPrintEl = document.getElementById('envioInfoPrint');
-    if (state.sucursalSeleccionada) {
+    if (state.sucursalSeleccionada && !esOrden) {
         hayEnvio = true;
         envioPrintEl.innerHTML = `
-            <div style="font-size:0.75em;font-weight:700;color:#234e52;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:7px;">📦 Envío Shalom</div>
+            <div style="font-size:0.75em;font-weight:700;color:#234e52;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📦 Envío Shalom</div>
             <div style="font-weight:700;font-size:0.88em;color:var(--primary);">${state.sucursalSeleccionada.nombre}</div>
-            <div style="font-size:0.78em;color:var(--text-muted);line-height:1.7;margin-top:5px;">
+            <div style="font-size:0.78em;color:var(--text-muted);line-height:1.7;margin-top:6px;">
                 📍 ${state.sucursalSeleccionada.direccion}<br>
                 🏙️ ${state.sucursalSeleccionada.ciudad}, ${state.sucursalSeleccionada.provincia}<br>
                 🏢 Tipo: ${state.sucursalSeleccionada.tipo}
@@ -143,6 +162,22 @@ export async function prepararCotizacion() {
         envioPrintEl.style.display = 'block';
     } else {
         envioPrintEl.style.display = 'none';
+    }
+
+    // TARJETA "ENTREGA" (solo Orden de Compra): Destino / Dirección /
+    // Forma de envío — reutiliza la sucursal seleccionada del cotizador.
+    const entregaBody = document.getElementById('printEntregaBody');
+    if (entregaBody) {
+        if (state.sucursalSeleccionada) {
+            const s = state.sucursalSeleccionada;
+            const ciudadProv = [s.ciudad, s.provincia].filter(Boolean).join(', ');
+            entregaBody.innerHTML = `
+                <div class="oc-row"><b>Destino:</b> ${s.nombre}${ciudadProv ? ' — ' + ciudadProv : ''}</div>
+                <div class="oc-row"><b>Dirección:</b> ${s.direccion || '—'}</div>
+                <div class="oc-row"><b>Forma de envío:</b> Shalom</div>`;
+        } else {
+            entregaBody.innerHTML = `<div class="oc-row" style="color:#9a9a9e;">Sin sucursal de envío seleccionada</div>`;
+        }
     }
 
     // Bloque compacto: solo si hay datos de cliente O envío
@@ -177,7 +212,7 @@ export async function prepararCotizacion() {
 
         const precioMostrar = state.mostrarConIGV ? calcularPrecioConIGV(precioUnitario) : precioUnitario;
         const subtotalMostrar = state.mostrarConIGV ? calcularPrecioConIGV(subtotal) : subtotal;
-        const colorInfo = producto.color ? ` <span style="background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:8px;font-size:0.75em;font-weight:600;margin-left:3px;">🎨 ${producto.color}</span>` : '';
+        const colorInfo = producto.color ? ` <span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:8px;font-size:0.75em;font-weight:600;margin-left:4px;">🎨 ${producto.color}</span>` : '';
 
         return `
             <tr>
@@ -192,7 +227,16 @@ export async function prepararCotizacion() {
 
     // TOTALES
     const totalMostrar = state.mostrarConIGV ? calcularPrecioConIGV(totalSinIGV) : totalSinIGV;
-    document.getElementById('printTotal').textContent = `S/ ${totalMostrar.toFixed(2)}`;
+    const totalTexto = `S/ ${totalMostrar.toFixed(2)}`;
+    document.getElementById('printTotal').textContent = totalTexto;
+    // Mismo total en la franja "TOTAL DE LA ORDEN" de la Orden de Compra.
+    const totalOCEl = document.getElementById('printTotalOC');
+    if (totalOCEl) totalOCEl.textContent = totalTexto;
+    const ocStripLabel = document.getElementById('printOCStripLabel');
+    if (ocStripLabel) {
+        const n = state.productosEnTabla.length;
+        ocStripLabel.textContent = `${n} producto${n !== 1 ? 's' : ''} · TOTAL DE LA ORDEN`;
+    }
 
     // Detalle de totales
     let detalleHTML = '';
@@ -207,16 +251,27 @@ export async function prepararCotizacion() {
     if (state.forzarPorMayor) infoText += ` · Precio por mayor`;
     document.getElementById('printTotalInfo').textContent = infoText;
 
-    // ADELANTO / PAGO
+    // ADELANTO / PAGO — mismo campo #montoAdelanto que la Cotización.
+    //  - Cotización: sección dentro de la caja de total.
+    //  - Orden de Compra: línea de desglose bajo la franja de total, que
+    //    SOLO se renderiza si hubo algún adelanto (> 0). Si el adelanto
+    //    cubre el total, se muestra igual con "Saldo pendiente: S/ 0.00".
     const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
     const pagoPrint = document.getElementById('printPagoSection');
+    const ocBreakdown = document.getElementById('printOCBreakdown');
     if (adelanto > 0) {
         const saldo = Math.max(0, totalMostrar - adelanto);
         pagoPrint.style.display = 'block';
         document.getElementById('printAdelanto').textContent = `S/ ${adelanto.toFixed(2)}`;
         document.getElementById('printSaldo').textContent = `S/ ${saldo.toFixed(2)}`;
+        if (ocBreakdown) {
+            ocBreakdown.style.display = 'flex';
+            document.getElementById('printOCAdelanto').textContent = `S/ ${adelanto.toFixed(2)}`;
+            document.getElementById('printOCSaldo').textContent = `S/ ${saldo.toFixed(2)}`;
+        }
     } else {
         pagoPrint.style.display = 'none';
+        if (ocBreakdown) ocBreakdown.style.display = 'none';
     }
 }
 

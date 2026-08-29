@@ -5,10 +5,11 @@ import { mostrarNotificacion, mostrarConfirmacion, mostrarPrompt } from '../core
 import { parseFetch, COTIZACION_CLASE, aclSoloUsuario } from '../core/parseClient.js';
 import { getClienteData, actualizarResumenCliente } from '../cotizador/cliente.js';
 import { obtenerPrecio, calcularPrecioConIGV } from '../cotizador/precios.js';
-import { renderTable, guardarEstado, actualizarPago } from '../cotizador/productos-tabla.js';
+import { renderTable, guardarEstado, actualizarPago, renderAccesosRapidos } from '../cotizador/productos-tabla.js';
 import { renderSucursales, mostrarSucursalSeleccionada } from '../catalogo/sucursales-crud.js';
 import { siguienteCorrelativo } from './correlativos.js';
 import { buscarEnvioPorOC, badgeEnvioHtml, poblarListaOrdenesCompra } from '../envios/shalom.js';
+import { actualizarBadgeEnviosSidebar } from '../envios/lima.js';
 import { switchTabById } from '../cotizador/productos-tabla.js';
 
 // opts.silencioso: omite la notificación (se usa cuando el guardado
@@ -156,6 +157,8 @@ export async function renderHistorial() {
     }
 
     pintarHistorialDesdeCache();
+    actualizarBadgeEnviosSidebar();
+    renderAccesosRapidos(); // los accesos rápidos dependen del historial
 }
 
 // Etiqueta visual del estado de pago de una orden (mismo estilo de chip
@@ -387,7 +390,7 @@ export async function cambiarEstadoCotizacion(objectId, nuevoEstado) {
         }
 
         await parseFetch(COTIZACION_CLASE, 'PUT', objectId, cambios);
-        renderHistorial();
+        renderHistorial(); // recalcula también el badge de "Envíos" de la sidebar
         mostrarNotificacion(
             nuevoEstado === 'orden_compra' ? '✅ Marcada como venta confirmada' : '↩ Vuelta a cotización',
             'success'

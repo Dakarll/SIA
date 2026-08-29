@@ -414,3 +414,105 @@
             margin-top: 6px;
             line-height: 1.4;
         }
+
+        /* ============================================================
+           FASE 2 — Documentos exportados (Cotización / Orden de Compra)
+           con principios de Apple Design. Ver documentos_apple_design.html.
+           Colores literales a propósito (no var()): estas zonas se
+           exportan como imagen/PDF y deben verse igual sin importar el
+           modo oscuro.
+           ============================================================ */
+
+        /* Título grande: tipografía óptica — tracking negativo + peso 800.
+           Mismo color NEGRO para Cotización y Orden de Compra: los dos
+           documentos son de la misma familia visual; el azul no va en el
+           título (restraint — un acento, no una decoración repetida). La
+           distinción de un vistazo la da el pill de estado. */
+        #printTipoDoc {
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: #1d1d1f;
+        }
+
+        /* Pill de estado: ámbar "Válido N días" (cotización) /
+           azul sólido + texto blanco "Confirmado" (orden). Es el ÚNICO
+           lugar del documento OC donde el azul aparece como fondo. */
+        #printValidezBadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        #printValidezBadge.pill-cotizacion { background: #fff4d6; color: #a8720a; }
+        #printValidezBadge.pill-orden { background: #3348c9; color: #ffffff; }
+
+        /* Materiales / profundidad: sombra suave de "elevación" incluso en
+           imagen estática — en la tarjeta de pago combinada y en la caja
+           de total. */
+        .cotizacion-print .print-combo-card {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+        }
+        .cotizacion-print .print-total-box {
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orden de Compra: tarjeta "Entrega" (reemplaza a "Datos para
+           transferencia/Yape"). Escala de espaciado en múltiplos de 2px. */
+        .oc-entrega-card {
+            background: #f4f5f7;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+        .oc-entrega-t {
+            font-size: 0.72em;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b6b70;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        #printEntregaBody .oc-row {
+            font-size: 0.84em;
+            color: #3a3a3c;
+            line-height: 1.7;
+        }
+        #printEntregaBody .oc-row b { color: #1d1d1f; font-weight: 600; }
+
+        /* Franja de total: neutro oscuro (el mismo que la tarjeta de pago),
+           con el azul SOLO como borde-acento a la izquierda — no como
+           relleno. El importe va en blanco. */
+        .oc-total-strip {
+            background: #1d1d1f;
+            color: #ffffff;
+            border-left: 4px solid #3348c9;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+        }
+        .oc-total-strip .oc-strip-lbl { font-size: 0.74em; color: rgba(255, 255, 255, 0.62); }
+        .oc-total-strip .oc-strip-amt {
+            font-size: 1.35em;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        /* Desglose de adelanto — solo se renderiza si adelanto > 0
+           (lo controla prepararCotizacion() con display:none/flex). */
+        .oc-breakdown {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.66em;
+            color: #8a8a8e;
+            padding: 8px 18px 0;
+            margin-top: -2px;
+        }
+        .oc-breakdown span b { color: #3a3a3c; font-weight: 700; }
+        .oc-breakdown .saldo b { color: #c0392b; }
