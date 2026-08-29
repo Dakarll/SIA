@@ -23,8 +23,13 @@ export function agregarNuevaSucursal(event) {
     state.sucursalesDB.push({ nombre, direccion, ciudad, provincia, tipo });
     guardarEstado();
     renderSucursalList();
+    renderSucursales();        // Fase 4b: refrescar la lista unificada
+    poblarListaProvincias();
+    renderEnvioSucursalList();
 
     document.getElementById('newSucursalForm').reset();
+    const det = document.querySelector('.suc-add-details');
+    if (det) det.open = false;
     mostrarNotificacion('✅ Sucursal agregada correctamente', 'success');
 }
 
@@ -90,6 +95,9 @@ function onSubmitEditSucursal(e) {
     const nuevaProvincia = document.getElementById('editSucursalProvincia').value.trim();
     const nuevoTipo = document.getElementById('editSucursalTipo').value;
 
+    const anterior = state.sucursalesDB[state.sucursalEditandoIndex];
+    const eraActiva = state.sucursalSeleccionada && anterior && state.sucursalSeleccionada.nombre === anterior.nombre;
+
     state.sucursalesDB[state.sucursalEditandoIndex] = {
         nombre: nuevoNombre,
         direccion: nuevaDireccion,
@@ -98,7 +106,15 @@ function onSubmitEditSucursal(e) {
         tipo: nuevoTipo
     };
 
+    // Si se editó la sucursal actualmente seleccionada para el envío,
+    // reflejar los cambios en state.sucursalSeleccionada (que las demás
+    // partes del flujo leen tal cual).
+    if (eraActiva) state.sucursalSeleccionada = { ...state.sucursalesDB[state.sucursalEditandoIndex] };
+
     renderSucursalList();
+    renderSucursales();              // Fase 4b
+    mostrarSucursalSeleccionada();
+    renderEnvioSucursalList();
     closeEditSucursalModal();
     guardarEstado();
     mostrarNotificacion('✅ Sucursal actualizada', 'success');
@@ -106,9 +122,21 @@ function onSubmitEditSucursal(e) {
 
 export function eliminarSucursal(index) {
     mostrarConfirmacion('¿Eliminar esta sucursal permanentemente?', () => {
+        const eliminada = state.sucursalesDB[index];
         state.sucursalesDB.splice(index, 1);
+        // Si se eliminó la sucursal elegida para el envío de la cotización
+        // en curso, dejar de referenciarla (si no, quedaría un destino
+        // "fantasma" en el guardado / la imagen).
+        if (eliminada && state.sucursalSeleccionada && state.sucursalSeleccionada.nombre === eliminada.nombre) {
+            state.sucursalSeleccionada = null;
+            const sel = document.getElementById('sucursalSeleccionada');
+            if (sel) sel.style.display = 'none';
+        }
         guardarEstado();
         renderSucursalList();
+        renderSucursales();             // Fase 4b
+        renderEnvioSucursalList();
+        actualizarPanelEnvioCotizar();
         mostrarNotificacion('🗑️ Sucursal eliminada', 'success');
     });
 }
@@ -241,12 +269,19 @@ export function renderSucursales() {
 
     grid.innerHTML = sucursales.map(sucursal => {
         const selected = state.sucursalSeleccionada && state.sucursalSeleccionada.nombre === sucursal.nombre ? 'selected' : '';
+        const realIndex = state.sucursalesDB.findIndex(s => s.nombre === sucursal.nombre);
         return `
             <div class="sucursal-card ${selected}" onclick='seleccionarSucursal(${JSON.stringify(sucursal).replace(/'/g, "&apos;")})'>
                 <div class="sucursal-nombre">${sucursal.nombre}</div>
                 <div class="sucursal-direccion">📍 ${sucursal.direccion}</div>
                 <div class="sucursal-direccion">🏙️ ${sucursal.ciudad}, ${sucursal.provincia}</div>
-                <div class="sucursal-tipo">${sucursal.tipo}</div>
+                <div class="sucursal-card-footer">
+                    <span class="sucursal-tipo">${sucursal.tipo}</span>
+                    <span class="sucursal-card-actions">
+                        <button type="button" class="btn-edit" aria-label="Editar sucursal" onclick="event.stopPropagation(); editarSucursal(${realIndex})">✏️</button>
+                        <button type="button" class="btn-remove" aria-label="Eliminar sucursal" onclick="event.stopPropagation(); eliminarSucursal(${realIndex})">🗑️</button>
+                    </span>
+                </div>
             </div>
         `;
     }).join('');

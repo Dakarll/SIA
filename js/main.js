@@ -6,7 +6,7 @@ import { state } from './core/state.js';
 import { initAuth, validarAccesoAlCargar, inicializarAppPostLogin, mostrarVista } from './core/auth.js';
 import { initUiHelpers, cargarPreferencias, toggleDarkMode } from './core/ui-helpers.js';
 import { initPrecios } from './cotizador/precios.js';
-import { initProductosTabla, cargarEstado, switchTab, switchTabById } from './cotizador/productos-tabla.js';
+import { initProductosTabla, cargarEstado, switchTab } from './cotizador/productos-tabla.js';
 import { initCliente } from './cotizador/cliente.js';
 import { initExport } from './cotizador/export.js';
 import { initProductosCrud, renderProductList, closeEditProductoModal } from './catalogo/productos-crud.js';
@@ -33,24 +33,6 @@ export { switchTabById } from './cotizador/productos-tabla.js';
 function initTabs() {
     document.querySelectorAll('.tab[data-tab]').forEach(btn => {
         btn.addEventListener('click', (e) => switchTab(btn.dataset.tab, e));
-    });
-    // Botones puente (Fase 3): saltan de una vista a otra sin ser una
-    // entrada de navegación propia — "⚙️ Gestionar sucursales" dentro de
-    // la vista Sucursales, y "‹ Volver a Sucursales". Reutilizan
-    // switchTabById. Como "Sucursales" y su gestión son la MISMA entrada
-    // de sidebar (se fusionan del todo en la Fase 4), se mantiene esa
-    // entrada resaltada en ambas vistas.
-    document.querySelectorAll('.nav-bridge[data-tab]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            switchTabById(btn.dataset.tab);
-            if (btn.dataset.tab === 'sucursales' || btn.dataset.tab === 'gestionsucursales') {
-                const sidebarSuc = document.querySelector('.sidebar-link[data-tab="sucursales"]');
-                if (sidebarSuc) {
-                    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-                    sidebarSuc.classList.add('active');
-                }
-            }
-        });
     });
 }
 

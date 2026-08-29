@@ -822,6 +822,45 @@
             margin-top: 8px;
         }
 
+        /* Fase 4b — pie de la tarjeta de sucursal: tipo + acciones
+           editar/eliminar (la sección "Gestión" ya no es aparte). */
+        .sucursal-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .sucursal-card-footer .sucursal-tipo { margin-top: 0; }
+        .sucursal-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .sucursal-card-actions .btn-edit { margin-right: 0; }
+
+        /* Fase 4b — bloque plegable "Agregar nueva sucursal" dentro de
+           la vista Sucursales. */
+        .suc-add-details {
+            margin-bottom: 20px;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            background: var(--bg-light);
+            overflow: hidden;
+        }
+        .suc-add-details > summary {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary);
+            list-style: none;
+            user-select: none;
+        }
+        .suc-add-details > summary::-webkit-details-marker { display: none; }
+        .suc-add-details > summary::before {
+            content: "\25B8\00a0";
+            color: var(--secondary);
+            font-weight: 700;
+        }
+        .suc-add-details[open] > summary::before { content: "\25BE\00a0"; }
+        .suc-add-details > summary + * { margin: 12px 15px 15px; }
+
         .sucursal-stats {
             margin-top: 15px;
             padding-top: 15px;

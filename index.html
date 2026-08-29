@@ -516,16 +516,13 @@
             <!-- TAB: SUCURSALES -->
             <div class="tab-content" id="tab-sucursales">
                 <div class="add-product-section">
-                    <div class="add-product-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-                        <span>🔍 Buscar Sucursal para Envío</span>
-                        <button type="button" class="nav-bridge btn btn-small" data-tab="gestionsucursales" style="background:var(--secondary); white-space:nowrap; font-weight:600;">⚙️ Gestionar sucursales</button>
-                    </div>
+                    <div class="add-product-title">🔍 Buscar Sucursal para Envío</div>
                     <div class="search-container">
                         <span class="search-icon">📍</span>
-                        <input 
-                            type="text" 
-                            id="searchSucursal" 
-                            class="search-input" 
+                        <input
+                            type="text"
+                            id="searchSucursal"
+                            class="search-input"
                             placeholder="Buscar por ciudad, provincia, dirección..."
                         >
                     </div>
@@ -546,6 +543,49 @@
                     </div>
                     <div class="sucursal-stats" id="sucursalStats"></div>
                 </div>
+
+                <!-- FASE 4b — "Sucursales" y "Gestión de sucursales" fusionadas en
+                     una sola sección: crear/editar/eliminar vive aquí mismo, en la
+                     lista de abajo. El formulario de alta va plegado por defecto. -->
+                <details class="suc-add-details">
+                    <summary>➕ Agregar nueva sucursal</summary>
+                    <div class="new-form-section" style="margin-top:12px;">
+                        <form id="newSucursalForm">
+                            <div class="form-group">
+                                <label class="form-label" style="color: white;">Nombre de la Sucursal</label>
+                                <input type="text" class="form-input" id="newSucursalNombre" placeholder="Ej: Lima Centro" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="color: white;">Dirección</label>
+                                <input type="text" class="form-input" id="newSucursalDireccion" placeholder="Ej: Av. Principal 123" required>
+                            </div>
+                            <div class="price-grid">
+                                <div class="form-group">
+                                    <label class="form-label" style="color: white;">Ciudad</label>
+                                    <input type="text" class="form-input" id="newSucursalCiudad" placeholder="Ej: Lima" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" style="color: white;">Provincia</label>
+                                    <input type="text" class="form-input" id="newSucursalProvincia" placeholder="Ej: Lima" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="color: white;">Tipo de Sucursal</label>
+                                <select class="form-input" id="newSucursalTipo" required>
+                                    <option value="">Seleccione un tipo...</option>
+                                    <option value="Grande / Co">Grande / Co</option>
+                                    <option value="Mediana">Mediana</option>
+                                    <option value="Pequeña">Pequeña</option>
+                                    <option value="Terminal">Terminal</option>
+                                    <option value="Micro">Micro</option>
+                                    <option value="Mini-micro">Mini-micro</option>
+                                    <option value="Micro E/r">Micro E/r</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">💾 Agregar Sucursal</button>
+                        </form>
+                    </div>
+                </details>
 
                 <!-- GENERAR IMAGEN DE SUCURSALES POR PROVINCIA -->
                 <div class="add-product-section">
@@ -623,75 +663,15 @@
             </div>
 
             <!-- TAB: GESTIÓN DE SUCURSALES -->
-            <div class="tab-content" id="tab-gestionsucursales">
-                <button type="button" class="nav-bridge btn btn-small" data-tab="sucursales" style="background:var(--border); color:var(--primary); margin-bottom:14px; font-weight:600;">‹ Volver a Sucursales</button>
-                <!-- FORMULARIO NUEVA SUCURSAL -->
-                <div class="new-form-section">
-                    <h3>➕ Agregar Nueva Sucursal</h3>
-                    <form id="newSucursalForm">
-                        <div class="form-group">
-                            <label class="form-label" style="color: white;">Nombre de la Sucursal</label>
-                            <input type="text" class="form-input" id="newSucursalNombre" placeholder="Ej: Lima Centro" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" style="color: white;">Dirección</label>
-                            <input type="text" class="form-input" id="newSucursalDireccion" placeholder="Ej: Av. Principal 123" required>
-                        </div>
-                        <div class="price-grid">
-                            <div class="form-group">
-                                <label class="form-label" style="color: white;">Ciudad</label>
-                                <input type="text" class="form-input" id="newSucursalCiudad" placeholder="Ej: Lima" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" style="color: white;">Provincia</label>
-                                <input type="text" class="form-input" id="newSucursalProvincia" placeholder="Ej: Lima" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" style="color: white;">Tipo de Sucursal</label>
-                            <select class="form-input" id="newSucursalTipo" required>
-                                <option value="">Seleccione un tipo...</option>
-                                <option value="Grande / Co">Grande / Co</option>
-                                <option value="Mediana">Mediana</option>
-                                <option value="Pequeña">Pequeña</option>
-                                <option value="Terminal">Terminal</option>
-                                <option value="Micro">Micro</option>
-                                <option value="Mini-micro">Mini-micro</option>
-                                <option value="Micro E/r">Micro E/r</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success" style="width: 100%;">💾 Agregar Sucursal</button>
-                    </form>
-                </div>
-
-                <!-- LISTA DE SUCURSALES -->
-                <div class="add-product-section">
-                    <div class="add-product-title">🏢 Lista de Sucursales (<span id="sucursalCount">0</span>)</div>
-                    <div class="search-container">
-                        <span class="search-icon">🔍</span>
-                        <input 
-                            type="text" 
-                            id="searchSucursalGestion" 
-                            class="search-input" 
-                            placeholder="Buscar sucursal..."
-                        >
-                    </div>
-                </div>
-                <div class="products-table-container">
-                    <table class="products-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Dirección</th>
-                                <th>Ciudad</th>
-                                <th>Provincia</th>
-                                <th>Tipo</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sucursalListBody"></tbody>
-                    </table>
-                </div>
+            <!-- TAB: GESTIÓN DE SUCURSALES — fusionada dentro de "Sucursales"
+                 en la Fase 4b. Este contenedor queda sin entrada de
+                 navegación; solo conserva los elementos que renderSucursalList()
+                 sigue tocando (búsqueda, contador, tbody), ocultos, para no
+                 tener que reescribir esa función ni sus llamadas. -->
+            <div class="tab-content" id="tab-gestionsucursales" hidden aria-hidden="true">
+                <input type="text" id="searchSucursalGestion" hidden>
+                <span id="sucursalCount" hidden>0</span>
+                <table hidden><tbody id="sucursalListBody"></tbody></table>
             </div>
 
             <!-- ============================================ -->
