@@ -222,18 +222,20 @@
             --chip-neutral-bg: #f0f0f0;
         }
 
-        /* FIX A2: el FIX A1 forzaba `color` también con el selector `*`
-           (todo descendiente), lo que pisaba el color:white heredado en
-           los bloques de pago (Transferencia/Yape) — sus hijos internos
-           no tienen color propio, heredan el blanco del contenedor con
-           fondo azul/morado, y `.cotizacion-print *` los sobrescribía a
-           gris oscuro, volviéndolos invisibles sobre su propio fondo.
-           Se aplica `color` solo al contenedor raíz (sin `*`): el texto
-           plano sigue heredando gris oscuro por cascada normal, y los
-           bloques con su propio color inline (blanco) ya no son tocados. */
-        #fichaPreview,
-        .cotizacion-print,
-        .ficha-print {
+        /* FIX A2 / FASE 1a: el FIX A1 forzaba `color` también con el
+           selector `*` (todo descendiente), lo que pisaba el color:white
+           heredado en las cajas de pago (Transferencia/Yape) — sus hijos
+           internos no tienen color propio, heredan el blanco del contenedor
+           con fondo oscuro, y `.cotizacion-print *` los sobrescribía a gris
+           oscuro, volviéndolos invisibles sobre su propio fondo.
+           Se aplica `color` SOLO al contenedor raíz (sin `*`) y SOLO en
+           modo oscuro: en modo claro el texto plano ya hereda el gris
+           oscuro normal del body, así que forzarlo ahí es innecesario y se
+           evita para no arriesgar regresiones. Los bloques con su propio
+           color inline (blanco) nunca se tocan. */
+        body.dark-mode .cotizacion-print,
+        body.dark-mode #fichaPreview,
+        body.dark-mode .ficha-print {
             color: #2d3748;
         }
 

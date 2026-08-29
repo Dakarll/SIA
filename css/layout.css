@@ -484,6 +484,20 @@
             font-weight: 700;
         }
 
+        /* En modo oscuro, el override genérico `body.dark-mode
+           .btn-primary:disabled` (fondo surface-3 + texto gris) tiene más
+           especificidad que `.action-buttons .btn-primary:disabled` y
+           dejaba el "Guardar" deshabilitado del footer con texto gris.
+           El spec (layout_final.html §3) pide fondo #3a3a3a, borde #555555
+           y texto BLANCO también deshabilitado — se re-aplica aquí con
+           especificidad suficiente, sin tocar padding/tamaños (que sí
+           deben seguir cediendo a los @media de móvil). */
+        body.dark-mode .action-buttons .btn-primary:disabled {
+            background: #3a3a3a;
+            border: 1.5px solid #555555;
+            color: #ffffff;
+        }
+
         /* SUCURSALES */
         .filter-section {
             display: flex;
