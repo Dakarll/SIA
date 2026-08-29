@@ -66,14 +66,10 @@ export function cargarEstado() {
 // SISTEMA DE TABS
 // ============================================
 
-export function switchTab(tab, e) {
-    state.tabActual = tab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-    e.target.classList.add('active');
-    document.getElementById(`tab-${tab}`).classList.add('active');
-
+// Dispara el render/carga de datos propio de cada vista. Se extrajo de
+// switchTab() para poder reutilizarlo desde la navegación móvil (Fase 4a),
+// que activa la vista con switchTabById y luego pide su contenido.
+export function renderTabContent(tab) {
     if (tab === 'sucursales') {
         renderSucursales();
         updateSucursalStats();
@@ -96,6 +92,18 @@ export function switchTab(tab, e) {
     if (tab !== 'shalom' && typeof detenerCamaraQR === 'function') {
         detenerCamaraQR();
     }
+}
+
+export function switchTab(tab, e) {
+    state.tabActual = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+    if (e && e.target) e.target.classList.add('active');
+    const tc = document.getElementById(`tab-${tab}`);
+    if (tc) tc.classList.add('active');
+
+    renderTabContent(tab);
 }
 
 // Variante que activa una pestaña por id sin depender de un evento de

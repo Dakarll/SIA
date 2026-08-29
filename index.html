@@ -287,7 +287,7 @@
                 <div class="sidebar-group-label">Operación diaria</div>
                 <button class="tab sidebar-link active" data-tab="cotizar">📋 Cotizar</button>
                 <button class="tab sidebar-link" data-tab="historial">🕓 Historial</button>
-                <button class="tab sidebar-link" data-tab="envios">🚚 Envíos <span class="sidebar-badge" id="sidebarEnviosBadge" hidden>0</span></button>
+                <button class="tab sidebar-link" data-tab="envios">🚚 Envíos <span class="sidebar-badge js-envios-badge" id="sidebarEnviosBadge" hidden>0</span></button>
             </div>
             <div class="sidebar-group">
                 <div class="sidebar-group-label">Catálogo</div>
@@ -330,6 +330,12 @@
 
         <div class="sync-indicator" id="syncIndicator">🔄 Datos actualizados en otra pestaña — click para recargar</div>
 
+        <!-- BARRA SUPERIOR MÓVIL (Fase 4a) — solo <1024px y solo fuera de
+             la pantalla "Inicio". Botón "‹ Inicio" + título de la sección. -->
+        <div class="mobile-top-bar mn-hidden" id="mobileTopBar">
+            <button type="button" class="mobile-back-btn" id="mobileBackBtn">‹ Inicio</button>
+            <span class="mobile-screen-title" id="mobileScreenTitle"></span>
+        </div>
 
         <div class="content">
             <!-- TABS — agrupados por frecuencia de uso (Fase B1). Los
@@ -353,7 +359,6 @@
                         <button class="tab" data-tab="productos" aria-label="Productos">📦 Productos</button>
                         <button class="tab" data-tab="sucursales" aria-label="Sucursales">🚚 Sucursales</button>
                         <button class="tab" data-tab="fichas" aria-label="Fichas Técnicas">📄 Fichas Técnicas</button>
-                        <button class="tab" data-tab="gestionsucursales" aria-label="Gestión Sucursales">🏢 Gestión Sucursales</button>
                     </div>
                 </div>
                 <div class="tab-group">
@@ -362,6 +367,48 @@
                         <button class="tab" data-tab="dashboard" aria-label="Dashboard">📊 Dashboard</button>
                         <button class="tab" data-tab="shalom" aria-label="Seguimiento Shalom">🚚 Seguimiento Shalom</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+                 PANTALLA RAÍZ "INICIO" (Fase 4a) — solo se usa en móvil
+                 (<1024px). Lista agrupada tipo iOS Settings; cada fila
+                 navega (push) a su sección con mobileNav.go(). En desktop
+                 nunca se activa (manda la sidebar de la Fase 3).
+                 ============================================================ -->
+            <div class="tab-content" id="tab-inicio">
+                <div class="inicio-group-label">Operación diaria</div>
+                <div class="inicio-group">
+                    <button type="button" class="inicio-row" data-go="cotizar">
+                        <span class="inicio-row-ic">📋</span><span class="inicio-row-lbl">Cotizar</span><span class="inicio-row-chev">›</span>
+                    </button>
+                    <button type="button" class="inicio-row" data-go="historial">
+                        <span class="inicio-row-ic">🕓</span><span class="inicio-row-lbl">Historial</span><span class="inicio-row-chev">›</span>
+                    </button>
+                    <button type="button" class="inicio-row" data-go="envios">
+                        <span class="inicio-row-ic">🚚</span><span class="inicio-row-lbl">Envíos</span><span class="inicio-row-badge js-envios-badge" hidden>0</span><span class="inicio-row-chev">›</span>
+                    </button>
+                </div>
+                <div class="inicio-group-label">Catálogo</div>
+                <div class="inicio-group">
+                    <button type="button" class="inicio-row" data-go="productos">
+                        <span class="inicio-row-ic">📦</span><span class="inicio-row-lbl">Productos</span><span class="inicio-row-chev">›</span>
+                    </button>
+                    <button type="button" class="inicio-row" data-go="sucursales">
+                        <span class="inicio-row-ic">🏢</span><span class="inicio-row-lbl">Sucursales</span><span class="inicio-row-chev">›</span>
+                    </button>
+                    <button type="button" class="inicio-row" data-go="fichas">
+                        <span class="inicio-row-ic">📄</span><span class="inicio-row-lbl">Fichas Técnicas</span><span class="inicio-row-chev">›</span>
+                    </button>
+                </div>
+                <div class="inicio-group-label">Reportes</div>
+                <div class="inicio-group">
+                    <button type="button" class="inicio-row" data-go="dashboard">
+                        <span class="inicio-row-ic">📊</span><span class="inicio-row-lbl">Dashboard</span><span class="inicio-row-chev">›</span>
+                    </button>
+                    <button type="button" class="inicio-row" data-go="shalom">
+                        <span class="inicio-row-ic">🚛</span><span class="inicio-row-lbl">Seguimiento Shalom</span><span class="inicio-row-chev">›</span>
+                    </button>
                 </div>
             </div>
 
