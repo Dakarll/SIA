@@ -414,3 +414,94 @@
             margin-top: 6px;
             line-height: 1.4;
         }
+
+        /* ============================================================
+           FASE 2 — Documentos exportados (Cotización / Orden de Compra)
+           con principios de Apple Design. Ver documentos_apple_design.html.
+           Colores literales a propósito (no var()): estas zonas se
+           exportan como imagen/PDF y deben verse igual sin importar el
+           modo oscuro.
+           ============================================================ */
+
+        /* Título grande: tipografía óptica — tracking negativo + peso 800.
+           El color lo fija el JS con .doc-cotizacion / .doc-orden, para
+           distinguir de un vistazo propuesta (oscuro + pill ámbar) de
+           pedido confirmado (azul + pill azul). */
+        #printTipoDoc {
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+        #printTipoDoc.doc-cotizacion { color: #1d1d1f; }
+        #printTipoDoc.doc-orden { color: #3348c9; }
+
+        /* Pill de estado: ámbar "Válido N días" (cotización) /
+           azul "Confirmado" (orden). */
+        #printValidezBadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+        #printValidezBadge.pill-cotizacion { background: #fff4d6; color: #a8720a; }
+        #printValidezBadge.pill-orden { background: #dbe4ff; color: #3348c9; }
+
+        /* Materiales / profundidad: sombra suave de "elevación" incluso en
+           imagen estática — en la tarjeta de pago combinada y en la caja
+           de total. */
+        .cotizacion-print .print-combo-card {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+        }
+        .cotizacion-print .print-total-box {
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Orden de Compra: tarjeta "Entrega" (reemplaza a "Datos para
+           transferencia/Yape") + franja azul "TOTAL DE LA ORDEN".
+           Escala de espaciado en múltiplos de 2px. */
+        .oc-entrega-card {
+            background: #f4f5f7;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+        .oc-entrega-t {
+            font-size: 0.72em;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b6b70;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        #printEntregaBody .oc-row {
+            font-size: 0.84em;
+            color: #3a3a3c;
+            line-height: 1.7;
+        }
+        #printEntregaBody .oc-row b { color: #1d1d1f; font-weight: 600; }
+
+        .oc-total-strip {
+            background: #3348c9;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            box-shadow: 0 6px 16px rgba(51, 72, 201, 0.25);
+        }
+        .oc-total-strip .oc-strip-lbl { font-size: 0.74em; color: #c7d0ff; }
+        .oc-total-strip .oc-strip-amt {
+            font-size: 1.35em;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .oc-total-strip .oc-strip-pago {
+            display: block;
+            font-size: 0.66em;
+            font-weight: 600;
+            color: #c7d0ff;
+            margin-top: 4px;
+        }
