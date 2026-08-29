@@ -266,6 +266,7 @@ export function seleccionarSucursal(sucursal) {
     }
 
     renderSucursales();
+    actualizarPanelEnvioCotizar(); // Fase 4d: mantener sincronizada la fila de "Sucursal de envío" en Cotizar
     updateTotal();
     guardarEstado();
 }
@@ -279,6 +280,97 @@ export function mostrarSucursalSeleccionada() {
             🏙️ ${state.sucursalSeleccionada.ciudad}, ${state.sucursalSeleccionada.provincia}
         `;
     }
+    actualizarPanelEnvioCotizar();
+}
+
+// ============================================
+// FASE 4d — SELECTOR DE SUCURSAL DE ENVÍO EN LA PANTALLA "COTIZAR"
+// Fila colapsable (mismo estilo que "Datos del Cliente"). Escribe en
+// state.sucursalSeleccionada reutilizando seleccionarSucursal(), así que
+// el valor queda disponible para guardado / imagen / Excel igual que si
+// se hubiera elegido desde la pestaña Sucursales.
+// ============================================
+
+function toggleEnvioPanelCotizar() {
+    const body = document.getElementById('envioPanelBody');
+    const icon = document.getElementById('envioPanelToggleIcon');
+    if (!body) return;
+    const abriendo = !body.classList.contains('open');
+    body.classList.toggle('open');
+    if (icon) icon.classList.toggle('open');
+    if (abriendo) renderEnvioSucursalList();
+}
+
+export function actualizarPanelEnvioCotizar() {
+    const resumen = document.getElementById('envioPanelResumen');
+    const badge = document.getElementById('envioPanelBadge');
+    if (!resumen || !badge) return;
+    const s = state.sucursalSeleccionada;
+    if (s) {
+        resumen.innerHTML = `<span>📦 ${s.nombre}</span><span>🏙️ ${s.ciudad}, ${s.provincia}</span>`;
+        badge.style.display = 'inline-block';
+    } else {
+        resumen.innerHTML = '';
+        badge.style.display = 'none';
+    }
+    // Si la lista está abierta, reflejar cuál fila queda marcada.
+    const body = document.getElementById('envioPanelBody');
+    if (body && body.classList.contains('open')) renderEnvioSucursalList();
+}
+
+export function renderEnvioSucursalList() {
+    const cont = document.getElementById('envioSucursalList');
+    const searchEl = document.getElementById('envioSucursalSearch');
+    if (!cont) return;
+    const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+    let lista = state.sucursalesDB;
+    if (q.length >= 2) {
+        lista = lista.filter(s =>
+            s.nombre.toLowerCase().includes(q) ||
+            s.ciudad.toLowerCase().includes(q) ||
+            s.provincia.toLowerCase().includes(q) ||
+            (s.direccion || '').toLowerCase().includes(q)
+        );
+    }
+
+    if (lista.length === 0) {
+        cont.innerHTML = `<div style="padding:14px; text-align:center; color:var(--text-muted); font-size:0.9em;">${state.sucursalesDB.length === 0 ? 'No hay sucursales registradas todavía.' : 'Sin coincidencias.'}</div>`;
+        return;
+    }
+
+    const activa = state.sucursalSeleccionada ? state.sucursalSeleccionada.nombre : null;
+    cont.innerHTML = lista.slice(0, 40).map(s => {
+        const sel = s.nombre === activa;
+        return `<button type="button" class="envio-suc-row${sel ? ' selected' : ''}" data-nombre="${encodeURIComponent(s.nombre)}">
+            <span class="envio-suc-dot${sel ? '' : ' off'}"></span>
+            <span class="envio-suc-info">
+                <span class="envio-suc-nombre">${s.nombre}</span>
+                <span class="envio-suc-meta">${s.direccion ? s.direccion + ' · ' : ''}${s.ciudad}, ${s.provincia}</span>
+            </span>
+            <span class="envio-suc-check">${sel ? '✓' : ''}</span>
+        </button>`;
+    }).join('');
+}
+
+export function initEnvioPanelCotizar() {
+    const header = document.getElementById('envioPanelHeader');
+    const searchEl = document.getElementById('envioSucursalSearch');
+    const listEl = document.getElementById('envioSucursalList');
+    if (!header) return;
+
+    header.addEventListener('click', toggleEnvioPanelCotizar);
+    if (searchEl) searchEl.addEventListener('input', renderEnvioSucursalList);
+    if (listEl) {
+        listEl.addEventListener('click', (e) => {
+            const row = e.target.closest('.envio-suc-row');
+            if (!row) return;
+            const nombre = decodeURIComponent(row.dataset.nombre);
+            const sucursal = state.sucursalesDB.find(s => s.nombre === nombre);
+            if (sucursal) seleccionarSucursal(sucursal); // ya llama a actualizarPanelEnvioCotizar()
+        });
+    }
+    actualizarPanelEnvioCotizar();
 }
 
 export function updateSucursalStats() {
@@ -301,6 +393,8 @@ export function initSucursalesCrud() {
     document.querySelectorAll('.filter-btn[data-tipo]').forEach(btn => {
         btn.addEventListener('click', (e) => filterByTipo(btn.dataset.tipo, e));
     });
+
+    initEnvioPanelCotizar(); // Fase 4d
 
     window.editarSucursal = editarSucursal;
     window.eliminarSucursal = eliminarSucursal;

@@ -420,6 +420,38 @@
                     </div>
                 </div>
 
+                <!-- SELECTOR DE SUCURSAL DE ENVÍO (Fase 4d) — fila colapsable
+                     con el mismo estilo que "Datos del Cliente" (borde de
+                     acento a la izquierda). Elige la sucursal de destino sin
+                     salir de Cotizar; escribe en state.sucursalSeleccionada,
+                     el MISMO dato que usa la pestaña Sucursales y que ya leen
+                     el guardado, la imagen y el Excel. -->
+                <div class="cliente-panel" id="envioPanel">
+                    <div class="cliente-panel-header" id="envioPanelHeader">
+                        <div class="cliente-panel-title">
+                            📦 Sucursal de envío
+                            <span class="cliente-panel-badge" id="envioPanelBadge" style="display:none">Seleccionada</span>
+                        </div>
+                        <div id="envioPanelResumen" class="cliente-summary"></div>
+                        <span class="cliente-panel-toggle" id="envioPanelToggleIcon">▼</span>
+                    </div>
+                    <div class="cliente-panel-body" id="envioPanelBody">
+                        <div class="ios-search-wrap" style="margin-top:0;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" class="ios-search" id="envioSucursalSearch" placeholder="Buscar sucursal por nombre, ciudad o provincia...">
+                        </div>
+                        <div id="envioSucursalList" class="envio-suc-list"></div>
+                    </div>
+                </div>
+
+                <!-- ACCESOS RÁPIDOS A PRODUCTOS (Fase 4c) — los 4-6 productos
+                     más vendidos del historial; un toque los agrega a la
+                     cotización sin buscar. Se oculta entero si no hay datos. -->
+                <div class="add-product-section" id="accesosRapidosSection" style="display:none;">
+                    <div class="add-product-title">⚡ Accesos rápidos</div>
+                    <div id="accesosRapidosGrid" class="accesos-rapidos-grid"></div>
+                </div>
+
                 <div class="add-product-section">
                     <div class="add-product-title">➕ Agregar Producto a la Cotización</div>
                     <div class="search-container">

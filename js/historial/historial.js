@@ -5,7 +5,7 @@ import { mostrarNotificacion, mostrarConfirmacion, mostrarPrompt } from '../core
 import { parseFetch, COTIZACION_CLASE, aclSoloUsuario } from '../core/parseClient.js';
 import { getClienteData, actualizarResumenCliente } from '../cotizador/cliente.js';
 import { obtenerPrecio, calcularPrecioConIGV } from '../cotizador/precios.js';
-import { renderTable, guardarEstado, actualizarPago } from '../cotizador/productos-tabla.js';
+import { renderTable, guardarEstado, actualizarPago, renderAccesosRapidos } from '../cotizador/productos-tabla.js';
 import { renderSucursales, mostrarSucursalSeleccionada } from '../catalogo/sucursales-crud.js';
 import { siguienteCorrelativo } from './correlativos.js';
 import { buscarEnvioPorOC, badgeEnvioHtml, poblarListaOrdenesCompra } from '../envios/shalom.js';
@@ -158,6 +158,7 @@ export async function renderHistorial() {
 
     pintarHistorialDesdeCache();
     actualizarBadgeEnviosSidebar();
+    renderAccesosRapidos(); // los accesos rápidos dependen del historial
 }
 
 // Etiqueta visual del estado de pago de una orden (mismo estilo de chip

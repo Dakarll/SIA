@@ -255,6 +255,115 @@
             margin-bottom: 15px;
         }
 
+        /* ============================================================
+           FASE 4c — ACCESOS RÁPIDOS A PRODUCTOS (grilla 2 columnas,
+           patrón .catalog-grid del prototipo). Un toque agrega el
+           producto a la cotización.
+           ============================================================ */
+        .accesos-rapidos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .acceso-rapido-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 12px 10px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            color: var(--primary);
+            font-family: inherit;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-out, border-color 0.12s ease, background 0.12s ease;
+        }
+        .acceso-rapido-item:hover { border-color: var(--secondary); }
+        .acceso-rapido-item:active { transform: scale(0.96); background: var(--bg-light); }
+        .acceso-rapido-item .ar-nombre {
+            display: block;
+            line-height: 1.25;
+        }
+        .acceso-rapido-item .ar-precio {
+            font-size: 0.85em;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+        body.dark-mode .acceso-rapido-item {
+            background: var(--dm-surface-1);
+            border-color: var(--dm-border);
+            color: var(--dm-text-primary);
+        }
+        body.dark-mode .acceso-rapido-item:active { background: var(--dm-surface-2); }
+
+        /* ============================================================
+           FASE 4d — LISTA DEL SELECTOR DE SUCURSAL DE ENVÍO (dentro de la
+           fila colapsable "Sucursal de envío" en Cotizar; el contenedor
+           reutiliza las clases .cliente-panel*).
+           ============================================================ */
+        .envio-suc-list {
+            margin-top: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+        .envio-suc-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            border-bottom: 1px solid var(--border);
+            background: white;
+            font-family: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.12s ease;
+        }
+        .envio-suc-row:last-child { border-bottom: none; }
+        .envio-suc-row:hover { background: var(--bg-light); }
+        .envio-suc-row.selected { background: rgba(102, 126, 234, 0.10); }
+        .envio-suc-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--success);
+            flex-shrink: 0;
+        }
+        .envio-suc-dot.off { background: var(--text-faint); }
+        .envio-suc-info { flex: 1; min-width: 0; }
+        .envio-suc-nombre {
+            display: block;
+            font-size: 0.88em;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .envio-suc-meta {
+            display: block;
+            font-size: 0.78em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .envio-suc-check { color: var(--secondary); font-weight: 700; flex-shrink: 0; }
+        body.dark-mode .envio-suc-list { border-color: var(--dm-border); }
+        body.dark-mode .envio-suc-row {
+            background: var(--dm-surface-1);
+            border-bottom-color: var(--dm-border);
+            color: var(--dm-text-primary);
+        }
+        body.dark-mode .envio-suc-row:hover { background: var(--dm-surface-2); }
+        body.dark-mode .envio-suc-row.selected { background: rgba(124, 142, 240, 0.16); }
+
         /* BÚSQUEDA */
         .search-container {
             position: relative;
