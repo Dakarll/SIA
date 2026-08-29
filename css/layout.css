@@ -431,67 +431,15 @@
         body.dark-mode .acceso-rapido-item:active { background: var(--dm-surface-2); }
 
         /* ============================================================
-           FASE 4d — LISTA DEL SELECTOR DE SUCURSAL DE ENVÍO (dentro de la
-           fila colapsable "Sucursal de envío" en Cotizar; el contenedor
-           reutiliza las clases .cliente-panel*).
+           FASE 4d — SELECTOR DE SUCURSAL DE ENVÍO (fila colapsable
+           "Sucursal de envío" en Cotizar). Es un cuadro de texto con
+           sugerencias en vivo: reutiliza .search-container /
+           .autocomplete-dropdown / .autocomplete-item del buscador de
+           productos. El dropdown flota (position:absolute); como el panel
+           usa overflow:hidden para el colapso, se abre el overflow solo
+           mientras la fila está desplegada.
            ============================================================ */
-        .envio-suc-list {
-            margin-top: 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-            max-height: 260px;
-            overflow-y: auto;
-        }
-        .envio-suc-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-            padding: 10px 12px;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            background: white;
-            font-family: inherit;
-            text-align: left;
-            cursor: pointer;
-            transition: background 0.12s ease;
-        }
-        .envio-suc-row:last-child { border-bottom: none; }
-        .envio-suc-row:hover { background: var(--bg-light); }
-        .envio-suc-row.selected { background: rgba(102, 126, 234, 0.10); }
-        .envio-suc-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--success);
-            flex-shrink: 0;
-        }
-        .envio-suc-dot.off { background: var(--text-faint); }
-        .envio-suc-info { flex: 1; min-width: 0; }
-        .envio-suc-nombre {
-            display: block;
-            font-size: 0.88em;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .envio-suc-meta {
-            display: block;
-            font-size: 0.78em;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .envio-suc-check { color: var(--secondary); font-weight: 700; flex-shrink: 0; }
-        body.dark-mode .envio-suc-list { border-color: var(--dm-border); }
-        body.dark-mode .envio-suc-row {
-            background: var(--dm-surface-1);
-            border-bottom-color: var(--dm-border);
-            color: var(--dm-text-primary);
-        }
-        body.dark-mode .envio-suc-row:hover { background: var(--dm-surface-2); }
-        body.dark-mode .envio-suc-row.selected { background: rgba(124, 142, 240, 0.16); }
+        .cliente-panel.envio-panel-open { overflow: visible; }
 
         /* BÚSQUEDA */
         .search-container {

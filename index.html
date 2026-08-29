@@ -483,11 +483,13 @@
                         <span class="cliente-panel-toggle" id="envioPanelToggleIcon">▼</span>
                     </div>
                     <div class="cliente-panel-body" id="envioPanelBody">
-                        <div class="ios-search-wrap" style="margin-top:0;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            <input type="text" class="ios-search" id="envioSucursalSearch" placeholder="Buscar sucursal por nombre, ciudad o provincia...">
+                        <div class="search-container" style="margin-bottom:0;">
+                            <span class="search-icon">📍</span>
+                            <input type="text" class="search-input" id="envioSucursalSearch" autocomplete="off"
+                                   placeholder="Escribe para buscar una sucursal...">
+                            <div id="envioSucursalDropdown" class="autocomplete-dropdown"></div>
                         </div>
-                        <div id="envioSucursalList" class="envio-suc-list"></div>
+                        <div id="envioSucursalHint" style="font-size:0.8em; color:var(--text-muted); margin-top:8px; min-height:16px;"></div>
                     </div>
                 </div>
 
