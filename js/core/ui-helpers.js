@@ -27,6 +27,30 @@ export function cargarPreferencias() {
         document.body.classList.add('dark-mode');
         document.getElementById('themeToggleBtn').textContent = '☀️ Claro';
     }
+
+    // Cargar estado de la sidebar de desktop (contraída / desplegada)
+    if (localStorage.getItem('sidebar_colapsada_lh') === '1') {
+        document.body.classList.add('sidebar-collapsed');
+    }
+    actualizarBotonSidebar();
+}
+
+// ============================================
+// SIDEBAR DE DESKTOP — contraer / desplegar
+// ============================================
+function actualizarBotonSidebar() {
+    const btn = document.getElementById('sidebarToggle');
+    if (!btn) return;
+    const colapsada = document.body.classList.contains('sidebar-collapsed');
+    btn.textContent = colapsada ? '›' : '‹';
+    btn.title = colapsada ? 'Desplegar menú' : 'Contraer menú';
+    btn.setAttribute('aria-label', btn.title);
+}
+
+export function toggleSidebarColapsado() {
+    const colapsada = document.body.classList.toggle('sidebar-collapsed');
+    localStorage.setItem('sidebar_colapsada_lh', colapsada ? '1' : '0');
+    actualizarBotonSidebar();
 }
 
 // ============================================
@@ -330,4 +354,6 @@ export let mostrarPrompt = () => {};
 
 export function initUiHelpers() {
     document.getElementById('themeToggleBtn').addEventListener('click', toggleDarkMode);
+    const sbToggle = document.getElementById('sidebarToggle');
+    if (sbToggle) sbToggle.addEventListener('click', toggleSidebarColapsado);
 }

@@ -282,23 +282,27 @@
              una entrada: se llega desde un botón dentro de "Sucursales"
              (se fusiona del todo en la Fase 4). -->
         <nav class="sidebar" id="appSidebar" aria-label="Navegación principal">
-            <div class="sidebar-brand">🏨 Línea Hotelera</div>
+            <div class="sidebar-brand">
+                <span class="sb-emoji">🏨</span>
+                <span class="sb-text">Línea Hotelera</span>
+                <button type="button" class="sidebar-toggle" id="sidebarToggle" title="Contraer menú" aria-label="Contraer menú">‹</button>
+            </div>
             <div class="sidebar-group">
                 <div class="sidebar-group-label">Operación diaria</div>
-                <button class="tab sidebar-link active" data-tab="cotizar">📋 Cotizar</button>
-                <button class="tab sidebar-link" data-tab="historial">🕓 Historial</button>
-                <button class="tab sidebar-link" data-tab="envios">🚚 Envíos <span class="sidebar-badge js-envios-badge" id="sidebarEnviosBadge" hidden>0</span></button>
+                <button class="tab sidebar-link active" data-tab="cotizar" title="Cotizar"><span class="sl-ic">📋</span><span class="sl-tx">Cotizar</span></button>
+                <button class="tab sidebar-link" data-tab="historial" title="Historial"><span class="sl-ic">🕓</span><span class="sl-tx">Historial</span></button>
+                <button class="tab sidebar-link" data-tab="envios" title="Envíos"><span class="sl-ic">🚚</span><span class="sl-tx">Envíos</span><span class="sidebar-badge js-envios-badge" id="sidebarEnviosBadge" hidden>0</span></button>
             </div>
             <div class="sidebar-group">
                 <div class="sidebar-group-label">Catálogo</div>
-                <button class="tab sidebar-link" data-tab="productos">📦 Productos</button>
-                <button class="tab sidebar-link" data-tab="sucursales">🏢 Sucursales</button>
-                <button class="tab sidebar-link" data-tab="fichas">📄 Fichas Técnicas</button>
+                <button class="tab sidebar-link" data-tab="productos" title="Productos"><span class="sl-ic">📦</span><span class="sl-tx">Productos</span></button>
+                <button class="tab sidebar-link" data-tab="sucursales" title="Sucursales"><span class="sl-ic">🏢</span><span class="sl-tx">Sucursales</span></button>
+                <button class="tab sidebar-link" data-tab="fichas" title="Fichas Técnicas"><span class="sl-ic">📄</span><span class="sl-tx">Fichas Técnicas</span></button>
             </div>
             <div class="sidebar-group">
                 <div class="sidebar-group-label">Reportes</div>
-                <button class="tab sidebar-link" data-tab="dashboard">📊 Dashboard</button>
-                <button class="tab sidebar-link" data-tab="shalom">🚛 Seguimiento Shalom</button>
+                <button class="tab sidebar-link" data-tab="dashboard" title="Dashboard"><span class="sl-ic">📊</span><span class="sl-tx">Dashboard</span></button>
+                <button class="tab sidebar-link" data-tab="shalom" title="Seguimiento Shalom"><span class="sl-ic">🚛</span><span class="sl-tx">Seguimiento Shalom</span></button>
             </div>
         </nav>
 

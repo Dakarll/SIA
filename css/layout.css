@@ -137,13 +137,39 @@
            ============================================================ */
         .sidebar { display: none; }
 
+        /* Ancho de la sidebar en desktop: cambia al contraer/expandir.
+           El layout usa una columna "gutter" a la derecha del MISMO ancho,
+           así el contenido queda centrado en pantalla en ambos estados. */
+        :root { --sidebar-w: 216px; }
+        body.sidebar-collapsed { --sidebar-w: 66px; }
+
         .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 0.95em;
             font-weight: 800;
             letter-spacing: -0.01em;
             color: var(--primary);
-            padding: 0 10px 14px;
+            padding: 0 6px 14px 10px;
         }
+        .sidebar-brand .sb-text { flex: 1; white-space: nowrap; overflow: hidden; }
+        .sidebar-toggle {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            background: white;
+            color: var(--text-muted);
+            font-size: 1em;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.12s ease-out;
+        }
+        .sidebar-toggle:hover { background: var(--bg-light); color: var(--secondary); }
+        .sidebar-toggle:active { transform: scale(0.92); }
+        body.dark-mode .sidebar-toggle { background: var(--dm-surface-2); border-color: var(--dm-border); }
 
         .sidebar-group + .sidebar-group { margin-top: 8px; }
 
@@ -154,6 +180,8 @@
             font-weight: 700;
             color: var(--text-faint);
             padding: 10px 10px 4px;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .sidebar .sidebar-link {
@@ -172,7 +200,21 @@
             font-weight: 600;
             color: var(--text-muted);
             cursor: pointer;
+            position: relative;
             transition: transform 0.12s ease-out, background 0.15s ease, color 0.15s ease;
+        }
+        .sidebar .sidebar-link .sl-ic {
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+            pointer-events: none;
+        }
+        .sidebar .sidebar-link .sl-tx {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            pointer-events: none;
         }
         .sidebar .sidebar-link:hover {
             background: rgba(124, 142, 240, 0.10);
@@ -203,18 +245,52 @@
         }
         .sidebar-badge[hidden] { display: none; }
 
+        /* --- Sidebar CONTRAÍDA: solo iconos --- */
+        body.sidebar-collapsed .sidebar .sb-text,
+        body.sidebar-collapsed .sidebar .sl-tx,
+        body.sidebar-collapsed .sidebar .sidebar-group-label { display: none; }
+        body.sidebar-collapsed .sidebar-brand { justify-content: center; padding: 0 4px 14px; gap: 0; }
+        body.sidebar-collapsed .sidebar .sidebar-link { justify-content: center; padding: 10px 0; gap: 0; }
+        body.sidebar-collapsed .sidebar .sidebar-link .sl-ic { width: auto; font-size: 1.15em; }
+        body.sidebar-collapsed .sidebar-group + .sidebar-group {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--border);
+        }
+        /* El badge de Envíos pasa a un punto en la esquina del icono. */
+        body.sidebar-collapsed .sidebar-badge {
+            position: absolute;
+            top: 5px;
+            right: 9px;
+            min-width: 8px;
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            font-size: 0;
+            border-radius: 50%;
+        }
+
         @media (min-width: 1024px) {
             .container {
                 display: grid;
-                grid-template-columns: 216px minmax(0, 1fr);
+                /* sidebar | contenido | "gutter" vacío del mismo ancho que
+                   la sidebar -> el contenido queda centrado en pantalla,
+                   con la sidebar desplegada o contraída. */
+                grid-template-columns: var(--sidebar-w) minmax(0, var(--content-max, 1120px)) var(--sidebar-w);
                 grid-template-areas:
-                    "sidebar header"
-                    "sidebar banner"
-                    "sidebar content"
-                    "sidebar total";
+                    "sidebar header  ."
+                    "sidebar banner  ."
+                    "sidebar content ."
+                    "sidebar total   .";
+                justify-content: center;
                 column-gap: 16px;
                 align-items: start;
+                max-width: 1760px;
+                transition: grid-template-columns 0.22s ease;
             }
+            /* Con la sidebar contraída el contenido puede ensancharse un
+               poco (sigue centrado). */
+            body.sidebar-collapsed .container { --content-max: 1320px; }
             .sidebar {
                 grid-area: sidebar;
                 display: block;
@@ -226,7 +302,7 @@
                 background: var(--bg-light);
                 border: 1px solid var(--border);
                 border-radius: 12px;
-                padding: 16px 10px;
+                padding: 16px 8px;
             }
             .header { grid-area: header; }
             .info-banner { grid-area: banner; }
@@ -235,7 +311,6 @@
                no hijo — hay que ubicarlo explícitamente en la columna de
                contenido o el grid lo autocoloca bajo la sidebar. */
             .total-section { grid-area: total; }
-            /* En desktop manda la sidebar. */
         }
 
         /* ============================================================
