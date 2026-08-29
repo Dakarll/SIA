@@ -424,18 +424,19 @@
            ============================================================ */
 
         /* Título grande: tipografía óptica — tracking negativo + peso 800.
-           El color lo fija el JS con .doc-cotizacion / .doc-orden, para
-           distinguir de un vistazo propuesta (oscuro + pill ámbar) de
-           pedido confirmado (azul + pill azul). */
+           Mismo color NEGRO para Cotización y Orden de Compra: los dos
+           documentos son de la misma familia visual; el azul no va en el
+           título (restraint — un acento, no una decoración repetida). La
+           distinción de un vistazo la da el pill de estado. */
         #printTipoDoc {
             font-weight: 800;
             letter-spacing: -0.025em;
+            color: #1d1d1f;
         }
-        #printTipoDoc.doc-cotizacion { color: #1d1d1f; }
-        #printTipoDoc.doc-orden { color: #3348c9; }
 
         /* Pill de estado: ámbar "Válido N días" (cotización) /
-           azul "Confirmado" (orden). */
+           azul sólido + texto blanco "Confirmado" (orden). Es el ÚNICO
+           lugar del documento OC donde el azul aparece como fondo. */
         #printValidezBadge {
             display: inline-flex;
             align-items: center;
@@ -445,7 +446,7 @@
             border-radius: 20px;
         }
         #printValidezBadge.pill-cotizacion { background: #fff4d6; color: #a8720a; }
-        #printValidezBadge.pill-orden { background: #dbe4ff; color: #3348c9; }
+        #printValidezBadge.pill-orden { background: #3348c9; color: #ffffff; }
 
         /* Materiales / profundidad: sombra suave de "elevación" incluso en
            imagen estática — en la tarjeta de pago combinada y en la caja
@@ -458,8 +459,7 @@
         }
 
         /* Orden de Compra: tarjeta "Entrega" (reemplaza a "Datos para
-           transferencia/Yape") + franja azul "TOTAL DE LA ORDEN".
-           Escala de espaciado en múltiplos de 2px. */
+           transferencia/Yape"). Escala de espaciado en múltiplos de 2px. */
         .oc-entrega-card {
             background: #f4f5f7;
             border-radius: 12px;
@@ -482,26 +482,37 @@
         }
         #printEntregaBody .oc-row b { color: #1d1d1f; font-weight: 600; }
 
+        /* Franja de total: neutro oscuro (el mismo que la tarjeta de pago),
+           con el azul SOLO como borde-acento a la izquierda — no como
+           relleno. El importe va en blanco. */
         .oc-total-strip {
-            background: #3348c9;
+            background: #1d1d1f;
             color: #ffffff;
+            border-left: 4px solid #3348c9;
             border-radius: 12px;
             padding: 14px 18px;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            box-shadow: 0 6px 16px rgba(51, 72, 201, 0.25);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
         }
-        .oc-total-strip .oc-strip-lbl { font-size: 0.74em; color: #c7d0ff; }
+        .oc-total-strip .oc-strip-lbl { font-size: 0.74em; color: rgba(255, 255, 255, 0.62); }
         .oc-total-strip .oc-strip-amt {
             font-size: 1.35em;
             font-weight: 800;
             letter-spacing: -0.02em;
+            color: #ffffff;
         }
-        .oc-total-strip .oc-strip-pago {
-            display: block;
+
+        /* Desglose de adelanto — solo se renderiza si adelanto > 0
+           (lo controla prepararCotizacion() con display:none/flex). */
+        .oc-breakdown {
+            display: flex;
+            justify-content: space-between;
             font-size: 0.66em;
-            font-weight: 600;
-            color: #c7d0ff;
-            margin-top: 4px;
+            color: #8a8a8e;
+            padding: 8px 18px 0;
+            margin-top: -2px;
         }
+        .oc-breakdown span b { color: #3a3a3c; font-weight: 700; }
+        .oc-breakdown .saldo b { color: #c0392b; }

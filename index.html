@@ -1170,7 +1170,7 @@
                 <div style="font-size:0.7em;color:var(--text-faint);">📞 923 579 140 · @lineahotelera</div>
             </div>
             <div style="text-align:right;">
-                <div id="printTipoDoc" class="doc-cotizacion" style="font-size:2em;line-height:1;">COTIZACIÓN</div>
+                <div id="printTipoDoc" style="font-size:2em;line-height:1;">COTIZACIÓN</div>
                 <div id="printNumeroCot" style="font-size:0.8em;color:var(--text-muted);margin-top:2px;"></div>
                 <div class="print-date" id="printDate" style="font-size:0.8em;color:var(--text-muted);margin-top:2px;"></div>
                 <div id="printValidezBadge" class="pill-cotizacion" style="font-size:0.72em;font-weight:700;">⏱ Válido 7 días</div>
@@ -1258,10 +1258,12 @@
             </div>
             <div class="oc-total-strip">
                 <span class="oc-strip-lbl" id="printOCStripLabel">TOTAL DE LA ORDEN</span>
-                <span style="display:inline-block;text-align:right;">
-                    <span class="oc-strip-amt" id="printTotalOC">S/ 0.00</span>
-                    <span class="oc-strip-pago" id="printOCPago"></span>
-                </span>
+                <span class="oc-strip-amt" id="printTotalOC">S/ 0.00</span>
+            </div>
+            <!-- Desglose de adelanto — prepararCotizacion() solo lo muestra si adelanto > 0 -->
+            <div class="oc-breakdown" id="printOCBreakdown" style="display:none;">
+                <span>Adelanto pagado: <b id="printOCAdelanto">S/ 0.00</b></span>
+                <span class="saldo">Saldo pendiente: <b id="printOCSaldo">S/ 0.00</b></span>
             </div>
         </div>
 

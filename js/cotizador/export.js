@@ -92,21 +92,17 @@ export async function prepararCotizacion() {
         : null;
     const numDoc = numeroCorrelativo ? `N° ${numeroCorrelativo}` : 'N° pendiente';
 
-    // TIPO DE DOCUMENTO — color como código de estado (Apple Design):
-    // Cotización = propuesta abierta (título oscuro + pill ámbar);
-    // Orden de Compra = pedido confirmado (título azul + pill azul).
+    // TIPO DE DOCUMENTO — el título va en negro en ambos casos (misma
+    // familia visual). La distinción de estado la da el pill.
     const tipodoc = document.getElementById('tipoDocumento').value;
     const esOrden = tipodoc === 'ORDEN DE COMPRA';
     const tituloDoc = esOrden ? 'ORDEN DE COMPRA' : 'COTIZACIÓN';
-    const tituloEl = document.getElementById('printTipoDoc');
-    tituloEl.textContent = tituloDoc;
-    tituloEl.classList.toggle('doc-orden', esOrden);
-    tituloEl.classList.toggle('doc-cotizacion', !esOrden);
+    document.getElementById('printTipoDoc').textContent = tituloDoc;
     document.getElementById('printDate').textContent = `Fecha: ${fechaStr}`;
     document.getElementById('printNumeroCot').textContent = numDoc;
 
     // PILL DE ESTADO: ámbar "⏱ Válido 7 días" (cotización) /
-    // azul "✓ Confirmado" (orden de compra).
+    // azul sólido "✓ Confirmado" (orden de compra).
     const validezEl = document.getElementById('printValidezBadge');
     if (validezEl) {
         validezEl.style.display = 'inline-flex';
@@ -233,7 +229,7 @@ export async function prepararCotizacion() {
     const totalMostrar = state.mostrarConIGV ? calcularPrecioConIGV(totalSinIGV) : totalSinIGV;
     const totalTexto = `S/ ${totalMostrar.toFixed(2)}`;
     document.getElementById('printTotal').textContent = totalTexto;
-    // Mismo total en la franja azul de la Orden de Compra.
+    // Mismo total en la franja "TOTAL DE LA ORDEN" de la Orden de Compra.
     const totalOCEl = document.getElementById('printTotalOC');
     if (totalOCEl) totalOCEl.textContent = totalTexto;
     const ocStripLabel = document.getElementById('printOCStripLabel');
@@ -255,22 +251,27 @@ export async function prepararCotizacion() {
     if (state.forzarPorMayor) infoText += ` · Precio por mayor`;
     document.getElementById('printTotalInfo').textContent = infoText;
 
-    // ADELANTO / PAGO — se mantiene en ambos tipos de documento (dato real
-    // de seguimiento de saldos, no es una sección de "Condiciones"). En la
-    // cotización va en la caja de total; en la orden, como sublínea de la
-    // franja azul.
+    // ADELANTO / PAGO — mismo campo #montoAdelanto que la Cotización.
+    //  - Cotización: sección dentro de la caja de total.
+    //  - Orden de Compra: línea de desglose bajo la franja de total, que
+    //    SOLO se renderiza si hubo algún adelanto (> 0). Si el adelanto
+    //    cubre el total, se muestra igual con "Saldo pendiente: S/ 0.00".
     const adelanto = parseFloat(document.getElementById('montoAdelanto').value) || 0;
     const pagoPrint = document.getElementById('printPagoSection');
-    const ocPagoEl = document.getElementById('printOCPago');
+    const ocBreakdown = document.getElementById('printOCBreakdown');
     if (adelanto > 0) {
         const saldo = Math.max(0, totalMostrar - adelanto);
         pagoPrint.style.display = 'block';
         document.getElementById('printAdelanto').textContent = `S/ ${adelanto.toFixed(2)}`;
         document.getElementById('printSaldo').textContent = `S/ ${saldo.toFixed(2)}`;
-        if (ocPagoEl) ocPagoEl.textContent = `Adelanto S/ ${adelanto.toFixed(2)} · Saldo S/ ${saldo.toFixed(2)}`;
+        if (ocBreakdown) {
+            ocBreakdown.style.display = 'flex';
+            document.getElementById('printOCAdelanto').textContent = `S/ ${adelanto.toFixed(2)}`;
+            document.getElementById('printOCSaldo').textContent = `S/ ${saldo.toFixed(2)}`;
+        }
     } else {
         pagoPrint.style.display = 'none';
-        if (ocPagoEl) ocPagoEl.textContent = '';
+        if (ocBreakdown) ocBreakdown.style.display = 'none';
     }
 }
 
