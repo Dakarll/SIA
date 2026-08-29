@@ -272,6 +272,36 @@
 
     <!-- SISTEMA DE COTIZACIÓN -->
     <div class="container">
+
+        <!-- SIDEBAR PERSISTENTE (Fase 3 — Variante B, solo desktop ≥1024px).
+             Los botones son los MISMOS `.tab[data-tab]` que la barra
+             horizontal: initTabs() los engancha igual y switchTab() no
+             distingue de dónde vino el click. La barra horizontal .tabs
+             sigue existiendo (se muestra en móvil/tablet; la Fase 4
+             rehará la navegación móvil). "Gestión Sucursales" ya no es
+             una entrada: se llega desde un botón dentro de "Sucursales"
+             (se fusiona del todo en la Fase 4). -->
+        <nav class="sidebar" id="appSidebar" aria-label="Navegación principal">
+            <div class="sidebar-brand">🏨 Línea Hotelera</div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-label">Operación diaria</div>
+                <button class="tab sidebar-link active" data-tab="cotizar">📋 Cotizar</button>
+                <button class="tab sidebar-link" data-tab="historial">🕓 Historial</button>
+                <button class="tab sidebar-link" data-tab="envios">🚚 Envíos <span class="sidebar-badge" id="sidebarEnviosBadge" hidden>0</span></button>
+            </div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-label">Catálogo</div>
+                <button class="tab sidebar-link" data-tab="productos">📦 Productos</button>
+                <button class="tab sidebar-link" data-tab="sucursales">🏢 Sucursales</button>
+                <button class="tab sidebar-link" data-tab="fichas">📄 Fichas Técnicas</button>
+            </div>
+            <div class="sidebar-group">
+                <div class="sidebar-group-label">Reportes</div>
+                <button class="tab sidebar-link" data-tab="dashboard">📊 Dashboard</button>
+                <button class="tab sidebar-link" data-tab="shalom">🚛 Seguimiento Shalom</button>
+            </div>
+        </nav>
+
         <div class="header">
             <h1>🏨 Línea Hotelera - Cotizador Profesional</h1>
             <div class="subtitle">Sistema Integrado de Cotización y Envíos a Provincias · v3.0 — Historial · WhatsApp · Multi-color · Clientes DB</div>
@@ -454,7 +484,10 @@
             <!-- TAB: SUCURSALES -->
             <div class="tab-content" id="tab-sucursales">
                 <div class="add-product-section">
-                    <div class="add-product-title">🔍 Buscar Sucursal para Envío</div>
+                    <div class="add-product-title" style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <span>🔍 Buscar Sucursal para Envío</span>
+                        <button type="button" class="nav-bridge btn btn-small" data-tab="gestionsucursales" style="background:var(--secondary); white-space:nowrap; font-weight:600;">⚙️ Gestionar sucursales</button>
+                    </div>
                     <div class="search-container">
                         <span class="search-icon">📍</span>
                         <input 
@@ -559,6 +592,7 @@
 
             <!-- TAB: GESTIÓN DE SUCURSALES -->
             <div class="tab-content" id="tab-gestionsucursales">
+                <button type="button" class="nav-bridge btn btn-small" data-tab="sucursales" style="background:var(--border); color:var(--primary); margin-bottom:14px; font-weight:600;">‹ Volver a Sucursales</button>
                 <!-- FORMULARIO NUEVA SUCURSAL -->
                 <div class="new-form-section">
                     <h3>➕ Agregar Nueva Sucursal</h3>

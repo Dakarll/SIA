@@ -126,6 +126,119 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ============================================================
+           SIDEBAR PERSISTENTE — Fase 3 (Variante B de
+           desktop_variantes_apple.html). Solo desktop (≥1024px); por
+           debajo se sigue usando la barra .tabs horizontal (la Fase 4
+           rehace la navegación móvil).
+           Los ítems son <button class="tab sidebar-link" data-tab>, así
+           que switchTab()/initTabs() los tratan igual que las tabs de
+           siempre — esto es solo estructura visual, no comportamiento.
+           ============================================================ */
+        .sidebar { display: none; }
+
+        .sidebar-brand {
+            font-size: 0.95em;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--primary);
+            padding: 0 10px 14px;
+        }
+
+        .sidebar-group + .sidebar-group { margin-top: 8px; }
+
+        .sidebar-group-label {
+            font-size: 0.66em;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+            color: var(--text-faint);
+            padding: 10px 10px 4px;
+        }
+
+        .sidebar .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 9px 10px;
+            margin-bottom: 2px;
+            border: none;
+            border-bottom: none;
+            border-radius: 8px;
+            background: none;
+            text-align: left;
+            font-size: 0.82em;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: transform 0.12s ease-out, background 0.15s ease, color 0.15s ease;
+        }
+        .sidebar .sidebar-link:hover {
+            background: rgba(124, 142, 240, 0.10);
+            color: var(--secondary);
+        }
+        /* Respuesta instantánea al clic (Apple Design). */
+        .sidebar .sidebar-link:active { transform: scale(0.97); }
+        /* Ítem activo: fondo tenue de acento + texto de acento. */
+        .sidebar .sidebar-link.active {
+            background: rgba(124, 142, 240, 0.16);
+            color: var(--secondary);
+            border-bottom: none;
+        }
+        body.dark-mode .sidebar .sidebar-link { color: var(--dm-text-secondary); }
+        body.dark-mode .sidebar .sidebar-link:hover,
+        body.dark-mode .sidebar .sidebar-link.active { color: #a5b4fc; }
+
+        .sidebar-badge {
+            margin-left: auto;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 0.85em;
+            font-weight: 700;
+            line-height: 1.4;
+            padding: 0 7px;
+            border-radius: 10px;
+            pointer-events: none;   /* el clic pasa al botón, no al badge */
+        }
+        .sidebar-badge[hidden] { display: none; }
+
+        @media (min-width: 1024px) {
+            .container {
+                display: grid;
+                grid-template-columns: 216px minmax(0, 1fr);
+                grid-template-areas:
+                    "sidebar header"
+                    "sidebar banner"
+                    "sidebar content"
+                    "sidebar total";
+                column-gap: 16px;
+                align-items: start;
+            }
+            .sidebar {
+                grid-area: sidebar;
+                display: block;
+                position: sticky;
+                top: 10px;
+                align-self: start;
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+                background: var(--bg-light);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px 10px;
+            }
+            .header { grid-area: header; }
+            .info-banner { grid-area: banner; }
+            .content { grid-area: content; }
+            /* .total-section (footer del cotizador) es hermano de .content,
+               no hijo — hay que ubicarlo explícitamente en la columna de
+               contenido o el grid lo autocoloca bajo la sidebar. */
+            .total-section { grid-area: total; }
+            /* En desktop manda la sidebar: se oculta la barra horizontal. */
+            .tabs { display: none; }
+        }
+
         /* SECCIÓN AGREGAR */
         .add-product-section {
             background: var(--bg-light);
